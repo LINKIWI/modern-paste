@@ -1,0 +1,2 @@
+DEV = 'dev'
+PROD = 'prod'
