@@ -7,6 +7,7 @@ app.config.from_object('flask_config')
 db = SQLAlchemy(app, session_options={
     'expire_on_commit': False,
 })
+session = db.session
 
 login_manager = LoginManager()
 login_manager.init_app(app)
