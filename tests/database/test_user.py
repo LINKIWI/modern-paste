@@ -1,4 +1,3 @@
-from flask.ext.testing import TestCase
 from util.exception import *
 
 import util.testing
@@ -6,16 +5,7 @@ import util.cryptography
 import database.user
 
 
-class TestUser(TestCase):
-    def create_app(self):
-        return util.testing.initialize_test_app()
-
-    def setUp(self):
-        util.testing.initialize_test_db_env()
-
-    def tearDown(self):
-        util.testing.destroy_test_db_env()
-
+class TestUser(util.testing.DatabaseTestCase):
     def test_create_new_user(self):
         database.user.create_new_user('username', 'password', '127.0.0.1', 'name', 'test@test.com')
         self.assertRaises(
