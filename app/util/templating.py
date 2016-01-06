@@ -6,9 +6,13 @@ import constants
 
 
 @app.context_processor
-def import_static_resource():
+def import_static_resources():
     """
-    TODO
+    Templating utility to handle build environment-specific static resource (CSS and JS) imports.
+    Set the config.BUILD_ENVIRONMENT parameter, then use as
+
+        {{ import_js(['my_js.js', 'my_other_js.js', ...]) }}
+        {{ import_css(['colors.css', 'fonts.css', ...]) }}
     """
     css_import_string = '<link rel="stylesheet" type="text/css" href="{url}">'
     js_import_string = '<script src="{url}" type="text/javascript"></script>'
@@ -19,7 +23,7 @@ def import_static_resource():
              for path in import_paths
          ])))
 
-    def js_import_path(path):
+    def _js_import_path(path):
         if path.startswith('//'):
             # Externally hosted resources
             return path
@@ -28,7 +32,7 @@ def import_static_resource():
         return js_import_string.format(url='/static/js/{path}'.format(path=path))
 
     def import_js(import_paths):
-        return '\n'.join(list(OrderedDict.fromkeys(map(js_import_path, import_paths))))
+        return '\n'.join(list(OrderedDict.fromkeys(map(_js_import_path, import_paths))))
 
     return dict(import_css=import_css, import_js=import_js)
 
