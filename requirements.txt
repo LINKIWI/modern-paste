@@ -1,0 +1,7 @@
+mock
+flask
+mysql-python
+flask-sqlalchemy
+flask-login
+flask-testing
+pycrypto
