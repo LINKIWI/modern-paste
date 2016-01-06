@@ -1,5 +1,6 @@
 import base64
 from Crypto.Cipher import AES
+from Crypto.Hash import SHA256
 
 from modern_paste import app
 from util.exception import InvalidIDException
@@ -46,3 +47,17 @@ def get_decid(encid):
         return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
     except:
         raise InvalidIDException('The encrypted ID is not valid')
+
+
+def secure_hash(s, iterations=10000):
+    """
+    Performs several iterations of a SHA256 hash of a plain-text string to generate a secure hash.
+
+    :param s: Input string to hash
+    :param iterations: Number of hash iterations to use
+    :return: A string representing a secure hash of the string
+    """
+    hash_result = SHA256.new(data=str(s)).hexdigest()
+    for i in range(iterations):
+        hash_result = SHA256.new(data=hash_result).hexdigest()
+    return hash_result
