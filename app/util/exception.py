@@ -12,6 +12,12 @@ class InvalidEmailException(Exception):
     pass
 
 
+# Paste
+
+class PasteDoesNotExistException(Exception):
+    pass
+
+
 # Crytography
 
 class InvalidIDException(Exception):

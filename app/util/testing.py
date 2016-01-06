@@ -1,8 +1,10 @@
 import random
+import time
 
 from flask.ext.testing import TestCase
 
 import database.user
+import database.paste
 from modern_paste import app
 from modern_paste import db
 
@@ -29,9 +31,6 @@ class Factory:
 
 
 class UserFactory(Factory):
-    def __init__(self):
-        pass
-
     @classmethod
     def generate(
         cls,
@@ -42,6 +41,22 @@ class UserFactory(Factory):
         email='{addr}@{domain}.com'.format(addr=random_alphanumeric_string(), domain=random_alphanumeric_string()),
     ):
         return database.user.create_new_user(username, password, signup_ip, name, email)
+
+
+class PasteFactory(Factory):
+    languages = ['python', 'java', 'html', 'css', 'javascript', 'matlab', 'text']
+
+    @classmethod
+    def generate(
+        cls,
+        user_id=random.getrandbits(16),
+        contents=random_alphanumeric_string(length=8192),
+        expiry_time=int(time.time() + random.getrandbits(16)),
+        title=random_alphanumeric_string(),
+        language=random.choice(languages),
+        password=random_alphanumeric_string(),
+    ):
+        return database.paste.create_new_paste(user_id, contents, expiry_time, title, language, password)
 
 
 class DatabaseTestCase(TestCase):
