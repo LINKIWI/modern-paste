@@ -56,7 +56,7 @@ class PasteFactory(Factory):
         language=random.choice(languages),
         password=random_alphanumeric_string(),
     ):
-        return database.paste.create_new_paste(user_id, contents, expiry_time, title, language, password)
+        return database.paste.create_new_paste(contents, user_id, expiry_time, title, language, password)
 
 
 class DatabaseTestCase(TestCase):

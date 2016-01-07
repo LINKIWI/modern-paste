@@ -7,7 +7,7 @@ import database.paste
 
 class TestPaste(util.testing.DatabaseTestCase):
     def test_create_new_paste(self):
-        paste = database.paste.create_new_paste(1, 'contents', 1452119965, 'title', 'python', 'password')
+        paste = database.paste.create_new_paste('contents', 1, 1452119965, 'title', 'python', 'password')
         self.assertEqual(1, paste.user_id)
         self.assertEqual('contents', paste.contents)
         self.assertEqual(1452119965, paste.expiry_time)
@@ -15,7 +15,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual('python', paste.language)
         self.assertEqual(util.cryptography.secure_hash('password'), paste.password_hash)
         # Should also be able to create pastes with all optional fields blank
-        database.paste.create_new_paste(1, 'contents')
+        database.paste.create_new_paste('contents')
 
     def test_get_paste_by_id(self):
         self.assertRaises(
