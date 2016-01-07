@@ -4,6 +4,10 @@ import config
 class URI:
     fqdn = config.DOMAIN
     path = '/'
+    api_endpoint = False
+
+    def __init__(self):
+        pass
 
     @classmethod
     def uri(cls, **kwargs):
