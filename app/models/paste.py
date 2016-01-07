@@ -1,5 +1,6 @@
 import time
 
+import util.testing
 from modern_paste import db
 
 
@@ -15,6 +16,7 @@ class Paste(db.Model):
     language = db.Column(db.Text)
     password_hash = db.Column(db.Text, default=None)
     contents = db.Column(db.Text)
+    deactivation_token = db.Column(db.Text)
 
     def __init__(
         self,
@@ -33,6 +35,7 @@ class Paste(db.Model):
         self.language = language
         self.password_hash = password_hash
         self.contents = contents
+        self.deactivation_token = util.testing.random_alphanumeric_string()
 
     def as_dict(self):
         """
@@ -41,6 +44,7 @@ class Paste(db.Model):
         :return: Dictionary of paste properties
         """
         return {
+            'paste_id': self.paste_id,
             'is_active': self.is_active,
             'user_id': self.user_id,
             'post_time': self.post_time,
@@ -48,4 +52,5 @@ class Paste(db.Model):
             'contents': self.contents,
             'title': self.title,
             'language': self.language,
+            'deactivation_token': self.deactivation_token,
         }

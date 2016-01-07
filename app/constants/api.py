@@ -26,3 +26,15 @@ NONEXISTENT_USER_FAILURE = {
     FAILURE: 'nonexistent_user_failure',
 }
 NONEXISTENT_USER_FAILURE_CODE = 400
+NONEXISTENT_PASTE_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'Paste does not exist',
+    FAILURE: 'nonexistent_paste_failure',
+}
+NONEXISTENT_PASTE_FAILURE_CODE = 400
+UNDEFINED_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'Undefined server-side failure',
+    FAILURE: 'undefined_failure',
+}
+UNDEFINED_FAILURE_CODE = 500
