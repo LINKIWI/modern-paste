@@ -20,3 +20,9 @@ INCOMPLETE_PARAMS_FAILURE = {
     FAILURE: 'incomplete_params_failure',
 }
 INCOMPLETE_PARAMS_FAILURE_CODE = 400
+NONEXISTENT_USER_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'User does not exist',
+    FAILURE: 'nonexistent_user_failure',
+}
+NONEXISTENT_USER_FAILURE_CODE = 400

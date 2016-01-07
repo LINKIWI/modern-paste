@@ -64,6 +64,20 @@ def get_user_by_username(username):
     return user
 
 
+def authenticate_user(username, password):
+    """
+    Authenticate a user with a username and password. This function only checks if the
+    credentials are correct.
+
+    :param username: Username to check
+    :param password: Plain text password to authenticate against
+    :return: True if the credential pair is valid; False otherwise
+    :raises UserDoesNotExistException: If no user exists with the given username
+    """
+    user = get_user_by_username(username)
+    return util.cryptography.secure_hash(password) == user.password_hash
+
+
 def is_username_available(username):
     """
     Arises from uniqueness constraint on username column.
