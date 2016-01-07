@@ -14,6 +14,7 @@ login_manager.init_app(app)
 
 
 import models
+from views import *
 
 
 if __name__ == '__main__':
