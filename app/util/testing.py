@@ -34,13 +34,23 @@ class UserFactory(Factory):
     @classmethod
     def generate(
         cls,
-        username=random_alphanumeric_string(),
-        password=random_alphanumeric_string(),
+        username=None,
+        password=None,
         signup_ip='127.0.0.1',
-        name=random_alphanumeric_string(),
-        email='{addr}@{domain}.com'.format(addr=random_alphanumeric_string(), domain=random_alphanumeric_string()),
+        name=None,
+        email=None,
     ):
-        return database.user.create_new_user(username, password, signup_ip, name, email)
+        random_username = random_alphanumeric_string()
+        random_password = random_alphanumeric_string()
+        random_name = random_alphanumeric_string()
+        random_email = '{addr}@{domain}.com'.format(addr=random_alphanumeric_string(), domain=random_alphanumeric_string())
+        return database.user.create_new_user(
+            username=username or random_username,
+            password=password or random_password,
+            signup_ip=signup_ip,
+            name=name or random_name,
+            email=email or random_email,
+        )
 
 
 class PasteFactory(Factory):
@@ -49,14 +59,27 @@ class PasteFactory(Factory):
     @classmethod
     def generate(
         cls,
-        user_id=random.getrandbits(16),
-        contents=random_alphanumeric_string(length=8192),
-        expiry_time=int(time.time() + random.getrandbits(16)),
-        title=random_alphanumeric_string(),
-        language=random.choice(languages),
-        password=random_alphanumeric_string(),
+        user_id=None,
+        contents=None,
+        expiry_time=None,
+        title=None,
+        language=None,
+        password=None,
     ):
-        return database.paste.create_new_paste(contents, user_id, expiry_time, title, language, password)
+        random_user_id = random.getrandbits(16)
+        random_contents = random_alphanumeric_string(length=8192)
+        random_expiry_time = int(time.time() + random.getrandbits(16))
+        random_title = random_alphanumeric_string()
+        random_language = random.choice(cls.languages)
+        random_password = random_alphanumeric_string()
+        return database.paste.create_new_paste(
+            contents=contents or random_contents,
+            user_id=user_id or random_user_id,
+            expiry_time=expiry_time or random_expiry_time,
+            title=title or random_title,
+            language=language or random_language,
+            password=password or random_password,
+        )
 
 
 class DatabaseTestCase(TestCase):
@@ -76,6 +99,7 @@ class DatabaseTestCase(TestCase):
         """
         Initialize a test database environment.
         """
+        self.client = app.test_client()
         db.create_all()
 
     def tearDown(self):
