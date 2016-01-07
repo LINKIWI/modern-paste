@@ -7,6 +7,7 @@ from util.exception import *
 from api.decorators import require_form_args
 import constants.api
 import database.paste
+import util.cryptography
 
 
 @app.route(PasteSubmitURI.path, methods=['POST'])
@@ -52,3 +53,29 @@ def deactivate_paste():
         }), constants.api.AUTH_FAILURE_CODE
     except PasteDoesNotExistException:
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
+@app.route(PasteDetailsURI.path, methods=['POST'])
+@require_form_args(['paste_id'])
+def paste_details():
+    data = flask.request.get_json()
+    try:
+        paste = database.paste.get_paste_by_id(data['paste_id'])
+        if not paste.password_hash or (data.get('password') and paste.password_hash == util.cryptography.secure_hash(data.get('password'))):
+            return flask.jsonify({
+                constants.api.RESULT: constants.api.RESULT_SUCCESS,
+                constants.api.MESSAGE: None,
+                'details': paste.as_dict(),
+            }), constants.api.SUCCESS_CODE
+        else:
+            return flask.jsonify({
+                constants.api.RESULT: constants.api.RESULT_FAULURE,
+                constants.api.MESSAGE: 'Password-protected paste: either no password or wrong password supplied',
+                'details': {},
+            }), constants.api.AUTH_FAILURE_CODE
+    except PasteDoesNotExistException:
+        return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE

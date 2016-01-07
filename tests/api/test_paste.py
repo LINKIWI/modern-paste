@@ -170,3 +170,84 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         self.assertFalse(database.paste.get_paste_by_id(paste.paste_id).is_active)
+
+    def test_paste_details_invalid(self):
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.INCOMPLETE_PARAMS_FAILURE_CODE)
+        self.assertEqual(json.loads(resp.data), constants.api.INCOMPLETE_PARAMS_FAILURE)
+
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': -1,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.NONEXISTENT_PASTE_FAILURE_CODE)
+        self.assertEqual(json.loads(resp.data), constants.api.NONEXISTENT_PASTE_FAILURE)
+
+    def test_paste_details_no_password(self):
+        paste = util.testing.PasteFactory.generate(password=None)
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(
+            database.paste.get_paste_by_id(paste.paste_id).as_dict(),
+            json.loads(resp.data)['details'],
+        )
+
+    def test_paste_details_password(self):
+        paste = util.testing.PasteFactory.generate(password='None')
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
+
+        paste = util.testing.PasteFactory.generate(password='password')
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
+
+        paste = util.testing.PasteFactory.generate(password='password')
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+                'password': 'invalid',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
+
+        paste = util.testing.PasteFactory.generate(password='password')
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(
+            database.paste.get_paste_by_id(paste.paste_id).as_dict(),
+            json.loads(resp.data)['details'],
+        )

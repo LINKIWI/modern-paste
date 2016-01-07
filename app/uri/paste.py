@@ -17,3 +17,8 @@ class PasteSubmitURI(URI):
 class PasteDeactivateURI(URI):
     api_endpoint = True
     path = '/api/paste/deactivate'
+
+
+class PasteDetailsURI(URI):
+    api_endpoint = True
+    path = '/api/paste/details'
