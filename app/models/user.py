@@ -30,3 +30,15 @@ class User(db.Model):
         self.password_hash = password_hash
         self.name = name
         self.email = email
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return self.is_active
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return unicode(self.user_id)
