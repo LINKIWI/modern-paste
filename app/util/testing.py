@@ -1,5 +1,6 @@
 import random
 import time
+import types
 
 from flask.ext.testing import TestCase
 
@@ -26,7 +27,23 @@ class Factory:
         pass
 
     @classmethod
+    def random_or_specified_value(cls, value):
+        """
+        Helper utility for choosing between a user-specified value for a field or a randomly generated value.
+
+        :param value: Either a lambda type or a non-lambda type.
+        :return: The value itself if not a lambda type, otherwise the value of the evaluated lambda (random value)
+        """
+        return value() if isinstance(value, types.LambdaType) else value
+
+    @classmethod
     def generate(cls, *args, **kwargs):
+        """
+        Generates an instance of the requested model and adds it to the test database.
+        This method should be overrided by subclasses.
+
+        :return: An instance of the model specified by the subclass type.
+        """
         raise NotImplementedError
 
 
@@ -34,51 +51,39 @@ class UserFactory(Factory):
     @classmethod
     def generate(
         cls,
-        username=None,
-        password=None,
-        signup_ip='127.0.0.1',
-        name=None,
-        email=None,
+        username=lambda: random_alphanumeric_string(),
+        password=lambda: random_alphanumeric_string(),
+        signup_ip=lambda: '127.0.0.1',
+        name=lambda: random_alphanumeric_string(),
+        email=lambda: '{addr}@{domain}.com'.format(addr=random_alphanumeric_string(), domain=random_alphanumeric_string()),
     ):
-        random_username = random_alphanumeric_string()
-        random_password = random_alphanumeric_string()
-        random_name = random_alphanumeric_string()
-        random_email = '{addr}@{domain}.com'.format(addr=random_alphanumeric_string(), domain=random_alphanumeric_string())
         return database.user.create_new_user(
-            username=username or random_username,
-            password=password or random_password,
-            signup_ip=signup_ip,
-            name=name or random_name,
-            email=email or random_email,
+            username=cls.random_or_specified_value(username),
+            password=cls.random_or_specified_value(password),
+            signup_ip=cls.random_or_specified_value(signup_ip),
+            name=cls.random_or_specified_value(name),
+            email=cls.random_or_specified_value(email),
         )
 
 
 class PasteFactory(Factory):
-    languages = ['python', 'java', 'html', 'css', 'javascript', 'matlab', 'text']
-
     @classmethod
     def generate(
         cls,
-        user_id=None,
-        contents=None,
-        expiry_time=None,
-        title=None,
-        language=None,
-        password=None,
+        user_id=lambda: random.getrandbits(16),
+        contents=lambda: random_alphanumeric_string(length=8192),
+        expiry_time=lambda: int(time.time() + random.getrandbits(16)),
+        title=lambda: random_alphanumeric_string(),
+        language=lambda: random.choice(['python', 'java', 'html', 'css', 'javascript', 'matlab', 'text']),
+        password=lambda: random_alphanumeric_string(),
     ):
-        random_user_id = random.getrandbits(16)
-        random_contents = random_alphanumeric_string(length=8192)
-        random_expiry_time = int(time.time() + random.getrandbits(16))
-        random_title = random_alphanumeric_string()
-        random_language = random.choice(cls.languages)
-        random_password = random_alphanumeric_string()
         return database.paste.create_new_paste(
-            contents=contents or random_contents,
-            user_id=user_id or random_user_id,
-            expiry_time=expiry_time or random_expiry_time,
-            title=title or random_title,
-            language=language or random_language,
-            password=password or random_password,
+            contents=cls.random_or_specified_value(contents),
+            user_id=cls.random_or_specified_value(user_id),
+            expiry_time=cls.random_or_specified_value(expiry_time),
+            title=cls.random_or_specified_value(title),
+            language=cls.random_or_specified_value(language),
+            password=cls.random_or_specified_value(password),
         )
 
 
