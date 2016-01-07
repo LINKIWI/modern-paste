@@ -22,7 +22,7 @@ def create_new_paste(contents, user_id=None, expiry_time=None, title=None, langu
         contents=contents,
         expiry_time=int(expiry_time) if expiry_time is not None else None,
         title=title,
-        language=language if language is not None else 'text',
+        language=language or 'text',
         password_hash=util.cryptography.secure_hash(password) if password is not None else None,
     )
     session.add(new_paste)

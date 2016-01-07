@@ -1,8 +1,8 @@
 import models
-
+import util.cryptography
+from modern_paste import login_manager
 from modern_paste import session
 from util.exception import *
-import util.cryptography
 
 
 def create_new_user(username, password, signup_ip, name=None, email=None):
@@ -104,3 +104,17 @@ def is_email_address_valid(email_addr):
     if not len(addr) or not len(domain) or '.' not in domain:
         return False
     return True
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    Flask-login requires implementation of this method, which returns a User model
+    object when passed a user ID.
+
+    :param user_id: User ID to load.
+    """
+    try:
+        return get_user_by_id(user_id)
+    except UserDoesNotExistException:
+        return None

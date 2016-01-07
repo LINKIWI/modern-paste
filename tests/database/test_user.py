@@ -57,6 +57,18 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('test@test.com', user.email)
         self.assertEqual(user, database.user.get_user_by_username('uSeRnAME'))
 
+    def test_authenticate_user(self):
+        self.assertRaises(
+            UserDoesNotExistException,
+            database.user.authenticate_user,
+            'username',
+            'password',
+        )
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.assertTrue(database.user.authenticate_user('username', 'password'))
+        self.assertTrue(database.user.authenticate_user('userNAME', 'password'))
+        self.assertTrue(database.user.authenticate_user('uSeRnAME', 'password'))
+
     def test_is_username_available(self):
         self.assertTrue(database.user.is_username_available('username'))
         self.assertTrue(database.user.is_username_available('Username'))
@@ -74,3 +86,13 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertFalse(database.user.is_email_address_valid('test@@test.com'))
         self.assertFalse(database.user.is_email_address_valid('test@testcom'))
         self.assertFalse(database.user.is_email_address_valid('@test.com'))
+
+    def test_load_user(self):
+        self.assertIsNone(database.user.load_user(1))
+        database.user.create_new_user('username', 'password', '127.0.0.1', 'name', 'test@test.com')
+        user = database.user.load_user(1)
+        self.assertEqual('username', user.username)
+        self.assertEqual(util.cryptography.secure_hash('password'), user.password_hash)
+        self.assertEqual('127.0.0.1', user.signup_ip)
+        self.assertEqual('name', user.name)
+        self.assertEqual('test@test.com', user.email)
