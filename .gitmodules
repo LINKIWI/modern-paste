@@ -1,0 +1,12 @@
+[submodule "app/static/build/lib/CodeMirror"]
+	path = app/static/build/lib/CodeMirror
+	url = https://github.com/codemirror/CodeMirror.git
+[submodule "app/static/build/lib/codemirror"]
+	path = app/static/build/lib/codemirror
+	url = https://github.com/codemirror/CodeMirror.git
+[submodule "app/static/build/lib/closure-library"]
+	path = app/static/build/lib/closure-library
+	url = https://github.com/google/closure-library.git
+[submodule "app/static/build/lib/date-time-picker"]
+	path = app/static/build/lib/date-time-picker
+	url = https://github.com/xdan/datetimepicker.git
