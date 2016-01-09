@@ -3,6 +3,7 @@ import unittest
 import config
 import constants.build_environment
 import util.templating
+import uri.base_uri
 
 
 class TestTemplating(unittest.TestCase):
@@ -11,6 +12,10 @@ class TestTemplating(unittest.TestCase):
 
         for environment_type in [constants.build_environment.DEV, constants.build_environment.PROD]:
             config.BUILD_ENVIRONMENT = environment_type
+            self.assertEqual(
+                '<link rel="stylesheet" type="text/css" href="//external_resource.css">',
+                import_css(['//external_resource.css'])
+            )
             self.assertEqual(
                 '<link rel="stylesheet" type="text/css" href="/static/build/path.css">',
                 import_css(['path.css'])
@@ -34,6 +39,14 @@ class TestTemplating(unittest.TestCase):
 
         config.BUILD_ENVIRONMENT = constants.build_environment.DEV
         self.assertEqual(
+            '<script src="//external_resource.js" type="text/javascript"></script>',
+            import_js(['//external_resource.js'])
+        )
+        self.assertEqual(
+            '<script src="/static/build/lib/lib.js" type="text/javascript"></script>',
+            import_js(['lib/lib.js'])
+        )
+        self.assertEqual(
             '<script src="/static/js/path.js" type="text/javascript"></script>',
             import_js(['path.js'])
         )
@@ -53,6 +66,14 @@ class TestTemplating(unittest.TestCase):
 
         config.BUILD_ENVIRONMENT = constants.build_environment.PROD
         self.assertEqual(
+            '<script src="//external_resource.js" type="text/javascript"></script>',
+            import_js(['//external_resource.js'])
+        )
+        self.assertEqual(
+            '<script src="/static/build/lib/lib.js" type="text/javascript"></script>',
+            import_js(['lib/lib.js'])
+        )
+        self.assertEqual(
             '<script src="/static/build/js.js" type="text/javascript"></script>',
             import_js(['path.js'])
         )
@@ -68,3 +89,16 @@ class TestTemplating(unittest.TestCase):
             '<script src="/static/build/js.js" type="text/javascript"></script>',
             import_js(['path.js', 'otherpath.js'])
         )
+
+    def test_get_app_config(self):
+        get_config = util.templating.get_app_config()['config']
+
+        for config_item in get_config():
+            self.assertIsNotNone(getattr(config, config_item))
+
+    def test_get_all_uris(self):
+        all_uris = util.templating.get_all_uris()['all_uris']()
+
+        for uri_module in all_uris:
+            for uri_class in all_uris[uri_module]:
+                self.assertIsInstance(getattr(uri_module, uri_class), uri.base_uri.URI)

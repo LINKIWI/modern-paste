@@ -1,3 +1,7 @@
+import sys
+import inspect
+import pkgutil
+
 from modern_paste import app
 from collections import OrderedDict
 
@@ -11,22 +15,29 @@ def import_static_resources():
     Templating utility to handle build environment-specific static resource (CSS and JS) imports.
     Set the config.BUILD_ENVIRONMENT parameter, then use as
 
-        {{ import_js(['my_js.js', 'my_other_js.js', ...]) }}
-        {{ import_css(['colors.css', 'fonts.css', ...]) }}
+        {{ import_js(['my_js.js', 'my_other_js.js', ...])|safe }}
+        {{ import_css(['colors.css', 'fonts.css', ...])|safe }}
+
+    Adding "safe" at the end is required so that Jinja understands how to handle the HTML tags.
     """
     css_import_string = '<link rel="stylesheet" type="text/css" href="{url}">'
     js_import_string = '<script src="{url}" type="text/javascript"></script>'
 
+    def _css_import_path(path):
+        if path.startswith('//'):
+            # Externally hosted resources
+            return css_import_string.format(url=path)
+        return css_import_string.format(url='/static/build/{path}'.format(path=path))
+
     def import_css(import_paths):
-        return '\n'.join(list(OrderedDict.fromkeys([
-             css_import_string.format(url='/static/build/{path}'.format(path=path))
-             for path in import_paths
-         ])))
+        return '\n'.join(list(OrderedDict.fromkeys(map(_css_import_path, import_paths))))
 
     def _js_import_path(path):
         if path.startswith('//'):
             # Externally hosted resources
-            return path
+            return js_import_string.format(url=path)
+        if path.startswith('lib'):
+            return js_import_string.format(url='/static/build/{path}'.format(path=path))
         if config.BUILD_ENVIRONMENT == constants.build_environment.PROD:
             return js_import_string.format(url='/static/build/js.js')
         return js_import_string.format(url='/static/js/{path}'.format(path=path))
@@ -61,3 +72,36 @@ def get_uri_path():
         return uri_class.full_uri(*args, **kwargs)
 
     return dict(uri=uri, full_uri=full_uri)
+
+
+@app.context_processor
+def get_app_config():
+    """
+    Templating utility to retrieve the user configuration parameters for the app.
+
+        {{ config() }}
+    """
+    def get_config():
+        return {
+            parameter: getattr(config, parameter)
+            for parameter in filter(lambda s: s == s.upper(), dir(config))
+        }
+
+    return dict(config=get_config)
+
+
+@app.context_processor
+def get_all_uris():
+    """
+    Templating utility to retrieve all available URIs, mapping modules to URI classes.
+    Used ultimately to store all URI paths in the template for easy retrieval by Javascript.
+
+        {{ all_uris() }}
+    """
+    return dict(all_uris=lambda: {
+        uri_module: filter(
+            lambda module_name: module_name.endswith('URI') and len(module_name) > 3,
+            map(lambda module_pair: module_pair[0], inspect.getmembers(sys.modules['uri.' + uri_module])),
+        )
+        for uri_module in [module[1] for module in pkgutil.iter_modules(['uri'])]
+    })
