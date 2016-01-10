@@ -13,6 +13,7 @@ import constants
 def import_static_resources():
     """
     Templating utility to handle build environment-specific static resource (CSS and JS) imports.
+    Javascript loading can be optionally deferred by using the HTML script defer attribute.
     Set the config.BUILD_ENVIRONMENT parameter, then use as
 
         {{ import_js(['my_js.js', 'my_other_js.js', ...])|safe }}
@@ -22,6 +23,7 @@ def import_static_resources():
     """
     css_import_string = '<link rel="stylesheet" type="text/css" href="{url}">'
     js_import_string = '<script src="{url}" type="text/javascript"></script>'
+    js_defer_import_string = '<script src="{url}" type="text/javascript" defer></script>'
 
     def _css_import_path(path):
         if path.startswith('//'):
@@ -32,18 +34,20 @@ def import_static_resources():
     def import_css(import_paths):
         return '\n'.join(list(OrderedDict.fromkeys(map(_css_import_path, import_paths))))
 
-    def _js_import_path(path):
+    def _js_import_path(path, import_string):
         if path.startswith('//'):
             # Externally hosted resources
-            return js_import_string.format(url=path)
+            return import_string.format(url=path)
         if path.startswith('lib'):
-            return js_import_string.format(url='/static/build/{path}'.format(path=path))
+            return import_string.format(url='/static/build/{path}'.format(path=path))
         if config.BUILD_ENVIRONMENT == constants.build_environment.PROD:
-            return js_import_string.format(url='/static/build/js.js')
-        return js_import_string.format(url='/static/js/{path}'.format(path=path))
+            return import_string.format(url='/static/build/js.js')
+        return import_string.format(url='/static/js/{path}'.format(path=path))
 
-    def import_js(import_paths):
-        return '\n'.join(list(OrderedDict.fromkeys(map(_js_import_path, import_paths))))
+    def import_js(import_paths, defer=False):
+        return '\n'.join(list(OrderedDict.fromkeys(
+            [_js_import_path(path, js_defer_import_string if defer else js_import_string) for path in import_paths]
+        )))
 
     return dict(import_css=import_css, import_js=import_js)
 

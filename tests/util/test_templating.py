@@ -51,6 +51,10 @@ class TestTemplating(unittest.TestCase):
             import_js(['path.js'])
         )
         self.assertEqual(
+            '<script src="/static/js/path.js" type="text/javascript" defer></script>',
+            import_js(['path.js'], defer=True)
+        )
+        self.assertEqual(
             '<script src="/static/js/path/nested/in/directory.js" type="text/javascript"></script>',
             import_js(['path/nested/in/directory.js'])
         )
