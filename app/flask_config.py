@@ -24,6 +24,3 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask session secret key
 SECRET_KEY = os.urandom(32)
-
-# Encid/decid AES key
-ID_ENCRYPTION_KEY = '6\x80\x18\xdc\xcf \xad\x14U\xa7\x05X\x7f\x81\x01\xd5\x19i\xf3S;\xcaL\xcf\xe2\x8d\x82\x1a\x12\xd9}\x8c'

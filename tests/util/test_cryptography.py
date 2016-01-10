@@ -1,5 +1,6 @@
 import unittest
 
+import config
 import util.cryptography
 from util.exception import *
 
@@ -32,6 +33,18 @@ class TestCryptography(unittest.TestCase):
         encid = util.cryptography.get_encid(15)
         decid = util.cryptography.get_decid(encid)
         self.assertEqual(decid, 15)
+
+    def test_get_id_repr(self):
+        decid = 25
+        encid = util.cryptography.get_encid(decid)
+
+        config.USE_ENCRYPTED_IDS = True
+        self.assertEqual(encid, util.cryptography.get_id_repr(decid))
+        self.assertEqual(encid, util.cryptography.get_id_repr(encid))
+
+        config.USE_ENCRYPTED_IDS = False
+        self.assertEqual(decid, util.cryptography.get_id_repr(decid))
+        self.assertEqual(decid, util.cryptography.get_id_repr(encid))
 
     def test_secure_hash(self):
         # Given the same number of iterations (10000), this result should always be the same

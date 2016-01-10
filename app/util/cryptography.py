@@ -2,13 +2,13 @@ import base64
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 
-from modern_paste import app
+import config
 from util.exception import InvalidIDException
 
 
 BLOCK_SIZE = 32
 PADDING_CHAR = '*'
-cipher = AES.new(app.config['ID_ENCRYPTION_KEY'])
+cipher = AES.new(config.ID_ENCRYPTION_KEY)
 
 
 def _pad(s):
@@ -47,6 +47,28 @@ def get_decid(encid):
         return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
     except:
         raise InvalidIDException('The encrypted ID is not valid')
+
+
+def get_id_repr(raw_id):
+    """
+    Get either an encrypted ID or decrypted ID from the input ID given the application configuration
+
+    :param id: ID to adapt to the current configuration
+    :return: Either an encrypted version of the ID or a decrypted version of the ID
+    """
+    if config.USE_ENCRYPTED_IDS:
+        try:
+            return get_encid(raw_id)
+        except InvalidIDException:
+            # If we can't get an encid out of the ID, let's just assume it's already an encid
+            # This is relatively unsafe is ok with due diligence in checking inputs before using this method.
+            return raw_id
+    else:
+        try:
+            return get_decid(raw_id)
+        except InvalidIDException:
+            # Assume ID is already a decid
+            return raw_id
 
 
 def secure_hash(s, iterations=10000):
