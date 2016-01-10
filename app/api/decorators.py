@@ -1,7 +1,6 @@
 from functools import wraps
 from requests.utils import quote
 
-from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import request
@@ -48,9 +47,7 @@ def require_login_api(func):
     """
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if current_app.login_manager._login_disabled:
-            return func(*args, **kwargs)
-        elif not current_user.is_authenticated:
+        if not current_user.is_authenticated:
             return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
         return func(*args, **kwargs)
     return decorated_view
@@ -63,9 +60,7 @@ def require_login_frontend(func):
     """
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if current_app.login_manager._login_disabled:
-            return func(*args, **kwargs)
-        elif not current_user.is_authenticated:
+        if not current_user.is_authenticated:
             return redirect(UserLoginURI.uri(redirect_url=quote(request.url, safe='')))
         return func(*args, **kwargs)
     return decorated_view
@@ -78,9 +73,7 @@ def hide_if_logged_in(redirect_uri):
     def decorator(func):
         @wraps(func)
         def decorated_view(*args, **kwargs):
-            if current_app.login_manager._login_disabled:
-                return func(*args, **kwargs)
-            elif current_user.is_authenticated:
+            if current_user.is_authenticated:
                 return redirect(redirect_uri)
             return func(*args, **kwargs)
         return decorated_view

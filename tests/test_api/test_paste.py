@@ -1,10 +1,13 @@
 import json
 
-import util.testing
-from uri.paste import *
-from uri.authentication import *
+import mock
+from sqlalchemy.exc import SQLAlchemyError
+
 import constants.api
 import database.paste
+import util.testing
+from uri.authentication import *
+from uri.paste import *
 
 
 class TestPaste(util.testing.DatabaseTestCase):
@@ -96,6 +99,18 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
 
+    def test_submit_paste_server_error(self):
+        with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
+            self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
+
     def test_deactivate_paste_invalid(self):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
@@ -170,6 +185,20 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         self.assertFalse(database.paste.get_paste_by_id(paste.paste_id).is_active)
+
+    def test_deactivate_paste_server_error(self):
+        with mock.patch.object(database.paste, 'deactivate_paste', side_effect=SQLAlchemyError):
+            paste = util.testing.PasteFactory.generate()
+            resp = self.client.post(
+                PasteDeactivateURI.uri(),
+                data=json.dumps({
+                    'paste_id': paste.paste_id,
+                    'deactivation_token': paste.deactivation_token,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
+            self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
 
     def test_paste_details_invalid(self):
         resp = self.client.post(
@@ -251,3 +280,16 @@ class TestPaste(util.testing.DatabaseTestCase):
             database.paste.get_paste_by_id(paste.paste_id).as_dict(),
             json.loads(resp.data)['details'],
         )
+
+    def test_paste_details_server_error(self):
+        with mock.patch.object(database.paste, 'get_paste_by_id', side_effect=SQLAlchemyError):
+            paste = util.testing.PasteFactory.generate(password=None)
+            resp = self.client.post(
+                PasteDetailsURI.uri(),
+                data=json.dumps({
+                    'paste_id': paste.paste_id,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
+            self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)

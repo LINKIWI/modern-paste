@@ -6,3 +6,4 @@ flask-sqlalchemy
 flask-login
 flask-testing
 pycrypto
+coveralls

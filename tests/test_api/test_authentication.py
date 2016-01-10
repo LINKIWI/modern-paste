@@ -43,16 +43,18 @@ class TestAuthentication(util.testing.DatabaseTestCase):
         self.assertEqual(json.loads(resp.data), constants.api.NONEXISTENT_USER_FAILURE)
 
         # Valid login
-        resp = self.client.post(
-            LoginUserURI.uri(),
-            data=json.dumps({
-                'username': 'username',
-                'password': 'password',
-            }),
-            content_type='application/json',
-        )
-        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
-        self.assertEqual(json.loads(resp.data)['username'], 'username')
+        # Second valid login should also return success
+        for i in range(2):
+            resp = self.client.post(
+                LoginUserURI.uri(),
+                data=json.dumps({
+                    'username': 'username',
+                    'password': 'password',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+            self.assertEqual(json.loads(resp.data)['username'], 'username')
 
         # Logout
         resp = self.client.post(LogoutUserURI.uri())

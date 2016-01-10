@@ -29,6 +29,11 @@ class TestCryptography(unittest.TestCase):
             util.cryptography.get_decid,
             'invalid',
         )
+        self.assertRaises(
+            InvalidIDException,
+            util.cryptography.get_decid,
+            u'\ue863',
+        )
 
         encid = util.cryptography.get_encid(15)
         decid = util.cryptography.get_decid(encid)

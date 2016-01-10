@@ -1,5 +1,6 @@
 import unittest
 
+from uri.paste import PasteSubmitURI
 import config
 import constants.build_environment
 import util.templating
@@ -93,6 +94,15 @@ class TestTemplating(unittest.TestCase):
             '<script src="/static/build/js.js" type="text/javascript"></script>',
             import_js(['path.js', 'otherpath.js'])
         )
+
+    def test_get_uri_path(self):
+        uri = util.templating.get_uri_path()['uri']
+        full_uri = util.templating.get_uri_path()['full_uri']
+
+        self.assertEqual(PasteSubmitURI.uri(), uri('paste', 'PasteSubmitURI'))
+        self.assertEqual(PasteSubmitURI.uri(key='value'), uri('paste', 'PasteSubmitURI', key='value'))
+        self.assertEqual(PasteSubmitURI.full_uri(), full_uri('paste', 'PasteSubmitURI'))
+        self.assertEqual(PasteSubmitURI.full_uri(key='value'), full_uri('paste', 'PasteSubmitURI', key='value'))
 
     def test_get_app_config(self):
         get_config = util.templating.get_app_config()['config']
