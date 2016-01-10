@@ -13,3 +13,6 @@
 [submodule "app/static/build/lib/bootstrap"]
 	path = app/static/build/lib/bootstrap
 	url = https://github.com/twbs/bootstrap.git
+[submodule "app/static/build/lib/pace"]
+	path = app/static/build/lib/pace
+	url = https://github.com/HubSpot/pace.git
