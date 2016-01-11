@@ -18,20 +18,28 @@ class TestTemplating(unittest.TestCase):
                 import_css(['//external_resource.css'])
             )
             self.assertEqual(
-                '<link rel="stylesheet" type="text/css" href="/static/build/path.css">',
+                '<link rel="stylesheet" type="text/css" href="/static/build/css/path.css">',
                 import_css(['path.css'])
             )
             self.assertEqual(
-                '<link rel="stylesheet" type="text/css" href="/static/build/path/nested/in/directory.css">',
+                '<link rel="stylesheet" type="text/css" href="/static/lib/path.css">',
+                import_css(['lib/path.css'])
+            )
+            self.assertEqual(
+                '<link rel="stylesheet" type="text/css" href="/static/lib/path.css">',
+                import_css(['lib/path.css'])
+            )
+            self.assertEqual(
+                '<link rel="stylesheet" type="text/css" href="/static/build/css/path/nested/in/directory.css">',
                 import_css(['path/nested/in/directory.css'])
             )
             self.assertEqual(
-                '<link rel="stylesheet" type="text/css" href="/static/build/path.css">',
+                '<link rel="stylesheet" type="text/css" href="/static/build/css/path.css">',
                 import_css(['path.css', 'path.css', 'path.css'])
             )
             self.assertEqual(
-                '<link rel="stylesheet" type="text/css" href="/static/build/path.css">\n'
-                '<link rel="stylesheet" type="text/css" href="/static/build/otherpath.css">',
+                '<link rel="stylesheet" type="text/css" href="/static/build/css/path.css">\n'
+                '<link rel="stylesheet" type="text/css" href="/static/build/css/otherpath.css">',
                 import_css(['path.css', 'otherpath.css'])
             )
 
@@ -44,7 +52,7 @@ class TestTemplating(unittest.TestCase):
             import_js(['//external_resource.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/lib/lib.js" type="text/javascript"></script>',
+            '<script src="/static/lib/lib.js" type="text/javascript"></script>',
             import_js(['lib/lib.js'])
         )
         self.assertEqual(
@@ -75,23 +83,24 @@ class TestTemplating(unittest.TestCase):
             import_js(['//external_resource.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/lib/lib.js" type="text/javascript"></script>',
+            '<script src="/static/lib/lib.js" type="text/javascript"></script>',
             import_js(['lib/lib.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/js.js" type="text/javascript"></script>',
+            '<script src="/static/build/js/path.js" type="text/javascript"></script>',
             import_js(['path.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/js.js" type="text/javascript"></script>',
+            '<script src="/static/build/js/path/nested/in/directory.js" type="text/javascript"></script>',
             import_js(['path/nested/in/directory.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/js.js" type="text/javascript"></script>',
+            '<script src="/static/build/js/path.js" type="text/javascript"></script>',
             import_js(['path.js', 'path.js', 'path.js'])
         )
         self.assertEqual(
-            '<script src="/static/build/js.js" type="text/javascript"></script>',
+            '<script src="/static/build/js/path.js" type="text/javascript"></script>\n'
+            '<script src="/static/build/js/otherpath.js" type="text/javascript"></script>',
             import_js(['path.js', 'otherpath.js'])
         )
 

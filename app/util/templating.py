@@ -29,7 +29,9 @@ def import_static_resources():
         if path.startswith('//'):
             # Externally hosted resources
             return css_import_string.format(url=path)
-        return css_import_string.format(url='/static/build/{path}'.format(path=path))
+        if path.startswith('lib'):
+            return css_import_string.format(url='/static/{path}'.format(path=path))
+        return css_import_string.format(url='/static/build/css/{path}'.format(path=path))
 
     def import_css(import_paths):
         return '\n'.join(list(OrderedDict.fromkeys(map(_css_import_path, import_paths))))
@@ -39,9 +41,9 @@ def import_static_resources():
             # Externally hosted resources
             return import_string.format(url=path)
         if path.startswith('lib'):
-            return import_string.format(url='/static/build/{path}'.format(path=path))
+            return import_string.format(url='/static/{path}'.format(path=path))
         if config.BUILD_ENVIRONMENT == constants.build_environment.PROD:
-            return import_string.format(url='/static/build/js.js')
+            return import_string.format(url='/static/build/js/{path}'.format(path=path))
         return import_string.format(url='/static/js/{path}'.format(path=path))
 
     def import_js(import_paths, defer=False):
