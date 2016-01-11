@@ -45,6 +45,7 @@ LANGUAGES = [
     'jinja2',
     'markdown',
     'php',
+    'python',
     'sass',
     'sql',
     'verilog',

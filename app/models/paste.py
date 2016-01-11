@@ -1,5 +1,6 @@
 import time
 
+import util.cryptography
 import util.testing
 from modern_paste import db
 
@@ -45,6 +46,7 @@ class Paste(db.Model):
         """
         return {
             'paste_id': self.paste_id,
+            'paste_id_repr': util.cryptography.get_id_repr(self.paste_id),
             'is_active': self.is_active,
             'user_id': self.user_id,
             'post_time': self.post_time,

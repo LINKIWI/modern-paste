@@ -60,6 +60,9 @@ def deactivate_paste():
 @app.route(PasteDetailsURI.path, methods=['POST'])
 @require_form_args(['paste_id'])
 def paste_details():
+    """
+    Retrieve details for a particular paste ID.
+    """
     data = flask.request.get_json()
     try:
         paste = database.paste.get_paste_by_id(data['paste_id'])
