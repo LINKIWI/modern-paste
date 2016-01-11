@@ -1,0 +1,24 @@
+@import '../universal/colors';
+@import '../universal/mixins';
+
+
+#alert {
+    position: fixed;
+    right: 70px;
+    top: 120px;
+    width: 340px;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    background-color: black;
+    @include background-blur(23px, rgba(0, 0, 0, 0.63));
+    @include ease-out-transition(opacity);
+}
+
+#alert.alert-error {
+    background-color: $error-red;
+}
+
+#alert.alert-success {
+    background-color: $success-green;
+}

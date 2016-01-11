@@ -1,0 +1,97 @@
+@import '../universal/colors';
+@import '../universal/mixins';
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: initial;  // Undoing random useless Bootstrap CSS properties
+}
+
+html, body {
+    height: 100%;
+    line-height: initial;
+}
+
+p {
+    margin: 0;  // Why does Bootstrap add a margin-bottom property to p elements?
+}
+
+.hidden {
+    display: none;
+}
+
+#header {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: $white;
+    display: table;
+    @include ease-out-transition(margin);
+
+    .container {
+        display: table-row;
+    }
+
+    .menu-button {
+        width: 20px;
+        height: 20px;
+        padding-right: 25px;
+        cursor: pointer;
+        vertical-align: text-bottom;
+        margin-bottom: 2px;
+    }
+
+    .title {
+        padding-left: 50px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .user {
+        padding-right: 50px;
+        text-align: right;
+        display: table-cell;
+        vertical-align: middle;
+    }
+}
+
+#menu-panel {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    padding: 50px 30px;
+    background-color: $darker-blue;
+    margin-left: -310px;
+    @include ease-out-transition(margin);
+
+    .title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .menu-panel-item {
+        padding: 10px 0;
+    }
+
+    .open-source-note {
+        position: absolute;
+        width: 200px;
+        bottom: 150px;
+    }
+}
+
+#main-page {
+    @include ease-out-transition(margin);
+}
+
+.content {
+    padding-top: 70px;
+    overflow: hidden;
+}

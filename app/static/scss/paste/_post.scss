@@ -1,0 +1,128 @@
+@import "../universal/colors";
+@import "../universal/fonts";
+@import "../universal/mixins";
+
+
+.paste-submit-splash {
+    z-index: 4;
+}
+
+.section-label {
+    border-bottom: 1px solid $lighter-gray;
+}
+
+.minimal-input-field {
+    margin-top: 10px;
+    height: 20px;
+    width: 100%;
+    overflow: hidden;
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+}
+
+.underlined-input-field {
+    border-bottom: 2px solid $lighter-gray;
+    padding: 0 0 5px 0;
+}
+
+.paste-title-container {
+    height: 50px;
+    padding: 20px 30px 10px 30px;
+    width: 100%;
+}
+
+.paste-language-container {
+    height: 50px;
+    padding: 15px 30px;
+    width: 100%;
+
+    .language-selector {
+        width: 150px;
+        margin-top: 10px;
+    }
+}
+
+.more-options-container {
+    height: 25px;
+    padding: 10px 30px;
+    overflow: hidden;
+    @include ease-out-transition(height);
+
+    .option-description {
+        margin-top: 20px;
+    }
+
+    .more-options-link {
+        cursor: pointer;
+    }
+
+    .arrow {
+        @include rotate(90deg);
+        width: 8px;
+        height: 8px;
+        margin-left: 5px;
+        @include ease-out-transition(transform);
+    }
+}
+
+.paste-contents-container {
+    height: 20px;
+    padding: 15px 30px;
+}
+
+#paste-contents {
+    width: 100%;
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    display: table;
+    background-color: $dark-blue;
+    z-index: 6;
+    @include ease-out-transition(margin);
+
+    .statistics-section {
+        display: table-cell;
+        vertical-align: middle;
+
+        .line-count {
+            margin-left: 40px;
+        }
+
+        .character-count {
+            margin-left: 15px;
+        }
+    }
+
+    .submit-section {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: right;
+
+        .submit-arrow {
+            margin-right: 5px;
+        }
+
+        .submit-button {
+            width: 80px;
+            margin: 0 40px;
+            padding: 10px 30px;
+        }
+    }
+}
+
+.CodeMirror {
+    font-family: "ubuntu-mono-regular", monospace !important;
+    margin-bottom: 90px !important;
+    height: auto !important;
+}
+
+.CodeMirror-scroll {
+    min-height: 500px !important;
+}

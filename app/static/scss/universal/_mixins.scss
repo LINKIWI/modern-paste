@@ -1,0 +1,24 @@
+@mixin ease-out-transition($property) {
+    -webkit-transition: $property 0.6s cubic-bezier(0.17, 0.66, 0.24, 0.95);
+    transition: $property 0.6s cubic-bezier(0.17, 0.66, 0.24, 0.95);
+}
+
+@mixin rotate($degrees) {
+    -ms-transform: rotate($degrees);  // IE 9
+    -webkit-transform: rotate($degrees);  // Chrome, Safari, Opera
+    transform: rotate($degrees);
+}
+
+@mixin absolute-center($scale) {
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%) scale($scale);
+    -ms-transform: translateX(-50%) translateY(-50%) scale($scale);
+    transform: translateX(-50%) translateY(-50%) scale($scale);
+}
+
+@mixin background-blur($radius, $color) {
+    -webkit-box-shadow: 0 0 $radius 0 $color;
+    -moz-box-shadow: 0 0 $radius 0 $color;
+    box-shadow: 0 0 $radius 0 $color;
+}
