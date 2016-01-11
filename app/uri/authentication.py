@@ -9,3 +9,8 @@ class LoginUserURI(URI):
 class LogoutUserURI(URI):
     api_endpoint = True
     path = '/api/authentication/logout'
+
+
+class AuthStatusURI(URI):
+    api_endpoint = True
+    path = '/api/authentication/status'

@@ -60,3 +60,51 @@ class TestAuthentication(util.testing.DatabaseTestCase):
         resp = self.client.post(LogoutUserURI.uri())
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         self.assertEqual(json.loads(resp.data)['username'], 'username')
+
+    def test_auth_status_logged_in(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        resp = self.client.post(
+            LoginUserURI.uri(),
+            data=json.dumps({
+                'username': 'username',
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(json.loads(resp.data)['username'], 'username')
+
+        resp = self.client.post(
+            AuthStatusURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(
+            json.loads(resp.data),
+            {
+                'is_authenticated': True,
+                'user_details': {
+                    'username': 'username',
+                    'user_id': 1,
+                }
+            },
+        )
+
+    def test_auth_status_logged_out(self):
+        resp = self.client.post(
+            AuthStatusURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(
+            json.loads(resp.data),
+            {
+                'is_authenticated': False,
+                'user_details': {
+                    'username': None,
+                    'user_id': None,
+                }
+            },
+        )

@@ -43,13 +43,30 @@ def login_user():
     return success_resp
 
 
-@app.route(LogoutUserURI.path, methods=['GET', 'POST'])
+@app.route(LogoutUserURI.path, methods=['POST'])
 @login_required
 def logout_user():
+    """
+    Log the current user out, as applicable.
+    """
     username = str(current_user.username)
     logout()
     return flask.jsonify({
         constants.api.RESULT: constants.api.RESULT_SUCCESS,
         constants.api.MESSAGE: None,
         'username': username,
+    }), constants.api.SUCCESS_CODE
+
+
+@app.route(AuthStatusURI.path, methods=['POST'])
+def auth_status():
+    """
+    Gets the authentication status for the current user, if any.
+    """
+    return flask.jsonify({
+        'is_authenticated': bool(current_user.is_authenticated),
+        'user_details': {
+            'username': getattr(current_user, 'username', None),
+            'user_id': getattr(current_user, 'user_id', None),
+        },
     }), constants.api.SUCCESS_CODE
