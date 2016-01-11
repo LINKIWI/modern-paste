@@ -1,0 +1,3 @@
+{% macro include_uri(module, class) %}
+    <div id="{{ class }}" class="hidden">{{ uri(module, class) }}</div>
+{% endmacro %}

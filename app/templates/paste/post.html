@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Modern Paste
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    {{ import_css([
+        'lib/date-time-picker/jquery.datetimepicker.css',
+        'lib/codemirror/lib/codemirror.css',
+    ])|safe }}
+
+    {{ import_js([
+        'lib/date-time-picker/build/jquery.datetimepicker.full.min.js',
+        'lib/codemirror/lib/codemirror.js',
+        'paste/PostController.js',
+    ])|safe }}
+
+    {% for language in config().LANGUAGES %}
+        {% if language != 'text' %}
+            {{ import_js(['lib/codemirror/mode/' ~ language ~ '/' ~ language ~ '.js'], defer=True)|safe }}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <!--Paste title-->
+    <div class="paste-title-container section-label">
+        <p class="sans-serif regular size-1 light-gray less-spaced">PASTE TITLE</p>
+        <textarea class="paste-title minimal-input-field ubuntu-mono regular gray size-4" autocomplete="off">Untitled</textarea>
+    </div>
+    <!--Paste language-->
+    <div class="paste-language-container section-label">
+        <p class="sans-serif regular size-1 light-gray less-spaced">PASTE LANGUAGE</p>
+        <select class="language-selector ubuntu-mono regular gray" name="languages" autocomplete="off">
+            {% for language in config().LANGUAGES %}
+                <option value="{{ language|lower }}">{{ language|title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <!--More options-->
+    <div class="more-options-container section-label">
+        <span class="more-options-link">
+            <span class="sans-serif regular size-1 light-gray less-spaced">MORE OPTIONS</span>
+            <img class="arrow" src="/static/img/icons/arrows.png">
+        </span>
+        <p class="option-description sans-serif regular size-1 light-gray less-spaced">PASTE EXPIRATION</p>
+        <input id="date-time-picker" class="minimal-input-field underlined-input-field ubuntu-mono regular size-3" type="text" autocomplete="off" placeholder="Click to set a date">
+        <p class="option-description sans-serif regular size-1 light-gray less-spaced">PASSWORD</p>
+        <input type="password" class="paste-password minimal-input-field underlined-input-field regular size-3" autocomplete="off">
+    </div>
+    <!--Paste contents-->
+    <div class="paste-contents-container">
+        <p class="sans-serif regular size-1 light-gray less-spaced">PASTE CONTENTS</p>
+    </div>
+    <div id="paste-contents"></div>
+
+    <div id="footer">
+        <div class="statistics-section">
+            <span>
+                <span class="line-count sans-serif semibold size-1 white spaced">1</span>
+                <span class="sans-serif regular size-1 white spaced">LINES</span>
+                <span class="character-count sans-serif semibold size-1 white spaced">0</span>
+                <span class="sans-serif regular size-1 white spaced">CHARACTERS</span>
+            </span>
+        </div>
+        <div class="submit-section">
+            <span class="dark-link-alt">
+                <a class="paste-download-link sans-serif semibold size-1 white spaced" href="#">DOWNLOAD PASTE AS PLAIN TEXT</a>
+                <!--Hidden from the user; used to store the plain text data for launching the download via the link above.-->
+                <a class="paste-download-content hidden" href="#" download></a>
+                <button type="button" class="submit-button sans-serif semibold white size-2 spaced btn btn-success">
+                    <i class="submit-arrow fa fa-long-arrow-right"></i>
+                    SUBMIT
+                </button>
+            </span>
+        </div>
+    </div>
+
+    <div class="paste-submit-splash splash">
+        <div class="spinner"><div></div></div>
+    </div>
+{% endblock %}
