@@ -48,7 +48,11 @@ def import_static_resources():
 
     def import_js(import_paths, defer=False):
         return '\n'.join(list(OrderedDict.fromkeys(
-            [_js_import_path(path, js_defer_import_string if defer else js_import_string) for path in import_paths]
+            [
+                _js_import_path(path, js_defer_import_string if defer else js_import_string)
+                for path in import_paths
+                if config.BUILD_ENVIRONMENT != constants.build_environment.PROD or not path.startswith('universal/')
+            ]
         )))
 
     return dict(import_css=import_css, import_js=import_js)

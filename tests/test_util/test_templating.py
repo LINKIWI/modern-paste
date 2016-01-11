@@ -87,6 +87,14 @@ class TestTemplating(unittest.TestCase):
             import_js(['lib/lib.js'])
         )
         self.assertEqual(
+            '<script src="/static/lib/lib.js" type="text/javascript" defer></script>',
+            import_js(['lib/lib.js'], defer=True)
+        )
+        self.assertEqual(
+            '',
+            import_js(['universal/js.js'])
+        )
+        self.assertEqual(
             '<script src="/static/build/js/path.js" type="text/javascript"></script>',
             import_js(['path.js'])
         )
