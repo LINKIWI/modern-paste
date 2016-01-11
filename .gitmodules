@@ -1,18 +1,18 @@
-[submodule "app/static/build/lib/codemirror"]
-	path = app/static/build/lib/codemirror
+[submodule "app/static/lib/codemirror"]
+	path = app/static/lib/codemirror
 	url = https://github.com/codemirror/CodeMirror.git
-[submodule "app/static/build/lib/closure-library"]
-	path = app/static/build/lib/closure-library
+[submodule "app/static/lib/closure-library"]
+	path = app/static/lib/closure-library
 	url = https://github.com/google/closure-library.git
-[submodule "app/static/build/lib/date-time-picker"]
-	path = app/static/build/lib/date-time-picker
+[submodule "app/static/lib/date-time-picker"]
+	path = app/static/lib/date-time-picker
 	url = https://github.com/xdan/datetimepicker.git
-[submodule "app/static/build/lib/font-awesome"]
-	path = app/static/build/lib/font-awesome
+[submodule "app/static/lib/font-awesome"]
+	path = app/static/lib/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
-[submodule "app/static/build/lib/bootstrap"]
-	path = app/static/build/lib/bootstrap
+[submodule "app/static/lib/bootstrap"]
+	path = app/static/lib/bootstrap
 	url = https://github.com/twbs/bootstrap.git
-[submodule "app/static/build/lib/pace"]
-	path = app/static/build/lib/pace
+[submodule "app/static/lib/pace"]
+	path = app/static/lib/pace
 	url = https://github.com/HubSpot/pace.git
