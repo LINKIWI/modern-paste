@@ -36,6 +36,7 @@ if __name__ == '__main__':
         js_files,
     )
 
+    print 'Javascript build started.'
     for js_file, js_output_file in zip(js_files, js_output_files):
         print 'Compiling {js_file} --> {js_output_file}'.format(js_file=js_file, js_output_file=js_output_file)
         subprocess.call([
