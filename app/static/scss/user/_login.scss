@@ -1,0 +1,27 @@
+.login-container {
+    display: block;
+    width: 450px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .form-control {
+        height: 15px;
+    }
+
+    .login-header {
+        margin-bottom: 60px;
+    }
+
+    .remember-me-check {
+        margin-right: 10px;
+    }
+
+    .login-button {
+        margin: 30px 0;
+    }
+}
+
+.login-splash {
+    z-index: 4;
+}

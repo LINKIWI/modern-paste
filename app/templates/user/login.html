@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Login - Modern Paste
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    {{ import_js([
+        'user/LoginController.js',
+    ])|safe }}
+{% endblock %}
+
+{% block content %}
+    <div class="login-container light-link">
+        <div class="login-header">
+            <p class="sans-serif regular gray size-8 spaced">LOGIN</p>
+            <p class="sans-serif semibold light-gray size-2 less-spaced">Log in to view, control, and delete your pastes</p>
+        </div>
+        <fieldset class="form-group">
+            <input type="text" class="username-field form-control sans-serif regular gray size-2 less-spaced" placeholder="Username" autocomplete="off">
+        </fieldset>
+        <fieldset class="form-group">
+            <input type="password" class="password-field form-control sans-serif regular gray size-2 less-spaced" placeholder="Password" autocomplete="off">
+        </fieldset>
+        <label class="sans-serif regular size-2">
+            <input type="checkbox" class="remember-me-check">Remember me
+        </label>
+        <br/>
+        <button type="button" class="login-button btn btn-primary sans-serif semibold white size-2 less-spaced">LOGIN</button>
+        <br/><br/>
+        <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}" class="light-link sans-serif regular size-2">Don't have an account? Register here</a>
+    </div>
+    <div class="login-splash splash">
+        <div class="spinner"><div></div></div>
+    </div>
+{% endblock %}

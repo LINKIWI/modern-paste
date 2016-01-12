@@ -1,15 +1,15 @@
 from base_uri import URI
 
 
-class UserLoginURI(URI):
+class UserLoginInterfaceURI(URI):
     path = '/login'
 
 
-class UserLogoutURI(URI):
+class UserLogoutInterfaceURI(URI):
     path = '/logout'
 
 
-class UserRegisterURI(URI):
+class UserRegisterInterfaceURI(URI):
     path = '/register'
 
 
