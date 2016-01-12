@@ -17,13 +17,32 @@ modernPaste.universal.SplashController = function() {
 };
 
 /**
+ * Show the requested splash.
+ *
+ * @param splash A JQuery object of the splash to reveal.
+ */
+modernPaste.universal.SplashController.showSplash = function(splash) {
+    splash.css('visibility', 'visible');
+    splash.css('opacity', 0.5);
+};
+
+/**
+ * Hide the requested splash.
+ *
+ * @param splash A JQuery object of the splash to hide.
+ */
+modernPaste.universal.SplashController.hideSplash = function(splash) {
+    splash.css('opacity', 0);
+    setTimeout(function() {
+        splash.css('visibility', 'hidden');
+    }.bind(this), 600);
+};
+
+/**
  * Hide the loading splash.
  */
 modernPaste.universal.SplashController.hideLoadingSplash = function() {
-    this.loadingSplash.css('opacity', 0);
-    setTimeout(function() {
-        this.loadingSplash.css('visibility', 'hidden');
-    }.bind(this), 600);
+    modernPaste.universal.SplashController.hideSplash(this.loadingSplash);
 };
 
 

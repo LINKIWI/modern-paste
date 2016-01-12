@@ -99,14 +99,13 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
     evt.preventDefault();
 
     this.submitButton.prop('disabled', true);
-    this.pasteSubmitSplash.css('visibility', 'visible');
-    this.pasteSubmitSplash.css('opacity', 0.7);
+    modernPaste.universal.SplashController.hideSplash(this.pasteSubmitSplash);
 
     $.ajax({
-        method: 'POST',
-        url: modernPaste.universal.URIController.uris.PasteSubmitURI,
-        contentType: "application/json",
-        data: JSON.stringify({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteSubmitURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
             'contents': this.pasteContents.getValue(),
             'user_id': null,
             'expiry_time': Date.parse(this.dateTimePicker.val()),
@@ -135,8 +134,7 @@ modernPaste.paste.PostController.handleSubmitSuccess = function(data) {
  * On paste submission failure, simply display an error message to the user.
  */
 modernPaste.paste.PostController.handleSubmitFail = function(data) {
-    this.pasteSubmitSplash.css('opacity', 0);
-    this.pasteSubmitSplash.css('visibility', 'hidden');
+    modernPaste.universal.SplashController.hideSplash(this.pasteSubmitSplash);
     this.submitButton.prop('disabled', false);
 
     var errorMessages = {
