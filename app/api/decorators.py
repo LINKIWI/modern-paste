@@ -1,13 +1,44 @@
 from functools import wraps
 from requests.utils import quote
 
+import flask
 from flask import jsonify
 from flask import redirect
 from flask import request
+from flask import render_template
 from flask.ext.login import current_user
 
-from uri.user import UserLoginURI
+from uri.user import UserLoginInterfaceURI
 from constants.api import *
+from constants.build_environment import *
+import config
+
+
+# Dictionary of the context/environment that should be made available to all templates rendered with @render_view
+context_config = {
+    'is_dev_environment': config.BUILD_ENVIRONMENT == DEV,
+}
+
+
+def render_view(func):
+    """
+    Render this view endpoint's specified template with the provided context, with additional context parameters
+    as specified by _render_template_with_additional_context.
+
+        @app.route('/', methods=['GET'])
+        @render_view
+        def view_function():
+            return 'template_name.html', {'context': 'details'}
+    """
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        template, context = func(*args, **kwargs)
+        if 'config' in context:
+            context['config'].update(context_config)
+        else:
+            context['config'] = context_config
+        return render_template(template, **context)
+    return decorated_view
 
 
 def require_form_args(form_args, allow_blank_values=False, strict_params=False):
@@ -61,7 +92,7 @@ def require_login_frontend(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if not current_user.is_authenticated:
-            return redirect(UserLoginURI.uri(redirect_url=quote(request.url, safe='')))
+            return redirect(UserLoginInterfaceURI.uri(redirect_url=quote(request.url, safe='')))
         return func(*args, **kwargs)
     return decorated_view
 

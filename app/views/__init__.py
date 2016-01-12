@@ -4,6 +4,7 @@ from util.templating import *
 # Page view functions
 from main import *
 from paste import *
+from user import *
 
 # API view functions
 from api.authentication import *

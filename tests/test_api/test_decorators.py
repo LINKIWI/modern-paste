@@ -1,18 +1,60 @@
+import mock
+import flask
 from flask import request
+from flask import render_template
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 
 import constants.api
+import api.decorators
 import util.testing
 from api.decorators import hide_if_logged_in
 from api.decorators import require_form_args
 from api.decorators import require_login_api
 from api.decorators import require_login_frontend
+from api.decorators import render_view
 from modern_paste import app
 from uri.main import *
 
 
 class TestDecorators(util.testing.DatabaseTestCase):
+    def test_render_view(self):
+        with mock.patch.object(api.decorators, 'render_template') as render_template_mock:
+            @render_view
+            def template_without_context():
+                return 'template name', {}
+            template_without_context()
+            self.assertEqual(1, render_template_mock.call_count)
+            render_template_mock.assert_called_with(
+                'template name',
+                config=api.decorators.context_config,
+            )
+
+        with mock.patch.object(api.decorators, 'render_template') as render_template_mock:
+            @render_view
+            def template_with_context():
+                return 'template name', {'key': 'value'}
+            template_with_context()
+            self.assertEqual(1, render_template_mock.call_count)
+            render_template_mock.assert_called_with(
+                'template name',
+                config=api.decorators.context_config,
+                key='value',
+            )
+
+        with mock.patch.object(api.decorators, 'render_template') as render_template_mock:
+            @render_view
+            def template_with_config_context():
+                return 'template name', {'config': {'key': 'value'}}
+            template_with_config_context()
+            self.assertEqual(1, render_template_mock.call_count)
+            expect_config = dict(api.decorators.context_config)
+            expect_config['key'] = 'value'
+            render_template_mock.assert_called_with(
+                'template name',
+                config=expect_config,
+            )
+
     def test_require_form_args(self):
         with app.test_request_context():
             @require_form_args([])
