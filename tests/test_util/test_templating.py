@@ -4,7 +4,6 @@ from uri.paste import PasteSubmitURI
 import config
 import constants.build_environment
 import util.templating
-import uri.base_uri
 
 
 class TestTemplating(unittest.TestCase):
@@ -121,15 +120,11 @@ class TestTemplating(unittest.TestCase):
         self.assertEqual(PasteSubmitURI.full_uri(), full_uri('paste', 'PasteSubmitURI'))
         self.assertEqual(PasteSubmitURI.full_uri(key='value'), full_uri('paste', 'PasteSubmitURI', key='value'))
 
-    def test_get_app_config(self):
-        get_config = util.templating.get_app_config()['config']
-
-        for config_item in get_config():
-            self.assertIsNotNone(getattr(config, config_item))
-
     def test_get_all_uris(self):
+        uri = util.templating.get_uri_path()['uri']
         all_uris = util.templating.get_all_uris()['all_uris']()
+        self.assertGreater(len(all_uris), 0)
 
         for uri_module in all_uris:
             for uri_class in all_uris[uri_module]:
-                self.assertIsInstance(getattr(uri_module, uri_class), uri.base_uri.URI)
+                self.assertIsNotNone(uri(uri_module, uri_class))

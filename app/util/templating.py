@@ -84,22 +84,6 @@ def get_uri_path():
 
 
 @app.context_processor
-def get_app_config():
-    """
-    Templating utility to retrieve the user configuration parameters for the app.
-
-        {{ config() }}
-    """
-    def get_config():
-        return {
-            parameter: getattr(config, parameter)
-            for parameter in filter(lambda s: s == s.upper(), dir(config))
-        }
-
-    return dict(config=get_config)
-
-
-@app.context_processor
 def get_all_uris():
     """
     Templating utility to retrieve all available URIs, mapping modules to URI classes.
@@ -112,5 +96,5 @@ def get_all_uris():
             lambda module_name: module_name.endswith('URI') and len(module_name) > 3,
             map(lambda module_pair: module_pair[0], inspect.getmembers(sys.modules['uri.' + uri_module])),
         )
-        for uri_module in [module[1] for module in pkgutil.iter_modules(['uri'])]
+        for uri_module in [mod[1] for mod in pkgutil.iter_modules(['app/uri'])]
     })
