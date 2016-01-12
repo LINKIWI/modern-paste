@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
     Modern Paste
@@ -18,7 +18,7 @@
         'paste/PostController.js',
     ])|safe }}
 
-    {% for language in config().LANGUAGES %}
+    {% for language in config.languages %}
         {% if language != 'text' %}
             {{ import_js(['lib/codemirror/mode/' ~ language ~ '/' ~ language ~ '.js'], defer=True)|safe }}
         {% endif %}
@@ -35,7 +35,7 @@
     <div class="paste-language-container section-label">
         <p class="sans-serif regular size-1 light-gray less-spaced">PASTE LANGUAGE</p>
         <select class="language-selector ubuntu-mono regular gray" name="languages" autocomplete="off">
-            {% for language in config().LANGUAGES %}
+            {% for language in config.languages %}
                 <option value="{{ language|lower }}">{{ language|title }}</option>
             {% endfor %}
         </select>

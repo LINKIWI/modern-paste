@@ -1,12 +1,11 @@
-import sys
 import inspect
 import pkgutil
-
-from modern_paste import app
+import sys
 from collections import OrderedDict
 
 import config
 import constants
+from modern_paste import app
 
 
 @app.context_processor

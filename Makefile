@@ -10,6 +10,7 @@ skip-tests:
 	$(MAKE) default
 
 default:
+	pip install -r requirements.txt
 	mkdir -p app/static/build/js
 	mkdir -p app/static/build/css
 	python build/build_database.py --create

@@ -1,22 +1,22 @@
 from functools import wraps
-from requests.utils import quote
 
-import flask
 from flask import jsonify
 from flask import redirect
-from flask import request
 from flask import render_template
+from flask import request
 from flask.ext.login import current_user
+from requests.utils import quote
 
-from uri.user import UserLoginInterfaceURI
+import config
 from constants.api import *
 from constants.build_environment import *
-import config
+from uri.user import UserLoginInterfaceURI
 
 
 # Dictionary of the context/environment that should be made available to all templates rendered with @render_view
 context_config = {
     'is_dev_environment': config.BUILD_ENVIRONMENT == DEV,
+    'languages': config.LANGUAGES,
 }
 
 

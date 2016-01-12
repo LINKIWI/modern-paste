@@ -10,8 +10,8 @@ SUCCESS_CODE = 200
 # Predefined JSON responses
 AUTH_FAILURE = {
     RESULT: RESULT_FAULURE,
-    FAILURE: 'auth_failure',
     MESSAGE: 'User needs to be authenticated to complete this request',
+    FAILURE: 'auth_failure',
 }
 AUTH_FAILURE_CODE = 401
 INCOMPLETE_PARAMS_FAILURE = {
