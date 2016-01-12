@@ -18,3 +18,12 @@
 .dark-link-alt a:hover {
     border-bottom: 2px solid $white;
 }
+
+.light-link a:link, .light-link a:visited, .light-link a:active {
+    color: $blue;
+    text-decoration: none;
+}
+
+.light-link a:hover {
+    border-bottom: 2px solid $blue;
+}

@@ -76,6 +76,7 @@
             {% endblock %}
         </div>
     </div>
+
     <div id="uris" class="hidden">
         {% set uri_modules_to_classes = all_uris() %}
         {% for uri_module in uri_modules_to_classes %}
@@ -84,5 +85,11 @@
             {% endfor %}
         {% endfor %}
     </div>
+
+    {% if config.is_dev_environment %}
+        <div id="dev-banner">
+            <p class="sans-serif semibold white size-1 spaced">DEV</p>
+        </div>
+    {% endif %}
 </body>
 </html>
