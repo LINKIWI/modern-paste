@@ -16,3 +16,6 @@
 [submodule "app/static/lib/pace"]
 	path = app/static/lib/pace
 	url = https://github.com/HubSpot/pace.git
+[submodule "app/static/lib/jquery-easing"]
+	path = app/static/lib/jquery-easing
+	url = https://github.com/gdsmith/jquery.easing.git
