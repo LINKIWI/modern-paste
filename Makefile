@@ -3,7 +3,6 @@ export PYTHONPATH := app:$(PYTHONPATH)
 
 all:
 	$(MAKE) test-coverage
-	coverage report -m
 	$(MAKE) default
 
 skip-tests:
@@ -26,3 +25,4 @@ test:
 
 test-coverage:
 	coverage run --source=app -m unittest discover -s tests -v
+	coverage report -m

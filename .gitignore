@@ -2,4 +2,4 @@
 *.pyc
 .coverage
 app/static/build
-app/static/.sass-cache
+.sass-cache
