@@ -21,6 +21,8 @@ def submit_paste():
         return flask.jsonify(constants.api.AUTH_FAILURE), constants.api.AUTH_FAILURE_CODE
 
     try:
+        if current_user.is_authenticated:
+            data['user_id'] = current_user.user_id
         return flask.jsonify(database.paste.create_new_paste(**data).as_dict()), constants.api.SUCCESS_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE

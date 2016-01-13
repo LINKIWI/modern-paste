@@ -18,7 +18,7 @@ modernPaste.paste.PostController = function() {
     this.languageSelector = $('.language-selector');
     this.dateTimePicker = $('#date-time-picker');
     this.pastePassword = $('.more-options-container .paste-password');
-    this.codeMirrorContainer = $('#paste-contents');
+    this.codeMirrorContainer = $('#paste-post-contents');
     this.lineCounter = $('#footer').find('.statistics-section .line-count');
     this.characterCounter = $('#footer').find('.statistics-section .character-count');
     this.pasteDownloadLink = $('#footer').find('.submit-section .paste-download-link');
@@ -34,6 +34,7 @@ modernPaste.paste.PostController = function() {
             'autofocus': true,
             'lineNumbers': true,
             'viewportMargin': Infinity,
+            'lineWrapping': true,
             'mode': ''  // Start with plain text mode by default
         }
     );
@@ -107,7 +108,6 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
         'contentType': 'application/json',
         'data': JSON.stringify({
             'contents': this.pasteContents.getValue(),
-            'user_id': null,
             'expiry_time': Date.parse(this.dateTimePicker.val()),
             'title': this.pasteTitle.text(),
             'language': this.languageSelector.val().toLowerCase(),
