@@ -1,0 +1,70 @@
+@import '../universal/colors';
+@import '../universal/mixins';
+
+
+#header {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: $white;
+    display: table;
+    @include ease-out-transition(margin);
+
+    .container {
+        display: table-row;
+    }
+
+    .menu-button {
+        width: 20px;
+        height: 20px;
+        padding-right: 25px;
+        cursor: pointer;
+        vertical-align: text-bottom;
+        margin-bottom: 2px;
+    }
+
+    .title-section {
+        padding-left: 50px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .user-section {
+        padding-right: 30px;
+        text-align: right;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .user-header {
+        padding: 20px;
+        cursor: pointer;
+
+        .user-menu-arrow {
+            width: 10px;
+            height: 10px;
+            margin-left: 10px;
+            @include rotate(90deg);
+            @include ease-out-transition(transform);
+        }
+    }
+}
+
+#user-header-dropdown {
+    position: fixed;
+    top: 70px;
+    right: 40px;
+    width: 120px;
+    padding: 10px 20px;
+    background-color: $white;
+    z-index: 5;
+    text-align: right;
+    display: none;  // Dropdown should default to not being shown
+
+    .dropdown-item {
+        margin: 10px 0;
+    }
+}

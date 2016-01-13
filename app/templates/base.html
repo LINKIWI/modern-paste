@@ -15,12 +15,14 @@
 
         {{ import_js([
             'lib/jquery/jquery.min.js',
+            'lib/jquery-easing/jquery.easing.min.js',
             'lib/closure-library/closure/goog/base.js',
             'lib/pace/pace.min.js',
             'universal/SplashController.js',
             'universal/URIController.js',
             'universal/AlertController.js',
             'universal/MenuController.js',
+            'universal/UserHeaderController.js',
         ])|safe }}
     {% endblock %}
 </head>
@@ -57,20 +59,47 @@
     </div>
 
     <div id="main-page">
-        <div id="header">
-            {% block header %}
+        {% block header %}
+            <div id="header">
                 <div class="container">
-                    <span class="title">
+                    <span class="title-section">
                         <img class="menu-button" src="/static/img/icons/menu.png" />
                         <img class="hidden" src="/static/img/icons/cross.png" />
                         <span class="sans-serif light gray size-5 spaced">modern</span><span class="sans-serif regular gray size-5 spaced">paste</span>
                     </span>
-                    <span class="user">
-                        <span class="sans-serif semibold size-2 less-spaced">ANONYMOUS</span>
+                    <span class="user-section">
+                        <span class="user-header sans-serif semibold size-2 less-spaced">
+                            {% if current_user.is_authenticated %}
+                                {{ current_user.username|upper }}
+                            {% else %}
+                                ANONYMOUS
+                            {% endif %}
+                            <img class="user-menu-arrow" src="/static/img/icons/dark-arrows.png">
+                        </span>
                     </span>
                 </div>
-            {% endblock %}
-        </div>
+            </div>
+            <div id="user-header-dropdown">
+                {% if current_user.is_authenticated %}
+                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
+                        <a href="{{ uri('main', 'HomeURI') }}">MY ACCOUNT</a>
+                    </p>
+                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
+                        <a href="{{ uri('main', 'HomeURI') }}">API KEY</a>
+                    </p>
+                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
+                        <a href="{{ uri('user', 'UserLogoutInterfaceURI') }}">LOGOUT</a>
+                    </p>
+                {% else %}
+                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
+                        <a href="{{ uri('user', 'UserLoginInterfaceURI') }}">LOGIN</a>
+                    </p>
+                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
+                        <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
+                    </p>
+                {% endif %}
+            </div>
+        {% endblock %}
         <div class="content">
             {% block content %}
             {% endblock %}

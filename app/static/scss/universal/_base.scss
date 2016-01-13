@@ -21,44 +21,6 @@ p {
     display: none;
 }
 
-#header {
-    position: fixed;
-    z-index: 5;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background-color: $white;
-    display: table;
-    @include ease-out-transition(margin);
-
-    .container {
-        display: table-row;
-    }
-
-    .menu-button {
-        width: 20px;
-        height: 20px;
-        padding-right: 25px;
-        cursor: pointer;
-        vertical-align: text-bottom;
-        margin-bottom: 2px;
-    }
-
-    .title {
-        padding-left: 50px;
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .user {
-        padding-right: 50px;
-        text-align: right;
-        display: table-cell;
-        vertical-align: middle;
-    }
-}
-
 #menu-panel {
     position: fixed;
     z-index: 5;
