@@ -1,5 +1,6 @@
 import models
 import util.cryptography
+import util.testing
 from modern_paste import login_manager
 from modern_paste import session
 from util.exception import *
@@ -61,6 +62,20 @@ def get_user_by_username(username):
     user = models.User.query.filter_by(username=username.lower()).first()
     if not user:
         raise UserDoesNotExistException('No user with username {username} exists'.format(username=username))
+    return user
+
+
+def generate_new_api_key(user_id):
+    """
+    Generate a new API key for the user.
+
+    :param user_id: User ID for which to generate a new API key
+    :return: User object for that user ID with a modified API key
+    :raises UserDoesNotExistException: If no user exists with the given user_id
+    """
+    user = get_user_by_id(user_id)
+    user.api_key = util.testing.random_alphanumeric_string(length=64)
+    session.commit()
     return user
 
 

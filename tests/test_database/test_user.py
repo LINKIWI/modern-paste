@@ -6,6 +6,12 @@ import database.user
 
 
 class TestUser(util.testing.DatabaseTestCase):
+    def test_user_properties(self):
+        user = util.testing.UserFactory.generate()
+        self.assertEqual(unicode(user.user_id), user.get_id())
+        self.assertTrue(user.is_authenticated())
+        self.assertFalse(user.is_anonymous())
+
     def test_create_new_user(self):
         database.user.create_new_user('username', 'password', '127.0.0.1', 'name', 'test@test.com')
         self.assertRaises(
@@ -56,6 +62,14 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('name', user.name)
         self.assertEqual('test@test.com', user.email)
         self.assertEqual(user, database.user.get_user_by_username('uSeRnAME'))
+
+    def test_generate_new_api_key(self):
+        user = util.testing.UserFactory.generate()
+        old_api_key = str(user.api_key)
+        self.assertIsNotNone(old_api_key)
+        user_api_key_modified = database.user.generate_new_api_key(user.user_id)
+        self.assertNotEqual(old_api_key, user_api_key_modified.api_key)
+        self.assertNotEqual(old_api_key, database.user.get_user_by_id(user.user_id).api_key)
 
     def test_authenticate_user(self):
         self.assertRaises(

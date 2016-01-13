@@ -1,5 +1,6 @@
 import time
 
+import util.testing
 from modern_paste import db
 
 
@@ -14,6 +15,7 @@ class User(db.Model):
     password_hash = db.Column(db.Text)
     name = db.Column(db.Text, default=None)
     email = db.Column(db.Text, default=None)
+    api_key = db.Column(db.String(64))
 
     def __init__(
         self,
@@ -30,14 +32,14 @@ class User(db.Model):
         self.password_hash = password_hash
         self.name = name
         self.email = email
+        self.api_key = util.testing.random_alphanumeric_string(length=64)
 
-    def is_authenticated(self):
+    @staticmethod
+    def is_authenticated():
         return True
 
-    def is_active(self):
-        return self.is_active
-
-    def is_anonymous(self):
+    @staticmethod
+    def is_anonymous():
         return False
 
     def get_id(self):
