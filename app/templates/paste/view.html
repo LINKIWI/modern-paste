@@ -3,3 +3,62 @@
 {% block title %}
     View Paste
 {% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    {{ import_css([
+        'lib/codemirror/lib/codemirror.css',
+    ])|safe }}
+
+    {{ import_js([
+        'lib/codemirror/lib/codemirror.js',
+        'paste/ViewController.js',
+    ])|safe }}
+
+    {% if paste_language != 'text' %}
+        {{ import_js(['lib/codemirror/mode/' ~ paste_language ~ '/' ~ paste_language ~ '.js'], defer=True)|safe }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="paste-load-splash splash">
+        <div class="spinner"><div></div></div>
+    </div>
+
+    <div class="paste-header">
+        <p class="paste-title ubuntu-mono regular white size-5">Paste Title</p>
+        <p class="paste-subtitle sans-serif regular size-1 light-gray less-spaced">
+            <span class="paste-language sans-serif semibold">LANGUAGE</span>
+            | BY <span class="paste-poster-username">USERNAME</span>
+            | POSTED <span class="paste-post-time"> DATE</span>
+            <span class="paste-expiry-time-container">
+                | EXPIRES <span class="paste-expiry-time">DATE</span>
+            </span>
+        </p>
+        <br/>
+        <p class="paste-subtitle sans-serif semibold size-1 white less-spaced dark-link-alt">
+            <a href="">DOWNLOAD</a> &bull; <a href="">VIEW RAW</a> &bull; <a href="">FORK</a>
+        </p>
+    </div>
+
+    <div class="paste-view-container">
+        <textarea id="paste-view-contents" class="raw-paste-contents"></textarea>
+    </div>
+
+    <div class="password-protected">
+        <img class="lock-icon" src="/static/img/icons/lock.png" />
+        <p class="sans-serif regular gray size-5 less-spaced">This paste is password-protected.</p>
+        <br/>
+        <p class="sans-serif regular light-gray size-3 less-spaced">Enter the paste password to continue.</p>
+        <br/>
+        <form>
+            <fieldset class="form-group">
+                <input type="password" class="paste-password-field form-control sans-serif regular gray size-2 less-spaced" placeholder="Paste password" autocomplete="off" autofocus>
+            </fieldset>
+            <button type="submit" class="password-submit-button btn btn-primary sans-serif semibold white size-2 less-spaced">CONTINUE</button>
+        </form>
+    </div>
+
+    <div id="paste-id" class="hidden" data-paste-id="{{ paste_id }}"></div>
+{% endblock %}

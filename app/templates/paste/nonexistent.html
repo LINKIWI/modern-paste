@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Paste Not Found - Modern Paste
+{% endblock %}
+
+{% block content %}
+    <div class="nonexistent-paste-container">
+        <div class="login-header">
+            <p class="sans-serif regular gray size-8 spaced">PASTE NOT FOUND</p>
+            <br/>
+            <p class="sans-serif regular light-gray size-4 less-spaced">
+                The paste you are looking for either does not exist or is no longer available.
+            </p>
+            <br/><br/>
+            <p class="light-link sans-serif regular light-gray size-2 less-spaced">
+                <a href="{{ uri('paste', 'PastePostInterfaceURI') }}">Create a new paste</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
