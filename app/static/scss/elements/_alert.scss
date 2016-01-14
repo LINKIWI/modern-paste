@@ -11,6 +11,7 @@
     opacity: 0;
     visibility: hidden;
     background-color: black;
+    z-index: 8;
     @include background-blur(23px, rgba(0, 0, 0, 0.63));
     @include ease-out-transition(opacity);
 }

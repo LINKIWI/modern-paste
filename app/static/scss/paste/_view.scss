@@ -1,0 +1,53 @@
+@import '../universal/colors';
+
+
+.paste-load-splash {
+    z-index: 6;
+    opacity: 0.6;
+    visibility: visible;
+}
+
+.paste-header {
+    position: fixed;
+    width: 100%;
+    height: 85px;
+    padding: 20px 50px;
+    background-color: $dark-blue;
+    z-index: 5;
+
+    .paste-subtitle {
+        margin-top: 5px;
+    }
+}
+
+.paste-view-container {
+    margin-top: 125px;
+}
+
+#paste-view-contents {
+    width: 0;
+    height: 0;
+}
+
+.password-protected {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 300px;
+    z-index: 6;
+    text-align: center;
+    padding: 50px;
+    display: none;  // Should be initially hidden
+
+    .lock-icon {
+        width: 100px;
+        height: 110px;
+        margin-bottom: 30px;
+    }
+
+    .paste-password-field {
+        height: 15px;
+        margin: 10px 0 20px 0;
+    }
+}

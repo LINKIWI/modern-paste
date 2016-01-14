@@ -72,7 +72,7 @@
     padding: 15px 30px;
 }
 
-#paste-contents {
+#paste-post-contents {
     width: 100%;
 }
 
@@ -84,7 +84,7 @@
     height: 80px;
     display: table;
     background-color: $dark-blue;
-    z-index: 6;
+    z-index: 7;
     @include ease-out-transition(margin);
 
     .statistics-section {
