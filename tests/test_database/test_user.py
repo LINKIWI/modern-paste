@@ -97,6 +97,12 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertTrue(database.user.authenticate_user('userNAME', 'password'))
         self.assertTrue(database.user.authenticate_user('uSeRnAME', 'password'))
 
+    def test_deactivate_user(self):
+        util.testing.UserFactory.generate()
+        self.assertTrue(database.user.get_user_by_id(1).is_active)
+        database.user.deactivate_user(1)
+        self.assertFalse(database.user.get_user_by_id(1).is_active)
+
     def test_is_username_available(self):
         self.assertTrue(database.user.is_username_available('username'))
         self.assertTrue(database.user.is_username_available('Username'))

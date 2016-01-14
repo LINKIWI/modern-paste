@@ -1,6 +1,10 @@
 import json
 
+import mock
+from sqlalchemy.exc import SQLAlchemyError
+
 import constants.api
+import database.user
 import util.testing
 from uri.user import *
 
@@ -64,6 +68,19 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
 
+    def test_create_new_user_server_error(self):
+        with mock.patch.object(database.user, 'create_new_user', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                UserCreateURI.uri(),
+                data=json.dumps({
+                    'username': 'username',
+                    'password': 'password',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
+
     def test_deactivate_user(self):
         # TODO
         pass
@@ -111,6 +128,18 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
         self.assertFalse(json.loads(resp.data)['is_available'])
 
+    def test_check_username_availability_server_error(self):
+        with mock.patch.object(database.user, 'is_username_available', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                CheckUsernameAvailabilityURI.uri(),
+                data=json.dumps({
+                    'username': 'username',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
+
     def test_validate_email_address_invalid_data(self):
         resp = self.client.post(
             ValidateEmailAddressURI.uri(),
@@ -143,3 +172,15 @@ class TestPaste(util.testing.DatabaseTestCase):
             )
             self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
             self.assertFalse(json.loads(resp.data)['is_valid'])
+
+    def test_validate_email_address_server_error(self):
+        with mock.patch.object(database.user, 'is_email_address_valid', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                ValidateEmailAddressURI.uri(),
+                data=json.dumps({
+                    'email': 'test@test.com',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))

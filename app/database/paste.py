@@ -55,6 +55,7 @@ def deactivate_paste(paste_id):
     paste = get_paste_by_id(paste_id)
     paste.is_active = False
     session.commit()
+    return paste
 
 
 def get_all_pastes_for_user(user_id):

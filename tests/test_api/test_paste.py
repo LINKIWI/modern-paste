@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 import constants.api
 import database.paste
+import database.user
 import util.testing
 from uri.authentication import *
 from uri.paste import *
@@ -68,7 +69,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         resp_data = json.loads(resp.data)
         self.assertIsNotNone(resp_data['post_time'])
-        self.assertIsNotNone(resp_data['paste_id'])
+        self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
 
@@ -95,7 +96,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         resp_data = json.loads(resp.data)
         self.assertIsNotNone(resp_data['post_time'])
-        self.assertIsNotNone(resp_data['paste_id'])
+        self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
 
@@ -121,10 +122,10 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         resp_data = json.loads(resp.data)
         self.assertIsNotNone(resp_data['post_time'])
-        self.assertIsNotNone(resp_data['paste_id'])
+        self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
-        self.assertEqual(user.user_id, database.paste.get_paste_by_id(resp_data['paste_id']).user_id)
+        self.assertEqual(user.user_id, database.paste.get_paste_by_id(resp_data['paste_id_repr']).user_id)
 
     def test_submit_paste_server_error(self):
         with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):
@@ -247,7 +248,8 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(json.loads(resp.data), constants.api.NONEXISTENT_PASTE_FAILURE)
 
     def test_paste_details_no_password(self):
-        paste = util.testing.PasteFactory.generate(password=None)
+        user = util.testing.UserFactory.generate(username='username')
+        paste = util.testing.PasteFactory.generate(password=None, user_id=user.user_id)
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
@@ -256,13 +258,13 @@ class TestPaste(util.testing.DatabaseTestCase):
             content_type='application/json',
         )
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
-        self.assertEqual(
-            database.paste.get_paste_by_id(paste.paste_id).as_dict(),
-            json.loads(resp.data)['details'],
-        )
+        paste_details = database.paste.get_paste_by_id(paste.paste_id).as_dict()
+        paste_details['poster_username'] = 'username'
+        self.assertEqual(paste_details, json.loads(resp.data)['details'])
 
     def test_paste_details_password(self):
-        paste = util.testing.PasteFactory.generate(password='None')
+        user = util.testing.UserFactory.generate(username='username')
+        paste = util.testing.PasteFactory.generate(password='None', user_id=user.user_id)
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
@@ -272,7 +274,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
 
-        paste = util.testing.PasteFactory.generate(password='password')
+        paste = util.testing.PasteFactory.generate(password='password', user_id=user.user_id)
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
@@ -282,7 +284,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
 
-        paste = util.testing.PasteFactory.generate(password='password')
+        paste = util.testing.PasteFactory.generate(password='password', user_id=user.user_id)
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
@@ -293,7 +295,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.AUTH_FAILURE_CODE)
 
-        paste = util.testing.PasteFactory.generate(password='password')
+        paste = util.testing.PasteFactory.generate(password='password', user_id=user.user_id)
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
@@ -303,10 +305,34 @@ class TestPaste(util.testing.DatabaseTestCase):
             content_type='application/json',
         )
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
-        self.assertEqual(
-            database.paste.get_paste_by_id(paste.paste_id).as_dict(),
-            json.loads(resp.data)['details'],
+        paste_details = database.paste.get_paste_by_id(paste.paste_id).as_dict()
+        paste_details['poster_username'] = 'username'
+        self.assertEqual(paste_details, json.loads(resp.data)['details'])
+
+    def test_paste_details_anonymous(self):
+        paste = util.testing.PasteFactory.generate(password=None, user_id=None)
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+            }),
+            content_type='application/json',
         )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual('Anonymous', json.loads(resp.data)['details']['poster_username'])
+
+        user = util.testing.UserFactory.generate(username='username')
+        paste = util.testing.PasteFactory.generate(password=None, user_id=user.user_id)
+        database.user.deactivate_user(user.user_id)
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual('Anonymous', json.loads(resp.data)['details']['poster_username'])
 
     def test_paste_details_server_error(self):
         with mock.patch.object(database.paste, 'get_paste_by_id', side_effect=SQLAlchemyError):

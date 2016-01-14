@@ -107,6 +107,20 @@ def authenticate_user(username, password):
     return util.cryptography.secure_hash(password) == user.password_hash
 
 
+def deactivate_user(user_id):
+    """
+    Deactivate the specified user by ID.
+
+    :param user_id: User ID to deactivate
+    :return: An instance of models.User of the deactivated user
+    :raises UserDoesNotExistException: If the user does not exist
+    """
+    user = get_user_by_id(user_id)
+    user.is_active = False
+    session.commit()
+    return user
+
+
 def is_username_available(username):
     """
     Arises from uniqueness constraint on username column.

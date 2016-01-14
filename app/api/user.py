@@ -16,8 +16,8 @@ def create_new_user():
     """
     API endpoint for creating a new user.
     """
-    data = flask.request.get_json()
     try:
+        data = flask.request.get_json()
         new_user = database.user.create_new_user(
             username=data['username'],
             password=data['password'],
@@ -63,11 +63,14 @@ def check_username_availability():
     """
     Check if the specified username is available for registration.
     """
-    data = flask.request.get_json()
-    return flask.jsonify({
-        'username': data['username'],
-        'is_available': database.user.is_username_available(data['username']),
-    }), constants.api.SUCCESS_CODE
+    try:
+        data = flask.request.get_json()
+        return flask.jsonify({
+            'username': data['username'],
+            'is_available': database.user.is_username_available(data['username']),
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
 @app.route(ValidateEmailAddressURI.path, methods=['POST'])
@@ -76,8 +79,11 @@ def validate_email_address():
     """
     Check if the provided email address is valid.
     """
-    data = flask.request.get_json()
-    return flask.jsonify({
-        'email': data['email'],
-        'is_valid': database.user.is_email_address_valid(data['email']),
-    }), constants.api.SUCCESS_CODE
+    try:
+        data = flask.request.get_json()
+        return flask.jsonify({
+            'email': data['email'],
+            'is_valid': database.user.is_email_address_valid(data['email']),
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
