@@ -100,7 +100,7 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
     evt.preventDefault();
 
     this.submitButton.prop('disabled', true);
-    modernPaste.universal.SplashController.hideSplash(this.pasteSubmitSplash);
+    modernPaste.universal.SplashController.showSplash(this.pasteSubmitSplash);
 
     $.ajax({
         'method': 'POST',

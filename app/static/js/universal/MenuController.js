@@ -12,6 +12,8 @@ modernPaste.universal.MenuController = function() {
     this.pageHeader = $('#header');
     this.pageFooter = $('#footer');
     this.mainPage = $('#main-page');
+    this.userHeader = $('#header').find('.user-section .user-header');
+    this.userHeaderDropdown = $('#user-header-dropdown');
 
     this.menuToggleButton.on('click', modernPaste.universal.MenuController.handleMenuToggleButtonClick.bind(this));
 };
@@ -36,6 +38,9 @@ modernPaste.universal.MenuController.handleMenuToggleButtonClick = function(evt)
         }
     } else {
         // Panel is not visible
+        if (this.userHeaderDropdown.is(':visible')) {
+            this.userHeader.click();
+        }
         this.menuToggleButton.fadeOut(function() {
             $(this).attr('src', '/static/img/icons/cross.png');
             $(this).fadeIn();

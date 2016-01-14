@@ -23,7 +23,7 @@ modernPaste.universal.SplashController = function() {
  */
 modernPaste.universal.SplashController.showSplash = function(splash) {
     splash.css('visibility', 'visible');
-    splash.css('opacity', 0.5);
+    splash.css('opacity', 0.6);
 };
 
 /**
