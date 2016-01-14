@@ -126,6 +126,8 @@ def is_email_address_valid(email_addr):
     :param email_addr: Email address, type str
     :return: True if the email address is valid, False otherwise
     """
+    if ' ' in email_addr:
+        return False
     separated_email_addr = tuple(email_addr.split('@'))
     if len(separated_email_addr) != 2:
         return False

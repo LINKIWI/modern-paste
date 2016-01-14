@@ -22,7 +22,7 @@ def create_new_user():
             username=data['username'],
             password=data['password'],
             signup_ip=flask.request.remote_addr,
-            name=data.get('username'),
+            name=data.get('name'),
             email=data.get('email'),
         )
         return flask.jsonify({
@@ -52,7 +52,7 @@ def create_new_user():
 @require_login_api
 def deactivate_user():
     """
-    TODO
+    Deactivate the currently logged-in user.
     """
     pass
 
@@ -61,23 +61,23 @@ def deactivate_user():
 @require_form_args(['username'])
 def check_username_availability():
     """
-    TODO
+    Check if the specified username is available for registration.
     """
     data = flask.request.get_json()
     return flask.jsonify({
         'username': data['username'],
         'is_available': database.user.is_username_available(data['username']),
-    }), constants.api.RESULT_SUCCESS
+    }), constants.api.SUCCESS_CODE
 
 
 @app.route(ValidateEmailAddressURI.path, methods=['POST'])
 @require_form_args(['email'])
 def validate_email_address():
     """
-    TODO
+    Check if the provided email address is valid.
     """
     data = flask.request.get_json()
     return flask.jsonify({
         'email': data['email'],
         'is_valid': database.user.is_email_address_valid(data['email']),
-    }), constants.api.RESULT_SUCCESS
+    }), constants.api.SUCCESS_CODE
