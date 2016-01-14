@@ -32,12 +32,20 @@ class TestCryptography(unittest.TestCase):
         self.assertRaises(
             InvalidIDException,
             util.cryptography.get_decid,
+            -1,
+        )
+        self.assertRaises(
+            InvalidIDException,
+            util.cryptography.get_decid,
             u'\ue863',
         )
 
         encid = util.cryptography.get_encid(15)
         decid = util.cryptography.get_decid(encid)
         self.assertEqual(decid, 15)
+
+        self.assertEqual(10, util.cryptography.get_decid(10))
+        self.assertEqual(100, util.cryptography.get_decid(100))
 
     def test_get_id_repr(self):
         decid = 25

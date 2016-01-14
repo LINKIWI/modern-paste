@@ -33,20 +33,26 @@ def get_encid(decid):
 
 def get_decid(encid):
     """
-    Generate a decrypted ID from an encrypted ID
+    Generate a decrypted ID from an encrypted ID.
+    This function makes use of a non-trivial number of try-excepts that I am not proud of.
 
     :param encid: Encrypted ID, type str
     :return: Decrypted ID, type int
     """
     try:
-        str(encid)
+        assert int(encid) > 0
+        # If the "encid" is both int-castable and greater than 0 in value,
+        # we can assume it's already a decid, so we can safely return it back.
+        return encid
     except:
-        raise InvalidIDException('Encrypted ID must be str-castable')
-
-    try:
-        return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
-    except:
-        raise InvalidIDException('The encrypted ID is not valid')
+        try:
+            str(encid)
+        except:
+            raise InvalidIDException('Encrypted ID must be str-castable')
+        try:
+            return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
+        except:
+            raise InvalidIDException('The encrypted ID is not valid')
 
 
 def get_id_repr(raw_id):
