@@ -40,19 +40,17 @@ class Paste(db.Model):
 
     def as_dict(self):
         """
-        Represent this paste as an easily JSON-serializable dictionary
+        Represent this paste as an easily JSON-serializable dictionary. This method is intended to present the paste
+        for consumption at the highest level of the stack, so it should exclude all sensitive information.
 
         :return: Dictionary of paste properties
         """
         return {
-            'paste_id': self.paste_id,
             'paste_id_repr': util.cryptography.get_id_repr(self.paste_id),
             'is_active': self.is_active,
-            'user_id': self.user_id,
             'post_time': self.post_time,
             'expiry_time': self.expiry_time,
             'contents': self.contents,
             'title': self.title,
             'language': self.language,
-            'deactivation_token': self.deactivation_token,
         }
