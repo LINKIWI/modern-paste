@@ -15,7 +15,7 @@ class User(db.Model):
     password_hash = db.Column(db.Text)
     name = db.Column(db.Text, default=None)
     email = db.Column(db.Text, default=None)
-    api_key = db.Column(db.String(64))
+    api_key = db.Column(db.String(64), index=True)
 
     def __init__(
         self,

@@ -65,6 +65,20 @@ def get_user_by_username(username):
     return user
 
 
+def get_user_by_api_key(api_key):
+    """
+    Get a User object by api_key, whose attributes match those in the database.
+
+    :param api_key: API key to query by
+    :return: User object for that user ID
+    :raises UserDoesNotExistException: If no user exists with the given user_id
+    """
+    user = models.User.query.filter_by(api_key=api_key).first()
+    if not user:
+        raise UserDoesNotExistException('No user with user_id {api_key} exists'.format(api_key=api_key))
+    return user
+
+
 def generate_new_api_key(user_id):
     """
     Generate a new API key for the user.

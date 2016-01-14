@@ -63,6 +63,20 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('test@test.com', user.email)
         self.assertEqual(user, database.user.get_user_by_username('uSeRnAME'))
 
+    def test_get_user_by_api_key(self):
+        self.assertRaises(
+            UserDoesNotExistException,
+            database.user.get_user_by_api_key,
+            'api key',
+        )
+        generated_user = database.user.create_new_user('username', 'password', '127.0.0.1', 'name', 'test@test.com')
+        user = database.user.get_user_by_api_key(generated_user.api_key)
+        self.assertEqual('username', user.username)
+        self.assertEqual(util.cryptography.secure_hash('password'), user.password_hash)
+        self.assertEqual('127.0.0.1', user.signup_ip)
+        self.assertEqual('name', user.name)
+        self.assertEqual('test@test.com', user.email)
+
     def test_generate_new_api_key(self):
         user = util.testing.UserFactory.generate()
         old_api_key = str(user.api_key)
