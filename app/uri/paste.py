@@ -1,6 +1,10 @@
 from base_uri import URI
 
 
+class PastePostInterfaceURI(URI):
+    path = '/paste/new'
+
+
 class PasteViewInterfaceURI(URI):
     path = '/paste/<paste_id>'
 

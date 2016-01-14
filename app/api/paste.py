@@ -7,6 +7,7 @@ from util.exception import *
 from api.decorators import require_form_args
 import constants.api
 import database.paste
+import database.user
 import util.cryptography
 
 
@@ -68,16 +69,23 @@ def paste_details():
     data = flask.request.get_json()
     try:
         paste = database.paste.get_paste_by_id(data['paste_id'])
+        paste_details_dict = paste.as_dict()
+        paste_details_dict['poster_username'] = 'Anonymous'
+        if paste.user_id:
+            poster = database.user.get_user_by_id(paste.user_id)
+            if poster.is_active:
+                paste_details_dict['poster_username'] = poster.username
         if not paste.password_hash or (data.get('password') and paste.password_hash == util.cryptography.secure_hash(data.get('password'))):
             return flask.jsonify({
                 constants.api.RESULT: constants.api.RESULT_SUCCESS,
                 constants.api.MESSAGE: None,
-                'details': paste.as_dict(),
+                'details': paste_details_dict,
             }), constants.api.SUCCESS_CODE
         else:
             return flask.jsonify({
                 constants.api.RESULT: constants.api.RESULT_FAULURE,
                 constants.api.MESSAGE: 'Password-protected paste: either no password or wrong password supplied',
+                constants.api.FAILURE: 'password_mismatch_failure',
                 'details': {},
             }), constants.api.AUTH_FAILURE_CODE
     except PasteDoesNotExistException:
