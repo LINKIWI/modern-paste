@@ -9,6 +9,10 @@ class PasteViewInterfaceURI(URI):
     path = '/paste/<paste_id>'
 
 
+class PasteViewRawInterfaceURI(URI):
+    path = '/paste/<paste_id>/raw'
+
+
 class PasteDeactivateInterfaceURI(URI):
     path = '/paste/<paste_id>/deactivate/<deactivation_token>'
 
