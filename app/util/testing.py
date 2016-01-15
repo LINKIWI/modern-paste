@@ -1,13 +1,20 @@
+import json
 import random
 import time
 import types
 
+from flask.ext.login import current_user
+from flask.ext.login import login_user
+from flask.ext.login import logout_user
 from flask.ext.testing import TestCase
 
-import database.user
+import constants.api
 import database.paste
+import database.user
 from modern_paste import app
 from modern_paste import db
+from uri.authentication import LoginUserURI
+from uri.authentication import LogoutUserURI
 
 
 def random_alphanumeric_string(length=64):
@@ -111,5 +118,34 @@ class DatabaseTestCase(TestCase):
         """
         Destroys the test database environment, resetting it to a clean state.
         """
+        if current_user.is_authenticated:
+            self.api_logout_user()
         db.session.remove()
         db.drop_all()
+
+    def api_login_user(self, username, password):
+        """
+        Logs in the specified user via the login API endpoint, and a hard login.
+
+        :param username: Username of the user to log in.
+        :param password: Password of the user to log in.
+        """
+        resp = self.client.post(
+            LoginUserURI.uri(),
+            data=json.dumps({
+                'username': username,
+                'password': password,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(json.loads(resp.data)['username'], 'username')
+        login_user(database.user.get_user_by_username(username))
+
+    def api_logout_user(self):
+        """
+        Logs out the current user via the logout API endpoint, and a hard logout.
+        """
+        resp = self.client.post(LogoutUserURI.uri())
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        logout_user()

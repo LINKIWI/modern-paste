@@ -70,11 +70,7 @@ def get_id_repr(raw_id):
             # This is relatively unsafe is ok with due diligence in checking inputs before using this method.
             return raw_id
     else:
-        try:
-            return get_decid(raw_id)
-        except InvalidIDException:
-            # Assume ID is already a decid
-            return raw_id
+        return get_decid(raw_id)
 
 
 def secure_hash(s, iterations=10000):
