@@ -5,6 +5,8 @@ from modern_paste import app
 
 import constants.api
 import database.user
+import util.cryptography
+from flask.ext.login import current_user
 from api.decorators import require_form_args
 from api.decorators import require_login_api
 from util.exception import *
@@ -48,13 +50,21 @@ def create_new_user():
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
-@app.route(UserRegisterInterfaceURI.path, methods=['POST'])
+@app.route(UserDeactivateURI.path, methods=['POST'])
 @require_login_api
 def deactivate_user():
     """
     Deactivate the currently logged-in user.
     """
-    pass
+    try:
+        database.user.deactivate_user(util.cryptography.get_decid(current_user.user_id))
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'username': current_user.username,
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
 @app.route(CheckUsernameAvailabilityURI.path, methods=['POST'])

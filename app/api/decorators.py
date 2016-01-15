@@ -5,12 +5,15 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask.ext.login import current_user
+from flask.ext.login import login_user
 from requests.utils import quote
 
 import config
+import database.user
 from constants.api import *
 from constants.build_environment import *
 from uri.user import UserLoginInterfaceURI
+from util.exception import *
 
 
 # Dictionary of the context/environment that should be made available to all templates rendered with @render_view
@@ -72,15 +75,25 @@ def require_form_args(form_args, allow_blank_values=False, strict_params=False):
 def require_login_api(func):
     """
     A custom implementation of Flask-login's built-in @login_required decorator.
+    This decorator will allow usage of the API endpoint if the user is either currently logged in via the app
+    or if the user authenticates with an API key in the POST JSON parameters.
     This implementation overrides the behavior taken when the current user is not authenticated by
-    returning the predefined AUTH_FAILURE JSON response with HTTP status code 403.
+    returning the predefined AUTH_FAILURE JSON response with HTTP status code 401.
     This decorator is intended for use with API endpoints.
     """
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if not current_user.is_authenticated:
+        data = request.get_json()
+        if current_user.is_authenticated:
+            return func(*args, **kwargs)
+        try:
+            if data and data.get('api_key'):
+                user = database.user.get_user_by_api_key(data['api_key'])
+                login_user(user)
+                return func(*args, **kwargs)
+        except UserDoesNotExistException:
             return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
-        return func(*args, **kwargs)
+        return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
     return decorated_view
 
 

@@ -2,11 +2,13 @@ import json
 
 import mock
 from sqlalchemy.exc import SQLAlchemyError
+from flask.ext.login import login_user
 
 import constants.api
 import database.user
 import util.testing
 from uri.user import *
+from uri.authentication import *
 
 
 class TestPaste(util.testing.DatabaseTestCase):
@@ -81,9 +83,68 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
             self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
 
-    def test_deactivate_user(self):
-        # TODO
-        pass
+    def test_deactivate_user_not_logged_in(self):
+        util.testing.UserFactory.generate()
+        resp = self.client.post(
+            UserDeactivateURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.AUTH_FAILURE, json.loads(resp.data))
+
+    def test_deactivate_user_logged_in(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        resp = self.client.post(
+            LoginUserURI.uri(),
+            data=json.dumps({
+                'username': 'username',
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        resp = self.client.post(
+            UserDeactivateURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertFalse(database.user.get_user_by_id(user.user_id).is_active)
+
+    def test_deactivate_user_api_key(self):
+        user = util.testing.UserFactory.generate()
+        resp = self.client.post(
+            UserDeactivateURI.uri(),
+            data=json.dumps({
+                'api_key': 'invalid',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.AUTH_FAILURE, json.loads(resp.data))
+        resp = self.client.post(
+            UserDeactivateURI.uri(),
+            data=json.dumps({
+                'api_key': user.api_key,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertFalse(database.user.get_user_by_id(user.user_id).is_active)
+
+    def test_deactivate_user_server_error(self):
+        with mock.patch.object(database.user, 'deactivate_user', side_effect=SQLAlchemyError):
+            user = util.testing.UserFactory.generate()
+            resp = self.client.post(
+                UserDeactivateURI.uri(),
+                data=json.dumps({
+                    'api_key': user.api_key,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
 
     def test_check_username_availability_invalid_data(self):
         resp = self.client.post(
