@@ -4,6 +4,14 @@
     Paste Not Found - Modern Paste
 {% endblock %}
 
+{% block head %}
+    {{ super() }}
+
+    {{ import_js([
+        'paste/NonexistentController.js',
+    ])|safe }}
+{% endblock %}
+
 {% block content %}
     <div class="nonexistent-paste-container">
         <div class="login-header">
