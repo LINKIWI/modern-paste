@@ -30,15 +30,19 @@ def create_new_paste(contents, user_id=None, expiry_time=None, title=None, langu
     return new_paste
 
 
-def get_paste_by_id(paste_id):
+def get_paste_by_id(paste_id, active_only=False):
     """
     Get the specified paste by ID.
 
     :param paste_id: Paste ID to look up
+    :param active_only: Set this flag to True to only query for active pastes
     :return: An instance of models.Paste representing the requested paste
     :raises PasteDoesNotExistException: If the paste does not exist
     """
-    paste = models.Paste.query.filter_by(paste_id=paste_id).first()
+    if active_only:
+        paste = models.Paste.query.filter_by(paste_id=paste_id, is_active=True).first()
+    else:
+        paste = models.Paste.query.filter_by(paste_id=paste_id).first()
     if not paste:
         raise PasteDoesNotExistException('No paste with paste_id {paste_id} exists'.format(paste_id=paste_id))
     return paste

@@ -27,10 +27,18 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertRaises(
             PasteDoesNotExistException,
             database.paste.get_paste_by_id,
-            1,
+            -1,
         )
         paste = util.testing.PasteFactory.generate()
-        self.assertEqual(paste, database.paste.get_paste_by_id(1))
+        self.assertEqual(paste, database.paste.get_paste_by_id(paste.paste_id))
+        database.paste.deactivate_paste(paste.paste_id)
+        self.assertEqual(paste, database.paste.get_paste_by_id(paste.paste_id))
+        self.assertRaises(
+            PasteDoesNotExistException,
+            database.paste.get_paste_by_id,
+            paste.paste_id,
+            active_only=True,
+        )
 
     def test_deactivate_paste(self):
         util.testing.PasteFactory.generate()
