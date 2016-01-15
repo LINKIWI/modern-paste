@@ -10,6 +10,8 @@ goog.require('modernPaste.universal.AlertController');
  * @constructor
  */
 modernPaste.paste.PostController = function() {
+    this.urlParams = modernPaste.universal.URIController.getURLParameters();
+
     this.alert = $('#alert');
 
     this.moreOptionsContainer = $('.more-options-container');
@@ -38,6 +40,11 @@ modernPaste.paste.PostController = function() {
             'mode': ''  // Start with plain text mode by default
         }
     );
+
+    // If the user is forking a paste, load the forked contents rather than a blank box
+    if (this.urlParams.hasOwnProperty('fork')) {
+        modernPaste.paste.PostController.loadForkedPasteContents.bind(this)();
+    }
 
     this.moreOptionsLink.on('click', modernPaste.paste.PostController.handleMoreOptionLinkClick.bind(this));
     this.languageSelector.on('change', modernPaste.paste.PostController.handleLanguageSelectorChange.bind(this));
@@ -87,7 +94,7 @@ modernPaste.paste.PostController.handlePasteContentsChange = function(evt) {
 modernPaste.paste.PostController.handlePasteDownloadLinkClick = function(evt) {
     evt.preventDefault();
 
-    this.pasteDownloadContent.attr('download', this.pasteTitle.text() + '.txt');
+    this.pasteDownloadContent.attr('download', this.pasteTitle.val() + '.txt');
     this.pasteDownloadContent.attr('href', 'data:text/plain;base64,' + window.btoa(this.pasteContents.getValue()));
     this.pasteDownloadContent[0].click();  // Why can't I use .click() on a JQuery <a> object with a download attribute?
 };
@@ -109,7 +116,7 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
         'data': JSON.stringify({
             'contents': this.pasteContents.getValue(),
             'expiry_time': Date.parse(this.dateTimePicker.val()),
-            'title': this.pasteTitle.text(),
+            'title': this.pasteTitle.val(),
             'language': this.languageSelector.val().toLowerCase(),
             'password': this.pastePassword.val() !== '' ? this.pastePassword.val() : null
         })
@@ -140,6 +147,47 @@ modernPaste.paste.PostController.handleSubmitFail = function(data) {
     var errorMessages = {
         'incomplete_params_failure': 'You can\'t submit an empty paste.',
         'auth_failure': 'You need to be logged in to post a non-anonymous paste.'
+    };
+    modernPaste.universal.AlertController.displayErrorAlert(
+        modernPaste.universal.AlertController.selectErrorMessage(data, errorMessages)
+    );
+};
+
+/**
+ * If the user is attempting to fork an existing paste, AJAX-load the existing paste's contents into
+ * the code textarea.
+ */
+modernPaste.paste.PostController.loadForkedPasteContents = function() {
+    $.ajax({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteDetailsURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+            'paste_id': this.urlParams.fork
+        })
+    })
+    .done(modernPaste.paste.PostController.insertForkedPaste.bind(this))
+    .fail(modernPaste.paste.PostController.showPasteForkFail.bind(this));
+};
+
+/**
+ * On successful retrieval of the forked paste details, set the language of the paste (as appropriate),
+ * insert its full contents into the code textarea, and set the paste title.
+ */
+modernPaste.paste.PostController.insertForkedPaste = function(data) {
+    this.pasteContents.setValue(data.details.contents);
+    this.languageSelector.val(data.details.language.toLowerCase());
+    this.pasteContents.setOption('mode', data.details.language.toLowerCase());
+    this.pasteTitle.val('Fork of ' + data.details.title);
+};
+
+/**
+ * Display an error alert if the paste fork fails.
+ */
+modernPaste.paste.PostController.showPasteForkFail = function(data) {
+    var errorMessages = {
+        'password_mismatch_failure': 'You cannot fork a password-protected paste.',
+        'nonexistent_paste_failure': 'The paste you are trying to fork does not exist.'
     };
     modernPaste.universal.AlertController.displayErrorAlert(
         modernPaste.universal.AlertController.selectErrorMessage(data, errorMessages)

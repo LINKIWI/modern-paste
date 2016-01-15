@@ -32,13 +32,19 @@
             <span class="paste-language sans-serif semibold">LANGUAGE</span>
             | BY <span class="paste-poster-username">USERNAME</span>
             | POSTED <span class="paste-post-time"> DATE</span>
+            <!--The expiry time should be hidden if it has no expiry time-->
             <span class="paste-expiry-time-container">
                 | EXPIRES <span class="paste-expiry-time">DATE</span>
             </span>
         </p>
         <br/>
         <p class="paste-subtitle sans-serif semibold size-1 white less-spaced dark-link-alt">
-            <a class="paste-download-link" href="#">DOWNLOAD</a> &bull; <a class="paste-raw-link" href="#">VIEW RAW</a> &bull; <a class="paste-fork-link" href="#">FORK</a>
+            <a class="paste-download-link" href="#">DOWNLOAD</a>
+            &bull; <a class="paste-raw-link" href="{{ uri('paste', 'PasteViewRawInterfaceURI', paste_id=paste_id) }}">VIEW RAW</a>
+            <!--The fork option should be hidden if the paste is password-protected-->
+            <span class="paste-fork-container">
+                &bull; <a class="paste-fork-link" href="{{ uri('paste', 'PastePostInterfaceURI', fork=paste_id) }}">FORK</a>
+            </span>
         </p>
     </div>
 

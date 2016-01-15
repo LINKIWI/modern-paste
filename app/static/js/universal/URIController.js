@@ -29,6 +29,7 @@ modernPaste.universal.URIController = function() {
  *
  * @param uri The URI string to format
  * @param params An object mapping keys to values with which to format the URI string
+ * @returns {string} The formatted URI
  */
 modernPaste.universal.URIController.formatURI = function(uri, params) {
     var constructedURI = uri;
@@ -49,6 +50,27 @@ modernPaste.universal.URIController.formatURI = function(uri, params) {
     } else {
         return constructedURI;
     }
+};
+
+/**
+ * Grab the GET parameters in the current URL and return them in an object.
+ *
+ * '?key1=value1&key2=value2' -> {key1: 'value1', key2: 'value2'}
+ *
+ * @returns {{}} Mapping of parameter keys to values
+ */
+modernPaste.universal.URIController.getURLParameters = function() {
+    var qs = document.location.search.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
 };
 
 

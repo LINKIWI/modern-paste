@@ -31,8 +31,7 @@ modernPaste.paste.ViewController = function() {
     // Paste header links
     this.pasteDownloadLink = $('.paste-header .paste-download-link');
     this.pasteDownloadContent = $('.paste-view-container .paste-download-content');
-    this.pasteRawLink = $('.paste-header .paste-raw-link');
-    this.pasteForkLink = $('.paste-header .paste-fork-link');
+    this.pasteForkContainer = $('.paste-header .paste-fork-container');
 
     modernPaste.paste.ViewController.loadPaste.bind(this)();
 
@@ -88,8 +87,9 @@ modernPaste.paste.ViewController.initializePasteDetails = function(data) {
 };
 
 /**
- *
- * @param data
+ * The paste could fail to load on first attempt either because the paste is password-protected, and returns an
+ * authentication error when attempting to access it without a password, or because of an undefined server or client
+ * side error.
  */
 modernPaste.paste.ViewController.handlePasteLoadFail = function(data) {
     if (data.responseJSON.failure === 'password_mismatch_failure') {
@@ -97,6 +97,9 @@ modernPaste.paste.ViewController.handlePasteLoadFail = function(data) {
         // in order to preserve a faded white backdrop for the password prompt.
         this.spinner.fadeOut();
         this.passwordProtectionNotice.fadeIn('fast');
+        // We should also immediately disable the paste fork link in the UI.
+        // It is insecure to allow a password-protected paste to be forked.
+        this.pasteForkContainer.hide();
     } else {
         modernPaste.universal.SplashController.hideSplash(this.pasteLoadSplash);
         modernPaste.universal.AlertController.displayErrorAlert('The details for this paste couldn\'t be loaded. Please try again later.');
@@ -143,7 +146,7 @@ modernPaste.paste.ViewController.convertUnixTimestamp = function(unixTimestampSt
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var date = new Date(parseInt(unixTimestampString, 10)*1000);
     // It would also be nice if Javascript had a formalized method of formatting strings
-    return monthNames[date.getMonth()].toUpperCase() + ' ' + date.getDay() + ', ' + date.getFullYear() + ' ' + date.getHours() % 13 + ':' + date.getMinutes() + ' ' + (date.getHours() >= 12 ? 'PM' : 'AM');
+    return monthNames[date.getMonth()].toUpperCase() + ' ' + date.getDate() + ', ' + date.getFullYear() + ' ' + (date.getHours() + 1) % 13 + ':' + date.getMinutes() + ' ' + (date.getHours() >= 12 ? 'PM' : 'AM');
 };
 
 /**
