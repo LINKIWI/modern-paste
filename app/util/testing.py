@@ -118,8 +118,6 @@ class DatabaseTestCase(TestCase):
         """
         Destroys the test database environment, resetting it to a clean state.
         """
-        if current_user.is_authenticated:
-            self.api_logout_user()
         db.session.remove()
         db.drop_all()
 
