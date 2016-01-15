@@ -9,9 +9,14 @@ goog.require('modernPaste.universal.AlertController');
  * @constructor
  */
 modernPaste.paste.ViewController = function() {
+    // Metadata
     this.pasteId = $('#paste-id').data('paste-id');
 
+    // Page elements
     this.pasteLoadSplash = $('.paste-load-splash');
+    this.spinner = $('.paste-load-splash .spinner');
+
+    // Paste UI elements
     this.rawPasteContents = $('.raw-paste-contents');
     this.pasteTitle = $('.paste-header .paste-title');
     this.pasteLanguage = $('.paste-header .paste-language');
@@ -22,11 +27,17 @@ modernPaste.paste.ViewController = function() {
     this.passwordProtectionNotice = $('.password-protected');
     this.pastePasswordField = $('.password-protected .paste-password-field');
     this.passwordSubmitButton = $('.password-protected .password-submit-button');
-    this.spinner = $('.paste-load-splash .spinner');
+
+    // Paste header links
+    this.pasteDownloadLink = $('.paste-header .paste-download-link');
+    this.pasteDownloadContent = $('.paste-view-container .paste-download-content');
+    this.pasteRawLink = $('.paste-header .paste-raw-link');
+    this.pasteForkLink = $('.paste-header .paste-fork-link');
 
     modernPaste.paste.ViewController.loadPaste.bind(this)();
 
     this.passwordSubmitButton.on('click', modernPaste.paste.ViewController.verifyPastePassword.bind(this));
+    this.pasteDownloadLink.on('click', modernPaste.paste.ViewController.downloadPasteAsFile.bind(this));
 };
 
 /**
@@ -133,6 +144,41 @@ modernPaste.paste.ViewController.convertUnixTimestamp = function(unixTimestampSt
     var date = new Date(parseInt(unixTimestampString, 10)*1000);
     // It would also be nice if Javascript had a formalized method of formatting strings
     return monthNames[date.getMonth()].toUpperCase() + ' ' + date.getDay() + ', ' + date.getFullYear() + ' ' + date.getHours() % 13 + ':' + date.getMinutes() + ' ' + (date.getHours() >= 12 ? 'PM' : 'AM');
+};
+
+/**
+ * Download the contents of the paste as a file with the appropriate file extension.
+ */
+modernPaste.paste.ViewController.downloadPasteAsFile = function(evt) {
+    evt.preventDefault();
+
+    // Necessary to determine the appropriate file extension
+    // This mapping is obviously not exhaustive, but covers popular languages
+    var fileExtensions = {
+        'text': '.txt',
+        'coffeescript': '.coffee',
+        'css': '.css',
+        'htmlmixed': '.html',
+        'javascript': '.js',
+        'jinja2': '.html',
+        'markdown': '.md',
+        'php': '.php',
+        'python': '.py',
+        'sass': '.scss',
+        'sql': '.sql',
+        'verilog': '.v',
+        'yaml': '.yml'
+    };
+
+    // If the file extension is unknown, default to having no file extension.
+    var fileExtension = '';
+    if (fileExtensions.hasOwnProperty(this.pasteLanguage.text().toLowerCase())) {
+        fileExtension = fileExtensions[this.pasteLanguage.text().toLowerCase()];
+    }
+
+    this.pasteDownloadContent.attr('download', this.pasteTitle.text() + fileExtension);
+    this.pasteDownloadContent.attr('href', 'data:text/plain;base64,' + window.btoa(this.pasteContents.getValue()));
+    this.pasteDownloadContent[0].click();
 };
 
 
