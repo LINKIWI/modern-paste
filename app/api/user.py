@@ -7,6 +7,7 @@ import constants.api
 import database.user
 import util.cryptography
 from flask.ext.login import current_user
+from flask.ext.login import login_user
 from api.decorators import require_form_args
 from api.decorators import require_login_api
 from util.exception import *
@@ -27,6 +28,7 @@ def create_new_user():
             name=data.get('name'),
             email=data.get('email'),
         )
+        login_user(new_user)
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_SUCCESS,
             constants.api.MESSAGE: None,

@@ -2,7 +2,7 @@ import json
 
 import mock
 from sqlalchemy.exc import SQLAlchemyError
-from flask.ext.login import login_user
+from flask.ext.login import current_user
 
 import constants.api
 import database.user
