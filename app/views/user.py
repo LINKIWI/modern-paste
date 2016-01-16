@@ -15,6 +15,13 @@ def user_login_interface():
     return 'user/login.html', {}
 
 
+@app.route(UserRegisterInterfaceURI.path, methods=['GET'])
+@hide_if_logged_in(redirect_uri=HomeURI.uri())
+@render_view
+def user_register_interface():
+    return 'user/register.html', {}
+
+
 @app.route(UserLogoutInterfaceURI.path, methods=['GET'])
 def user_logout_interface():
     logout_user()
