@@ -27,3 +27,14 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual(302, redirect_resp.status_code)
         self.assertEqual(HomeURI.uri(), redirect_resp.location)
         self.assertFalse(current_user.is_authenticated)
+
+    def test_user_register_interface(self):
+        self.assertIn('Register for an account to view, modify, and delete your pastes', views.user.user_register_interface())
+
+        self.assertFalse(current_user.is_authenticated)
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        self.assertTrue(current_user.is_authenticated)
+        redirect_resp = views.user.user_register_interface()
+        self.assertEqual(302, redirect_resp.status_code)
+        self.assertEqual(HomeURI.uri(), redirect_resp.location)
