@@ -3,7 +3,6 @@ import random
 import time
 import types
 
-from flask.ext.login import current_user
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from flask.ext.testing import TestCase

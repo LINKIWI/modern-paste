@@ -18,7 +18,8 @@ default:
 	python build/build_css.py
 
 dependencies:
-	gem install sass
+	gem list sass -i
+	if [ $$? -ne 0 ]; then gem install sass; fi;
 	pip install -r requirements.txt
 
 clean:
