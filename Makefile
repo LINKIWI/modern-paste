@@ -2,19 +2,24 @@ export PYTHONPATH := app:$(PYTHONPATH)
 
 
 all:
+	$(MAKE) dependencies
 	$(MAKE) test-coverage
 	$(MAKE) default
 
 skip-tests:
+	$(MAKE) dependencies
 	$(MAKE) default
 
 default:
-	pip install -r requirements.txt
 	mkdir -p app/static/build/js
 	mkdir -p app/static/build/css
 	python build/build_database.py --create
 	python build/build_js.py --respect-environment
 	python build/build_css.py
+
+dependencies:
+	gem install sass
+	pip install -r requirements.txt
 
 clean:
 	rm -rf app/static/build
