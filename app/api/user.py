@@ -59,7 +59,7 @@ def deactivate_user():
     Deactivate the currently logged-in user.
     """
     try:
-        database.user.deactivate_user(util.cryptography.get_decid(current_user.user_id))
+        database.user.deactivate_user(current_user.user_id)
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_SUCCESS,
             constants.api.MESSAGE: None,

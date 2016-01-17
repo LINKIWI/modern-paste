@@ -31,28 +31,36 @@ def get_encid(decid):
     return base64.b64encode(cipher.encrypt(_pad(str(decid)))).replace('/', '-').replace('+', '~')
 
 
-def get_decid(encid):
+def get_decid(encid, force=False):
     """
     Generate a decrypted ID from an encrypted ID.
-    This function makes use of a non-trivial number of try-excepts that I am not proud of.
+    This is a bit of a tricky situation: when configured to use encrypted IDs, the entire application should refuse
+    to respond to valid decrypted IDs, and should only consider valid (e.g., decryptable) encrypted IDs. However,
+    when the application is configured to use decrypted IDs, it should not throw exceptions when attempting to get
+    the decrypted ID of an ID that is already decrypted. Similarly, the application should throw exceptions when
+    configured to expect only decrypted IDs, but encounters a (potentially valid) encrypted ID.
+    The compromise solution here is to throw exceptions depending on the application's current configuration setting.
+    Note that this will cause this function to exhibit different behavior depending on the application's configuration.
 
     :param encid: Encrypted ID, type str
+    :param force: Forcefully decrypt the encid, regardless of the current configuration
     :return: Decrypted ID, type int
     """
     try:
         assert int(encid) > 0
-        # If the "encid" is both int-castable and greater than 0 in value,
-        # we can assume it's already a decid, so we can safely return it back.
-        return encid
+        if not config.USE_ENCRYPTED_IDS:
+            # If we're not configured to use encids, we can assume the passed encid is already decrypted
+            return encid
     except:
-        try:
-            str(encid)
-        except:
-            raise InvalidIDException('Encrypted ID must be str-castable')
-        try:
-            return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
-        except:
+        if not config.USE_ENCRYPTED_IDS and not force:
+            # We expected a decid (e.g., an int-castable one)
             raise InvalidIDException('The encrypted ID is not valid')
+
+    try:
+        str(encid)
+        return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
+    except:
+        raise InvalidIDException('The encrypted ID is not valid')
 
 
 def get_id_repr(raw_id):
@@ -70,7 +78,7 @@ def get_id_repr(raw_id):
             # This is relatively unsafe is ok with due diligence in checking inputs before using this method.
             return raw_id
     else:
-        return get_decid(raw_id)
+        return get_decid(raw_id, force=True)
 
 
 def secure_hash(s, iterations=10000):

@@ -40,12 +40,21 @@ class TestCryptography(unittest.TestCase):
             u'\ue863',
         )
 
-        encid = util.cryptography.get_encid(15)
-        decid = util.cryptography.get_decid(encid)
-        self.assertEqual(decid, 15)
+        config.USE_ENCRYPTED_IDS = True
+        self.assertRaises(
+            InvalidIDException,
+            util.cryptography.get_decid,
+            15,
+        )
+        self.assertEqual(15, util.cryptography.get_decid(util.cryptography.get_encid(15)))
 
-        self.assertEqual(10, util.cryptography.get_decid(10))
-        self.assertEqual(100, util.cryptography.get_decid(100))
+        config.USE_ENCRYPTED_IDS = False
+        self.assertRaises(
+            InvalidIDException,
+            util.cryptography.get_decid,
+            util.cryptography.get_encid(15),
+        )
+        self.assertEqual(15, util.cryptography.get_decid(15))
 
     def test_get_id_repr(self):
         decid = 25

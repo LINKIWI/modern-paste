@@ -46,13 +46,13 @@ def deactivate_paste():
             return flask.jsonify({
                 constants.api.RESULT: constants.api.RESULT_SUCCESS,
                 constants.api.MESSAGE: None,
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }), constants.api.SUCCESS_CODE
         fail_msg = 'User does not own requested paste' if current_user.is_authenticated else 'Deactivation token is invalid'
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_FAULURE,
             constants.api.MESSAGE: fail_msg,
-            'paste_id': paste.paste_id,
+            'paste_id': util.cryptography.get_id_repr(paste.paste_id),
         }), constants.api.AUTH_FAILURE_CODE
     except PasteDoesNotExistException:
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
@@ -68,7 +68,7 @@ def paste_details():
     """
     data = flask.request.get_json()
     try:
-        paste = database.paste.get_paste_by_id(data['paste_id'])
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(data['paste_id']))
         paste_details_dict = paste.as_dict()
         paste_details_dict['poster_username'] = 'Anonymous'
         if paste.user_id:
@@ -88,7 +88,7 @@ def paste_details():
                 constants.api.FAILURE: 'password_mismatch_failure',
                 'details': {},
             }), constants.api.AUTH_FAILURE_CODE
-    except PasteDoesNotExistException:
+    except (PasteDoesNotExistException, InvalidIDException):
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE

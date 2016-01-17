@@ -29,10 +29,10 @@ def paste_view(paste_id):
     :param paste_id: Encid or decid of the paste to look up; supplied in the URL
     """
     try:
-        paste = database.paste.get_paste_by_id(paste_id)
-        database.paste.increment_paste_views(paste_id)
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id))
+        database.paste.increment_paste_views(util.cryptography.get_decid(paste_id))
         assert paste.is_active
-    except (PasteDoesNotExistException, AssertionError):
+    except (PasteDoesNotExistException, InvalidIDException, AssertionError):
         return 'paste/nonexistent.html', {}
 
     return 'paste/view.html', {
@@ -49,7 +49,7 @@ def paste_view_raw(paste_id):
     :param paste_id: Encid or decid of the paste to look up; supplied in the URL
     """
     try:
-        paste = database.paste.get_paste_by_id(paste_id)
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id))
         if not paste.is_active:
             raise PasteDoesNotExistException
 
@@ -62,7 +62,7 @@ def paste_view_raw(paste_id):
         if paste.password_hash and util.cryptography.secure_hash(flask.request.args.get('password')) != paste.password_hash:
             return flask.Response(invalid_password_error, mimetype='text/plain')
 
-        database.paste.increment_paste_views(paste_id)
+        database.paste.increment_paste_views(util.cryptography.get_decid(paste_id))
         return flask.Response(paste.contents, mimetype='text/plain')
-    except PasteDoesNotExistException:
+    except (PasteDoesNotExistException, InvalidIDException):
         return flask.Response('This paste either does not exist or has been deleted.', mimetype='text/plain')

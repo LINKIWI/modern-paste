@@ -7,6 +7,7 @@ import constants.api
 import database.paste
 import database.user
 import util.testing
+import util.cryptography
 from uri.authentication import *
 from uri.paste import *
 
@@ -125,7 +126,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
-        self.assertEqual(user.user_id, database.paste.get_paste_by_id(resp_data['paste_id_repr']).user_id)
+        self.assertEqual(user.user_id, database.paste.get_paste_by_id(util.cryptography.get_decid(resp_data['paste_id_repr'])).user_id)
 
     def test_submit_paste_server_error(self):
         with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):
@@ -253,7 +254,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -268,7 +269,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -278,7 +279,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -288,7 +289,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'password': 'invalid',
             }),
             content_type='application/json',
@@ -299,7 +300,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'password': 'password',
             }),
             content_type='application/json',
@@ -314,7 +315,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -327,7 +328,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDetailsURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -340,7 +341,7 @@ class TestPaste(util.testing.DatabaseTestCase):
             resp = self.client.post(
                 PasteDetailsURI.uri(),
                 data=json.dumps({
-                    'paste_id': paste.paste_id,
+                    'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 }),
                 content_type='application/json',
             )

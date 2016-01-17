@@ -17,6 +17,10 @@ class PasteDeactivateInterfaceURI(URI):
     path = '/paste/<paste_id>/deactivate/<deactivation_token>'
 
 
+class PasteArchiveInterfaceURI(URI):
+    path = '/archive'
+
+
 class PasteSubmitURI(URI):
     api_endpoint = True
     path = '/api/paste/submit'
