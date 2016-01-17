@@ -6,7 +6,8 @@ install:
     - "gem install sass"
 script:
     - "make test-coverage"
-    - "make default"
+    - "make dev"
+    - "make prod"
 before_script:
     - mysql -u root -e "CREATE DATABASE IF NOT EXISTS modern_paste; CREATE DATABASE IF NOT EXISTS modern_paste_dev; CREATE DATABASE IF NOT EXISTS modern_paste_test; GRANT ALL ON *.* TO 'modern_paste'@'localhost' IDENTIFIED BY 'U4bV96S7uchYnJv4WK4akKfzdqKhDFLOpfm0XspYkTF7gyJawhmpZnBi1KdAQNPqxqoUbNDZzuxX0LOgyMc2g8B2NS2j2Fib';"
 after_success:

@@ -13,16 +13,44 @@ import constants
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--respect-environment',
+        '--config-environment',
         help='Compile Javascript according to the build environment specified in config.py',
+        action='store_true'
+    )
+    parser.add_argument(
+        '--dev',
+        help='Don\'t compile Javascript',
+        action='store_true'
+    )
+    parser.add_argument(
+        '--prod',
+        help='Compile Javascript at the default optimization level',
         action='store_true'
     )
     args = parser.parse_args()
 
-    if args.respect_environment and config.BUILD_ENVIRONMENT == constants.build_environment.DEV:
-        print 'Configuration in config.py specified a dev environment.\n' \
-              'This script will respect that environment and not compile Javascript; exiting.'
+    num_args = len(filter(lambda arg: arg, [args.config_environment, args.dev, args.prod]))
+    if num_args > 1:
+        print 'Arguments are ambiguous. Choose only one of --config-environment, --dev, and --prod.\nExiting.'
+        sys.exit(1)
+    if num_args == 0:
+        print 'No arguments passed. Choose only one of --config-environment, --dev, and --prod.\nExiting.'
+        sys.exit(1)
+
+    style = 'expanded'
+    if args.config_environment:
+        if config.BUILD_ENVIRONMENT == constants.build_environment.DEV:
+            print 'Configuration in config.py specified a dev environment.\n' \
+                  'Skipping compilation of Javascript.'
+            sys.exit()
+        else:
+            print 'Configuration in config.py specified a dev environment.\n' \
+                  'Compiling Javascript with default optimizations.'
+    if args.dev:
+        print 'Skipping compilation of Javascript.'
         sys.exit()
+    if args.prod:
+        print 'Compiling Javascript with default optimizations.'
 
     CLOSURE_COMPILER_JAR = 'app/static/lib/closure-compiler/compiler.jar'
 

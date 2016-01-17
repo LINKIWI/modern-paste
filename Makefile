@@ -14,8 +14,22 @@ default:
 	mkdir -p app/static/build/js
 	mkdir -p app/static/build/css
 	python build/build_database.py --create
-	python build/build_js.py --respect-environment
-	python build/build_css.py
+	python build/build_js.py --config-environment
+	python build/build_css.py --config-environment
+
+dev:
+	mkdir -p app/static/build/js
+	mkdir -p app/static/build/css
+	python build/build_database.py --create
+	python build/build_js.py --dev
+	python build/build_css.py --dev
+
+prod:
+	mkdir -p app/static/build/js
+	mkdir -p app/static/build/css
+	python build/build_database.py --create
+	python build/build_js.py --prod
+	python build/build_css.py --prod
 
 dependencies:
 	gem list sass -i
