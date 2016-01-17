@@ -11,6 +11,9 @@ goog.require('modernPaste.universal.SplashController');
  * @constructor
  */
 modernPaste.user.RegisterController = function() {
+    modernPaste.user.RegisterController.EVENT_FIELD_UPDATED = 'field_updated';
+
+    this.registerForm = $('.register-container .register-form');
     this.usernameField = $('.register-container .username-field');
     this.passwordField = $('.register-container .password-field');
     this.passwordConfirmField = $('.register-container .password-confirm-field');
@@ -33,7 +36,7 @@ modernPaste.user.RegisterController = function() {
     this.nameField.on('focusout', modernPaste.user.RegisterController.showFieldSuccess.bind(this, this.nameField));  // No validity criteria
     this.emailField.on('focusin', modernPaste.user.RegisterController.clearFieldStatus);
     this.emailField.on('focusout', modernPaste.user.RegisterController.validateEmailAddress.bind(this));
-    this.formGroups.on('change', modernPaste.user.RegisterController.enableRegisterButton.bind(this));
+    this.registerForm.on(modernPaste.user.RegisterController.EVENT_FIELD_UPDATED, modernPaste.user.RegisterController.enableRegisterButton.bind(this));
     this.registerButton.on('click', modernPaste.user.RegisterController.registerUser.bind(this));
 };
 
@@ -125,7 +128,10 @@ modernPaste.user.RegisterController.enableRegisterButton = function() {
  * @param field A JQuery object representing the input field.
  */
 modernPaste.user.RegisterController.showFieldSuccess = function(field) {
-    field.parent().removeClass('has-error has-success').addClass('has-success');
+    if (field.val().length > 0) {
+        field.parent().removeClass('has-error has-success').addClass('has-success');
+    }
+    $('.register-container .register-form').trigger(modernPaste.user.RegisterController.EVENT_FIELD_UPDATED);
 };
 
 /**
@@ -141,6 +147,7 @@ modernPaste.user.RegisterController.showFieldFailure = function(field, message) 
     }
     // Any field failure should prevent registration
     $('.register-container .register-button').prop('disabled', true);  // Yes, I duplicated a JQuery lookup, deal with it
+    $('.register-container .register-form').trigger(modernPaste.user.RegisterController.EVENT_FIELD_UPDATED);
 };
 
 /**
