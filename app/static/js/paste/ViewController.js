@@ -24,6 +24,7 @@ modernPaste.paste.ViewController = function() {
     this.pastePostTime = $('.paste-header .paste-post-time');
     this.pasteExpiryTimeContainer = $('.paste-expiry-time-container');
     this.pasteExpiryTime = $('.paste-header .paste-expiry-time');
+    this.pasteViews = $('.paste-header .paste-views');
     this.passwordProtectionNotice = $('.password-protected');
     this.pastePasswordField = $('.password-protected .paste-password-field');
     this.passwordSubmitButton = $('.password-protected .password-submit-button');
@@ -65,6 +66,7 @@ modernPaste.paste.ViewController.initializePasteDetails = function(data) {
     this.pasteLanguage.text(data.details.language.toUpperCase());
     this.pastePostTime.text(modernPaste.paste.ViewController.convertUnixTimestamp(data.details.post_time));
     this.pastePosterUsername.text(data.details.poster_username.toUpperCase());
+    this.pasteViews.text(data.details.views);
     if (data.details.expiry_time === null) {
         this.pasteExpiryTimeContainer.hide();
     } else {

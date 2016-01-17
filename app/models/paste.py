@@ -18,6 +18,7 @@ class Paste(db.Model):
     password_hash = db.Column(db.Text, default=None)
     contents = db.Column(db.Text)
     deactivation_token = db.Column(db.Text)
+    views = db.Column(db.Integer)
 
     def __init__(
         self,
@@ -37,6 +38,7 @@ class Paste(db.Model):
         self.password_hash = password_hash
         self.contents = contents
         self.deactivation_token = util.testing.random_alphanumeric_string()
+        self.views = 0
 
     def as_dict(self):
         """
@@ -53,4 +55,5 @@ class Paste(db.Model):
             'contents': self.contents,
             'title': self.title,
             'language': self.language,
+            'views': self.views,
         }

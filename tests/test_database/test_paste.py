@@ -46,6 +46,20 @@ class TestPaste(util.testing.DatabaseTestCase):
         database.paste.deactivate_paste(1)
         self.assertFalse(database.paste.get_paste_by_id(1).is_active)
 
+    def test_increment_paste_views(self):
+        self.assertRaises(
+            PasteDoesNotExistException,
+            database.paste.increment_paste_views,
+            paste_id=-1,
+        )
+        paste = util.testing.PasteFactory.generate()
+        self.assertEqual(0, database.paste.get_paste_by_id(paste.paste_id).views)
+        database.paste.increment_paste_views(paste.paste_id)
+        self.assertEqual(1, database.paste.get_paste_by_id(paste.paste_id).views)
+        for i in range(50):
+            database.paste.increment_paste_views(paste.paste_id)
+        self.assertEqual(51, database.paste.get_paste_by_id(paste.paste_id).views)
+
     def test_get_all_pastes_for_user(self):
         user = util.testing.UserFactory.generate()
         pastes = [util.testing.PasteFactory.generate(user_id=user.user_id) for i in range(30)]

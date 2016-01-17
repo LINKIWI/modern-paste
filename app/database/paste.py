@@ -62,6 +62,20 @@ def deactivate_paste(paste_id):
     return paste
 
 
+def increment_paste_views(paste_id):
+    """
+    Increment (by 1) the number of times this paste has been viewed.
+
+    :param paste_id: The paste whose view count should be incremented
+    :return: The models.Paste object representing the paste whose view was incremented
+    :raises PasteDoesNotExistException: If the paste does not exist
+    """
+    paste = get_paste_by_id(paste_id)
+    paste.views += 1
+    session.commit()
+    return paste
+
+
 def get_all_pastes_for_user(user_id):
     """
     Gets all pastes for the specified user ID.

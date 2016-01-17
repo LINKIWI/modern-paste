@@ -30,6 +30,7 @@ def paste_view(paste_id):
     """
     try:
         paste = database.paste.get_paste_by_id(paste_id)
+        database.paste.increment_paste_views(paste_id)
         assert paste.is_active
     except (PasteDoesNotExistException, AssertionError):
         return 'paste/nonexistent.html', {}
@@ -61,6 +62,7 @@ def paste_view_raw(paste_id):
         if paste.password_hash and util.cryptography.secure_hash(flask.request.args.get('password')) != paste.password_hash:
             return flask.Response(invalid_password_error, mimetype='text/plain')
 
+        database.paste.increment_paste_views(paste_id)
         return flask.Response(paste.contents, mimetype='text/plain')
     except PasteDoesNotExistException:
         return flask.Response('This paste either does not exist or has been deleted.', mimetype='text/plain')
