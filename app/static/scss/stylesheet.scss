@@ -10,9 +10,10 @@
 @import 'elements/header';
 @import 'elements/dev-banner';
 
+@import 'error/generic';
+
 @import 'paste/post';
 @import 'paste/view';
-@import 'paste/nonexistent';
 
 @import 'user/login';
 @import 'user/register';

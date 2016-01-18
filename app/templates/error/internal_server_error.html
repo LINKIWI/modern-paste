@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Paste Not Found - Modern Paste
+    500 Internal Server Error - Modern Paste
 {% endblock %}
 
 {% block head %}
     {{ super() }}
 
     {{ import_js([
-        'paste/NonexistentController.js',
+        'error/InternalServerErrorController.js',
     ])|safe }}
 {% endblock %}
 
 {% block content %}
     <div class="error-container">
-        <p class="sans-serif regular gray size-8 spaced">PASTE NOT FOUND</p>
+        <p class="sans-serif regular gray size-8 spaced">500 INTERNAL SERVER ERROR</p>
         <br/>
-        <p class="sans-serif regular light-gray size-4 less-spaced">
-            The paste you are looking for either does not exist or is no longer available.
+        <p class="light-link sans-serif regular light-gray size-4 less-spaced">
+            Something went wrong on our end. If this problem is persistent, please <a href="https://github.com/LINKIWI/modern-paste/issues">open a new issue</a> on Modern Paste's GitHub page.
         </p>
         <br/><br/>
         <p class="light-link sans-serif regular light-gray size-2 less-spaced">

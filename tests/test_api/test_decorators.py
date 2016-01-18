@@ -1,18 +1,16 @@
 import mock
-import flask
 from flask import request
-from flask import render_template
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 
-import constants.api
 import api.decorators
+import constants.api
 import util.testing
 from api.decorators import hide_if_logged_in
+from api.decorators import render_view
 from api.decorators import require_form_args
 from api.decorators import require_login_api
 from api.decorators import require_login_frontend
-from api.decorators import render_view
 from modern_paste import app
 from uri.main import *
 
