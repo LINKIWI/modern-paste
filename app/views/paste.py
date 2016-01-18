@@ -66,3 +66,9 @@ def paste_view_raw(paste_id):
         return flask.Response(paste.contents, mimetype='text/plain')
     except (PasteDoesNotExistException, InvalidIDException):
         return flask.Response('This paste either does not exist or has been deleted.', mimetype='text/plain')
+
+
+@app.route(PasteArchiveInterfaceURI.path, methods=['GET'])
+@render_view
+def paste_archive():
+    return 'paste/archive.html', {}
