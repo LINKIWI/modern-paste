@@ -1,4 +1,6 @@
 import json
+import random
+import time
 
 import mock
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,14 +8,14 @@ from sqlalchemy.exc import SQLAlchemyError
 import constants.api
 import database.paste
 import database.user
-import util.testing
 import util.cryptography
+import util.testing
 from uri.authentication import *
 from uri.paste import *
 
 
 class TestPaste(util.testing.DatabaseTestCase):
-    def test_submit_paste_invalid_input(self):
+    def test_submit_paste_invalid(self):
         # Invalid input
         resp = self.client.post(
             PasteSubmitURI.uri(),
@@ -366,6 +368,169 @@ class TestPaste(util.testing.DatabaseTestCase):
                 PasteDetailsURI.uri(),
                 data=json.dumps({
                     'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
+            self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
+
+    def test_recent_pastes_invalid(self):
+        resp = self.client.post(
+            RecentPastesURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE, json.loads(resp.data))
+
+        resp = self.client.post(
+            RecentPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 0,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE, json.loads(resp.data))
+
+    def test_recent_pastes_no_results(self):
+        resp = self.client.post(
+            RecentPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 0,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+        resp = self.client.post(
+            RecentPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 3,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+    def test_recent_pastes_results(self):
+        pastes = []
+        for i in range(15):
+            with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
+                pastes.append(util.testing.PasteFactory.generate(expiry_time=None))
+        recent_pastes_sorted = map(
+            lambda paste: paste.as_dict(),
+            sorted(pastes, key=lambda paste: paste.post_time, reverse=True),
+        )
+
+        resp = self.client.post(
+            RecentPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 0,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual(recent_pastes_sorted[0:5], json.loads(resp.data)['pastes'])
+
+    def test_top_pastes_invalid(self):
+        resp = self.client.post(
+            TopPastesURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE, json.loads(resp.data))
+
+        resp = self.client.post(
+            TopPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 0,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE, json.loads(resp.data))
+
+    def test_top_pastes_no_results(self):
+        resp = self.client.post(
+            TopPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 0,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+        resp = self.client.post(
+            TopPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 3,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+    def test_recent_pastes_server_error(self):
+        with mock.patch.object(database.paste, 'get_recent_pastes', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                RecentPastesURI.uri(),
+                data=json.dumps({
+                    'page_num': 0,
+                    'num_per_page': 5,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
+            self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
+
+    def test_top_pastes_results(self):
+        pastes = [util.testing.PasteFactory.generate() for i in range(15)]
+        for paste in pastes:
+            for i in range(random.randint(0, 50)):
+                database.paste.increment_paste_views(paste.paste_id)
+
+        for page_num in range(3):
+            resp = self.client.post(
+                TopPastesURI.uri(),
+                data=json.dumps({
+                    'page_num': page_num,
+                    'num_per_page': 5,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(5, len(json.loads(resp.data)['pastes']))
+            for i in range(4):
+                self.assertGreaterEqual(
+                    json.loads(resp.data)['pastes'][i]['views'],
+                    json.loads(resp.data)['pastes'][i + 1]['views']
+                )
+
+        resp = self.client.post(
+            TopPastesURI.uri(),
+            data=json.dumps({
+                'page_num': 3,
+                'num_per_page': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+    def test_top_pastes_server_error(self):
+        with mock.patch.object(database.paste, 'get_top_pastes', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                TopPastesURI.uri(),
+                data=json.dumps({
+                    'page_num': 0,
+                    'num_per_page': 5,
                 }),
                 content_type='application/json',
             )

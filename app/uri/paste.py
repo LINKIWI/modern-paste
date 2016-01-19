@@ -34,3 +34,13 @@ class PasteDeactivateURI(URI):
 class PasteDetailsURI(URI):
     api_endpoint = True
     path = '/api/paste/details'
+
+
+class RecentPastesURI(URI):
+    api_endpoint = True
+    path = '/api/paste/recent'
+
+
+class TopPastesURI(URI):
+    api_endpoint = True
+    path = '/api/paste/top'

@@ -94,3 +94,35 @@ def paste_details():
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
+@app.route(RecentPastesURI.path, methods=['POST'])
+@require_form_args(['page_num', 'num_per_page'])
+def recent_pastes():
+    try:
+        data = flask.request.get_json()
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'pastes': [
+                paste.as_dict() for paste in database.paste.get_recent_pastes(data['page_num'], data['num_per_page'])
+            ],
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
+@app.route(TopPastesURI.path, methods=['POST'])
+@require_form_args(['page_num', 'num_per_page'])
+def top_pastes():
+    try:
+        data = flask.request.get_json()
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'pastes': [
+                paste.as_dict() for paste in database.paste.get_top_pastes(data['page_num'], data['num_per_page'])
+            ],
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
