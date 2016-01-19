@@ -80,7 +80,7 @@ class PasteFactory(Factory):
         contents=lambda: random_alphanumeric_string(length=8192),
         expiry_time=lambda: int(time.time() + random.getrandbits(16)),
         title=lambda: random_alphanumeric_string(),
-        language=lambda: random.choice(['python', 'java', 'html', 'css', 'javascript', 'matlab', 'text']),
+        language=lambda: random.choice(['python', 'css', 'javascript', 'text']),
         password=lambda: random_alphanumeric_string(),
     ):
         return database.paste.create_new_paste(

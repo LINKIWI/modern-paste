@@ -88,7 +88,7 @@ def paste_details():
                 constants.api.FAILURE: 'password_mismatch_failure',
                 'details': {},
             }), constants.api.AUTH_FAILURE_CODE
-    except (PasteDoesNotExistException, InvalidIDException):
+    except (PasteDoesNotExistException, UserDoesNotExistException, InvalidIDException):
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
