@@ -335,6 +335,30 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
         self.assertEqual('Anonymous', json.loads(resp.data)['details']['poster_username'])
 
+    def test_paste_details_nonexistent(self):
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(1),
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
+
+    def test_paste_details_inactive(self):
+        paste = util.testing.PasteFactory.generate(password=None, user_id=None)
+        database.paste.deactivate_paste(paste.paste_id)
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
+
     def test_paste_details_server_error(self):
         with mock.patch.object(database.paste, 'get_paste_by_id', side_effect=SQLAlchemyError):
             paste = util.testing.PasteFactory.generate(password=None)

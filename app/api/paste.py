@@ -69,6 +69,8 @@ def paste_details():
     data = flask.request.get_json()
     try:
         paste = database.paste.get_paste_by_id(util.cryptography.get_decid(data['paste_id']))
+        if not paste.is_active:
+            raise PasteDoesNotExistException
         paste_details_dict = paste.as_dict()
         paste_details_dict['poster_username'] = 'Anonymous'
         if paste.user_id:
