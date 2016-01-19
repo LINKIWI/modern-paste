@@ -1,8 +1,11 @@
-import models
+import time
 
+from sqlalchemy import or_
+
+import models
+import util.cryptography
 from modern_paste import session
 from util.exception import *
-import util.cryptography
 
 
 def create_new_paste(contents, user_id=None, expiry_time=None, title=None, language=None, password=None):
@@ -74,6 +77,50 @@ def increment_paste_views(paste_id):
     paste.views += 1
     session.commit()
     return paste
+
+
+def get_recent_pastes(page_num, num_per_page):
+    """
+    Get recently posted pastes that are active and not expired. This query is intended to be used in chunks,
+    indexed by page: e.g., results 0-4 appear on page 0, 5-9 appear on page 1, etc.
+
+    :param page_num: The page number. Indexes from 0.
+    :param num_per_page: The number of results to query for in this chunk (e.g., to display on this page).
+    :return: A list of models.Paste objects sorted by post time (descending) that are active and not expired.
+    """
+    return models.Paste.query.filter_by(
+        is_active=True,
+    ).filter(
+        or_(models.Paste.expiry_time.is_(None), models.Paste.expiry_time > time.time()),
+    ).order_by(
+        models.Paste.post_time.desc(),
+    ).offset(
+        page_num*num_per_page,
+    ).limit(
+        num_per_page,
+    ).all()
+
+
+def get_top_pastes(page_num, num_per_page):
+    """
+    Get the top (most viewed) pastes that are active and not expired. This query is intended to be used in chunks,
+    indexed by page: e.g., results 0-4 appear on page 0, 5-9 appear on page 1, etc.
+
+    :param page_num: The page number. Indexes from 0.
+    :param num_per_page: The number of results to query for in this chunk (e.g., to display on this page).
+    :return: A list of models.Paste objects sorted by number of views (descending) that are active and not expired.
+    """
+    return models.Paste.query.filter_by(
+        is_active=True,
+    ).filter(
+        or_(models.Paste.expiry_time.is_(None), models.Paste.expiry_time > time.time()),
+    ).order_by(
+        models.Paste.views.desc(),
+    ).offset(
+        page_num*num_per_page,
+    ).limit(
+        num_per_page,
+    ).all()
 
 
 def get_all_pastes_for_user(user_id):

@@ -1,8 +1,12 @@
-from util.exception import *
+import random
+import time
 
-import util.testing
-import util.cryptography
+import mock
+
 import database.paste
+import util.cryptography
+import util.testing
+from util.exception import *
 
 
 class TestPaste(util.testing.DatabaseTestCase):
@@ -59,6 +63,30 @@ class TestPaste(util.testing.DatabaseTestCase):
         for i in range(50):
             database.paste.increment_paste_views(paste.paste_id)
         self.assertEqual(51, database.paste.get_paste_by_id(paste.paste_id).views)
+
+    def test_get_recent_pastes(self):
+        pastes = []
+        for i in range(15):
+            with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
+                pastes.append(util.testing.PasteFactory.generate(expiry_time=None))
+        recent_pastes_sorted = sorted(pastes, key=lambda paste: paste.post_time, reverse=True)
+        self.assertEqual(recent_pastes_sorted[0:5], database.paste.get_recent_pastes(0, 5))
+        self.assertEqual(recent_pastes_sorted[5:10], database.paste.get_recent_pastes(1, 5))
+        self.assertEqual(recent_pastes_sorted[10:15], database.paste.get_recent_pastes(2, 5))
+        self.assertEqual([], database.paste.get_recent_pastes(3, 5))
+        self.assertEqual([], database.paste.get_recent_pastes(4, 5))
+
+    def test_get_top_pastes(self):
+        pastes = [util.testing.PasteFactory.generate() for i in range(15)]
+        for paste in pastes:
+            for i in range(random.randint(0, 50)):
+                database.paste.increment_paste_views(paste.paste_id)
+        for page_num in [0, 1, 2]:
+            top_pastes = database.paste.get_top_pastes(page_num, 5)
+            for i in range(len(top_pastes) - 1):
+                self.assertGreaterEqual(top_pastes[i].views, top_pastes[i + 1].views)
+        self.assertEqual([], database.paste.get_top_pastes(3, 5))
+        self.assertEqual([], database.paste.get_top_pastes(4, 5))
 
     def test_get_all_pastes_for_user(self):
         user = util.testing.UserFactory.generate()
