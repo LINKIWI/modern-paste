@@ -33,10 +33,20 @@ class TestPaste(util.testing.DatabaseTestCase):
             database.paste.get_paste_by_id,
             -1,
         )
+
         paste = util.testing.PasteFactory.generate()
         self.assertEqual(paste, database.paste.get_paste_by_id(paste.paste_id))
+
         database.paste.deactivate_paste(paste.paste_id)
         self.assertEqual(paste, database.paste.get_paste_by_id(paste.paste_id))
+        self.assertRaises(
+            PasteDoesNotExistException,
+            database.paste.get_paste_by_id,
+            paste.paste_id,
+            active_only=True,
+        )
+
+        paste = util.testing.PasteFactory.generate(expiry_time=int(time.time()) - 1000)
         self.assertRaises(
             PasteDoesNotExistException,
             database.paste.get_paste_by_id,

@@ -361,6 +361,18 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
         self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
 
+    def test_paste_details_expired(self):
+        paste = util.testing.PasteFactory.generate(password=None, user_id=None, expiry_time=int(time.time()) - 1000)
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
+
     def test_paste_details_server_error(self):
         with mock.patch.object(database.paste, 'get_paste_by_id', side_effect=SQLAlchemyError):
             paste = util.testing.PasteFactory.generate(password=None)

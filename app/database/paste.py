@@ -38,16 +38,27 @@ def get_paste_by_id(paste_id, active_only=False):
     Get the specified paste by ID.
 
     :param paste_id: Paste ID to look up
-    :param active_only: Set this flag to True to only query for active pastes
+    :param active_only: Set this flag to True to only query for active and non-expired pastes
     :return: An instance of models.Paste representing the requested paste
     :raises PasteDoesNotExistException: If the paste does not exist
     """
     if active_only:
-        paste = models.Paste.query.filter_by(paste_id=paste_id, is_active=True).first()
+        paste = models.Paste.query.filter_by(
+            paste_id=paste_id,
+            is_active=True,
+        ).filter(
+            or_(models.Paste.expiry_time.is_(None), models.Paste.expiry_time > time.time()),
+        ).first()
     else:
-        paste = models.Paste.query.filter_by(paste_id=paste_id).first()
+        paste = models.Paste.query.filter_by(
+            paste_id=paste_id,
+        ).first()
     if not paste:
-        raise PasteDoesNotExistException('No paste with paste_id {paste_id} exists'.format(paste_id=paste_id))
+        raise PasteDoesNotExistException(
+            'No paste with paste_id {paste_id} exists, or is no longer active due to deactivation or expiry'.format(
+                paste_id=paste_id
+            )
+        )
     return paste
 
 

@@ -1,3 +1,5 @@
+import time
+
 import flask
 
 import database.paste
@@ -12,6 +14,14 @@ class TestPaste(util.testing.DatabaseTestCase):
 
     def test_paste_view(self):
         self.assertIn('PASTE NOT FOUND', views.paste.paste_view(-1))
+
+        paste = util.testing.PasteFactory.generate()
+        database.paste.deactivate_paste(paste.paste_id)
+        self.assertIn('PASTE NOT FOUND', views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
+
+        paste = util.testing.PasteFactory.generate(expiry_time=int(time.time()) - 1000)
+        database.paste.deactivate_paste(paste.paste_id)
+        self.assertIn('PASTE NOT FOUND', views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
         paste = util.testing.PasteFactory.generate()
         self.assertIn(str(paste.paste_id), views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))

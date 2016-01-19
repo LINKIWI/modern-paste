@@ -29,9 +29,8 @@ def paste_view(paste_id):
     :param paste_id: Encid or decid of the paste to look up; supplied in the URL
     """
     try:
-        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id))
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id), active_only=True)
         database.paste.increment_paste_views(util.cryptography.get_decid(paste_id))
-        assert paste.is_active
     except (PasteDoesNotExistException, InvalidIDException, AssertionError):
         return 'paste/nonexistent.html', {}
 
@@ -49,9 +48,7 @@ def paste_view_raw(paste_id):
     :param paste_id: Encid or decid of the paste to look up; supplied in the URL
     """
     try:
-        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id))
-        if not paste.is_active:
-            raise PasteDoesNotExistException
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id), active_only=True)
 
         password_protection_error = 'In order to view the raw contents of a password-protected paste, ' \
                                     'you must supply the password (in plain text) as a GET parameter in the URL, e.g. ' \
