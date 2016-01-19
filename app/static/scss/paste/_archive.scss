@@ -1,0 +1,73 @@
+@import '../universal/colors';
+@import '../universal/mixins';
+
+
+.archive-header-container {
+    width: 100%;
+    height: 100px;
+    padding: 50px 0;
+    background-color: $dark-blue;
+
+    .archive-header {
+        display: block;
+        width: 800px;
+        min-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+
+        .archive-title {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.archive-container {
+    display: block;
+    width: 800px;
+    min-width: 400px;
+    margin: 70px auto 150px;
+
+    .separator {
+        height: 5px;
+    }
+
+    .paste-posted, .paste-views {
+        text-align: right;
+    }
+
+    .page-navigation {
+        margin-top: 50px;
+        text-align: right;
+    }
+
+    .previous-button, .next-button {
+        cursor: pointer;
+        margin-left: 30px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .previous-button {
+        display: none;  // This should be hidden initially, since we start on the first pages
+    }
+
+    .right-arrow {
+        width: 20px;
+        height: 20px;
+        vertical-align: text-top;
+        margin-left: 5px;
+    }
+
+    .left-arrow {
+        width: 20px;
+        height: 20px;
+        vertical-align: text-top;
+        margin-right: 5px;
+        @include rotate(180deg);
+    }
+
+    td, th {
+        padding: 8px 0;
+    }
+}

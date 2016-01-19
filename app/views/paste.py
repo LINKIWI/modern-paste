@@ -68,4 +68,7 @@ def paste_view_raw(paste_id):
 @app.route(PasteArchiveInterfaceURI.path, methods=['GET'])
 @render_view
 def paste_archive():
+    """
+    View recent and top pastes in a paginated format.
+    """
     return 'paste/archive.html', {}

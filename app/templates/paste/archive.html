@@ -13,5 +13,64 @@
 {% endblock %}
 
 {% block content %}
-    asdfdfssfdfdsfda
+    <div class="archive-header-container">
+        <div class="archive-header dark-link-alt">
+            <p class="archive-title sans-serif regular white size-8 spaced">ARCHIVE</p>
+            <p class="sans-serif semibold light-gray size-2 less-spaced">
+                <a class="recent-pastes-link" href="#">RECENT</a> &bull; <a class="top-pastes-link" href="#">TOP</a>
+            </p>
+        </div>
+    </div>
+    <div class="archive-container light-link">
+        <p class="page-status sans-serif regular light-gray size-1 less-spaced">LOADING PASTES...</p>
+        <br/>
+        <table width="100%">
+            <tr class="paste-item-header" valign="middle">
+                <td width="75%">
+                    <p class="paste-title sans-serif semibold gray size-2 less-spaced">TITLE</p>
+                </td>
+                <td width="15%">
+                    <p class="paste-posted sans-serif semibold gray size-2 less-spaced">POSTED</p>
+                </td>
+                <td width="10%">
+                    <p class="paste-views sans-serif semibold gray size-2 less-spaced">VIEWS</p>
+                </td>
+            </tr>
+            <tr class="separator"></tr>
+        </table>
+        <table class="paste-list-container" width="100%">
+        </table>
+        <div class="page-navigation">
+            <span class="previous-button">
+                <span>
+                    <img class="left-arrow" src="/static/img/icons/arrows.png">
+                </span>
+                <span class="sans-serif regular light-gray size-3 less-spaced">PREVIOUS</span>
+            </span>
+            <span class="next-button">
+                <span class="sans-serif regular light-gray size-3 less-spaced">NEXT</span>
+                <span>
+                    <img class="right-arrow" src="/static/img/icons/arrows.png">
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="archive-splash splash">
+        <div class="spinner"><div></div></div>
+    </div>
+    <template class="paste-item-template">
+        <tr class="paste-item light-link" valign="middle">
+            <td width="75%">
+                <p class="sans-serif regular gray size-2">
+                    <a class="paste-title" href=""></a>
+                </p>
+            </td>
+            <td width="15%">
+                <p class="paste-posted sans-serif regular gray size-2"></p>
+            </td>
+            <td width="10%">
+                <p class="paste-views sans-serif regular gray size-2"></p>
+            </td>
+        </tr>
+    </template>
 {% endblock %}

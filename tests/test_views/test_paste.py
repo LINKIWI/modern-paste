@@ -55,3 +55,6 @@ class TestPaste(util.testing.DatabaseTestCase):
             'This paste either does not exist or has been deleted.',
             views.paste.paste_view_raw(util.cryptography.get_id_repr(paste.paste_id)).data,
         )
+
+    def test_paste_archive(self):
+        self.assertIsNotNone(views.paste.paste_archive())
