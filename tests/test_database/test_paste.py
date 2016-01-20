@@ -22,8 +22,8 @@ class TestPaste(util.testing.DatabaseTestCase):
         # Should also be able to create pastes with all optional fields blank
         paste = database.paste.create_new_paste('contents')
         self.assertEqual('text', paste.language)
+        self.assertEqual('Untitled', paste.title)
         self.assertIsNone(paste.password_hash)
-        self.assertIsNone(paste.title)
         self.assertIsNone(paste.user_id)
         self.assertIsNone(paste.expiry_time)
 
