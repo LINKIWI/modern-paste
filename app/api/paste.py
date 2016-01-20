@@ -5,6 +5,7 @@ from modern_paste import app
 from uri.paste import *
 from util.exception import *
 from api.decorators import require_form_args
+from api.decorators import optional_login_api
 import constants.api
 import database.paste
 import database.user
@@ -13,14 +14,12 @@ import util.cryptography
 
 @app.route(PasteSubmitURI.path, methods=['POST'])
 @require_form_args(['contents'])
+@optional_login_api
 def submit_paste():
     """
     Endpoint for submitting a new paste.
     """
     data = flask.request.get_json()
-    if data.get('user_id') and (not current_user.is_authenticated or current_user.user_id != data.get('user_id')):
-        return flask.jsonify(constants.api.AUTH_FAILURE), constants.api.AUTH_FAILURE_CODE
-
     try:
         if current_user.is_authenticated:
             data['user_id'] = current_user.user_id

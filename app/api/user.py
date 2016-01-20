@@ -5,7 +5,6 @@ from modern_paste import app
 
 import constants.api
 import database.user
-import util.cryptography
 from flask.ext.login import current_user
 from flask.ext.login import login_user
 from api.decorators import require_form_args
