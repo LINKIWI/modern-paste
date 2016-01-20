@@ -37,45 +37,57 @@ def create_new_user(username, password, signup_ip, name=None, email=None):
     return new_user
 
 
-def get_user_by_id(user_id):
+def get_user_by_id(user_id, active_only=False):
     """
     Get a User object by user_id, whose attributes match those in the database.
 
     :param user_id: User ID to query by
+    :param active_only: Set this flag to True to only query for active users
     :return: User object for that user ID
     :raises UserDoesNotExistException: If no user exists with the given user_id
     """
-    user = models.User.query.filter_by(user_id=user_id).first()
+    if active_only:
+        user = models.User.query.filter_by(user_id=user_id, is_active=True).first()
+    else:
+        user = models.User.query.filter_by(user_id=user_id).first()
     if not user:
         raise UserDoesNotExistException('No user with user_id {user_id} exists'.format(user_id=user_id))
     return user
 
 
-def get_user_by_username(username):
+def get_user_by_username(username, active_only=False):
     """
     Get a User object by username, whose attributes match those in the database.
 
     :param username: Username to query by
+    :param active_only: Set this flag to True to only query for active users
     :return: User object for that username
     :raises UserDoesNotExistException: If no user exists with the given username
     """
-    user = models.User.query.filter_by(username=username.lower()).first()
+    if active_only:
+        user = models.User.query.filter_by(username=username.lower(), is_active=True).first()
+    else:
+        user = models.User.query.filter_by(username=username.lower()).first()
     if not user:
         raise UserDoesNotExistException('No user with username {username} exists'.format(username=username))
     return user
 
 
-def get_user_by_api_key(api_key):
+def get_user_by_api_key(api_key, active_only=False):
     """
     Get a User object by api_key, whose attributes match those in the database.
 
     :param api_key: API key to query by
+    :param active_only: Set this flag to True to only query for active users
     :return: User object for that user ID
     :raises UserDoesNotExistException: If no user exists with the given user_id
     """
-    user = models.User.query.filter_by(api_key=api_key).first()
+    if active_only:
+        user = models.User.query.filter_by(api_key=api_key, is_active=True).first()
+    else:
+        user = models.User.query.filter_by(api_key=api_key).first()
     if not user:
-        raise UserDoesNotExistException('No user with user_id {api_key} exists'.format(api_key=api_key))
+        raise UserDoesNotExistException('No user with api_key {api_key} exists'.format(api_key=api_key))
     return user
 
 

@@ -48,6 +48,16 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('name', user.name)
         self.assertEqual('test@test.com', user.email)
 
+    def test_get_user_by_id_active_only(self):
+        user = util.testing.UserFactory.generate()
+        database.user.deactivate_user(user.user_id)
+        self.assertRaises(
+            UserDoesNotExistException,
+            database.user.get_user_by_id,
+            user.user_id,
+            active_only=True,
+        )
+
     def test_get_user_by_username(self):
         self.assertRaises(
             UserDoesNotExistException,
@@ -63,6 +73,16 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('test@test.com', user.email)
         self.assertEqual(user, database.user.get_user_by_username('uSeRnAME'))
 
+    def test_get_user_by_username_active_only(self):
+        user = util.testing.UserFactory.generate()
+        database.user.deactivate_user(user.user_id)
+        self.assertRaises(
+            UserDoesNotExistException,
+            database.user.get_user_by_username,
+            user.username,
+            active_only=True,
+        )
+
     def test_get_user_by_api_key(self):
         self.assertRaises(
             UserDoesNotExistException,
@@ -76,6 +96,16 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('127.0.0.1', user.signup_ip)
         self.assertEqual('name', user.name)
         self.assertEqual('test@test.com', user.email)
+
+    def test_get_user_by_api_key_active_only(self):
+        user = util.testing.UserFactory.generate()
+        database.user.deactivate_user(user.user_id)
+        self.assertRaises(
+            UserDoesNotExistException,
+            database.user.get_user_by_api_key,
+            user.api_key,
+            active_only=True,
+        )
 
     def test_generate_new_api_key(self):
         user = util.testing.UserFactory.generate()
