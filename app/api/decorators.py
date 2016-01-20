@@ -65,7 +65,7 @@ def require_form_args(form_args, allow_blank_values=False, strict_params=False):
     def decorator(func):
         @wraps(func)
         def abort_if_invalid_args(*args, **kwargs):
-            if (not strict_params and not set(form_args).issubset(request.get_json().keys())) or (strict_params and set(form_args) != set(request.get_json().keys())) or (not allow_blank_values and not all([request.get_json()[arg] is not None and len(str(request.get_json()[arg])) > 0 for arg in form_args])):
+            if (len(form_args) > 0 and not request.get_json()) or (not strict_params and not set(form_args).issubset(request.get_json().keys())) or (strict_params and set(form_args) != set(request.get_json().keys())) or (not allow_blank_values and not all([request.get_json()[arg] is not None and len(str(request.get_json()[arg])) > 0 for arg in form_args])):
                 return jsonify(INCOMPLETE_PARAMS_FAILURE), INCOMPLETE_PARAMS_FAILURE_CODE
             return func(*args, **kwargs)
         return abort_if_invalid_args
@@ -82,19 +82,47 @@ def require_login_api(func):
     This decorator is intended for use with API endpoints.
     """
     @wraps(func)
-    def decorated_view(*args, **kwargs):
+    def decorator(*args, **kwargs):
         data = request.get_json()
         if current_user.is_authenticated:
             return func(*args, **kwargs)
         try:
             if data and data.get('api_key'):
-                user = database.user.get_user_by_api_key(data['api_key'])
+                user = database.user.get_user_by_api_key(data['api_key'], active_only=True)
                 login_user(user)
+                del data['api_key']
+                request.get_json = lambda: data
                 return func(*args, **kwargs)
         except UserDoesNotExistException:
             return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
         return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
-    return decorated_view
+    return decorator
+
+
+def optional_login_api(func):
+    """
+    This decorator is similar in behavior to require_login_api, but is intended for use with endpoints that offer
+    extended functionality with a login, but can still be used without any authentication.
+    The decorator will set current_user if authentication via an API key is provided, and will continue without error
+    otherwise.
+    This decorator is intended for use with API endpoints.
+    """
+    @wraps(func)
+    def decorator(*args, **kwargs):
+        data = request.get_json()
+        if current_user.is_authenticated:
+            return func(*args, **kwargs)
+        try:
+            if data and data.get('api_key'):
+                user = database.user.get_user_by_api_key(data['api_key'], active_only=True)
+                login_user(user)
+                del data['api_key']
+                request.get_json = lambda: data
+                return func(*args, **kwargs)
+        except UserDoesNotExistException:
+            return jsonify(AUTH_FAILURE), AUTH_FAILURE_CODE
+        return func(*args, **kwargs)
+    return decorator
 
 
 def require_login_frontend(func):

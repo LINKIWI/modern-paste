@@ -1,12 +1,17 @@
+import json
+
 import mock
 from flask import request
+from flask.ext.login import current_user
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 
 import api.decorators
 import constants.api
+import database.user
 import util.testing
 from api.decorators import hide_if_logged_in
+from api.decorators import optional_login_api
 from api.decorators import render_view
 from api.decorators import require_form_args
 from api.decorators import require_login_api
@@ -111,17 +116,13 @@ class TestDecorators(util.testing.DatabaseTestCase):
             request.get_json = lambda: {'param': 'content'}
             self.assertEqual(strict_params_enforced(), 'success')
 
-    def test_require_login_api(self):
+    def test_require_login_api_credentials(self):
         with app.test_request_context():
             @require_login_api
             def login_required():
                 return 'success'
             self.assertEqual(login_required()[1], constants.api.AUTH_FAILURE_CODE)
             user = util.testing.UserFactory.generate(password='password')
-            request.get_json = lambda: {
-                'username': user.user_id,
-                'password': 'password',
-            }
             login_user(user)
             self.assertEqual(login_required(), 'success')
 
@@ -130,6 +131,76 @@ class TestDecorators(util.testing.DatabaseTestCase):
             self.assertEqual(login_not_required(), 'success')
             logout_user()
             self.assertEqual(login_not_required(), 'success')
+
+    def test_require_login_api_key(self):
+        with app.test_request_context():
+            @require_login_api
+            def login_required():
+                return 'success'
+            self.assertEqual(login_required()[1], constants.api.AUTH_FAILURE_CODE)
+            user = util.testing.UserFactory.generate(password='password')
+            request.get_json = lambda: {
+                'api_key': user.api_key,
+            }
+            self.assertEqual(login_required(), 'success')
+
+    def test_optional_login_api_key(self):
+        with app.test_request_context():
+            @optional_login_api
+            def login_optional():
+                if current_user.is_authenticated:
+                    return 'authenticated'
+                return 'not authenticated'
+            self.assertEqual('not authenticated', login_optional())
+            user = util.testing.UserFactory.generate(password='password')
+            request.get_json = lambda: {
+                'api_key': user.api_key,
+            }
+            self.assertEqual('authenticated', login_optional())
+
+    def test_optional_login_api_credentials(self):
+        with app.test_request_context():
+            @optional_login_api
+            def login_optional():
+                if current_user.is_authenticated:
+                    return 'authenticated'
+                return 'not authenticated'
+            self.assertEqual('not authenticated', login_optional())
+            user = util.testing.UserFactory.generate(password='password')
+            login_user(user)
+            self.assertEqual('authenticated', login_optional())
+
+    def test_optional_login_api_invalid_credentials(self):
+        with app.test_request_context():
+            @optional_login_api
+            def login_optional():
+                if current_user.is_authenticated:
+                    return 'authenticated'
+                return 'not authenticated'
+            self.assertEqual('not authenticated', login_optional())
+            request.get_json = lambda: {
+                'api_key': 'invalid',
+            }
+            resp, resp_code = login_optional()
+            self.assertEqual(constants.api.AUTH_FAILURE, json.loads(resp.data))
+            self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp_code)
+
+    def test_optional_login_api_deactivated_user(self):
+        with app.test_request_context():
+            @optional_login_api
+            def login_optional():
+                if current_user.is_authenticated:
+                    return 'authenticated'
+                return 'not authenticated'
+            self.assertEqual('not authenticated', login_optional())
+            user = util.testing.UserFactory.generate()
+            database.user.deactivate_user(user.user_id)
+            request.get_json = lambda: {
+                'api_key': user.api_key,
+            }
+            resp, resp_code = login_optional()
+            self.assertEqual(constants.api.AUTH_FAILURE, json.loads(resp.data))
+            self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp_code)
 
     def test_require_login_frontend(self):
         with app.test_request_context():
