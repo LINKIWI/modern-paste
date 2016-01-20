@@ -1,0 +1,17 @@
+@import '../universal/colors';
+
+
+.api-documentation-container {
+    margin: 70px 0 50px 100px;
+}
+
+pre {
+    // !important to override highlight.js defaults
+    border: none !important;
+    background-color: transparent !important;
+    border-radius: initial !important;
+    padding: 0 !important;
+    width: 1000px !important;
+    min-width: 500px;
+    margin-top: 10px;
+}

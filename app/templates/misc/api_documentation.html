@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    API Documentation - Modern Paste
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    {{ import_css([
+        'lib/highlight/default.min.css',
+        'lib/highlight/railscasts.min.css',
+    ])|safe }}
+
+    {{ import_js([
+        'lib/highlight/highlight.min.js',
+        'misc/APIDocumentationController.js',
+    ])|safe }}
+{% endblock %}
+
+{% block content %}
+    <div class="api-documentation-container">
+        <p class="sans-serif regular gray size-6 less-spaced">
+            <span>CREATE A NEW PASTE</span>
+            <span class="sans-serif semibold blue size-2">AUTHENTICATION REQUIRED</span>
+        </p>
+        <p class="sans-serif regular light-gray size-3 less-spaced">Endpoint to create a new anonymous or authorized paste</p>
+        <br/><br/>
+        <p class="sans-serif semibold gray size-2 less-spaced">ENDPOINT</p>
+        <pre><code>
+    {{ full_uri('paste', 'PasteSubmitURI') }}
+        </code></pre>
+        <br/>
+        <p class="sans-serif semibold gray size-2 less-spaced">SAMPLE USAGE</p>
+        <pre><code class="python">
+    def hello():
+        return 'hello'
+        </code></pre>
+    </div>
+{% endblock %}
