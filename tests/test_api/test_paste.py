@@ -41,6 +41,22 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
 
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': 'contents',
+                'user_id': 1,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        resp_data = json.loads(resp.data)
+        self.assertIsNotNone(resp_data['post_time'])
+        self.assertIsNotNone(resp_data['paste_id_repr'])
+        self.assertTrue(resp_data['is_active'])
+        self.assertEquals('contents', resp_data['contents'])
+        self.assertIsNone(database.paste.get_paste_by_id(1).user_id)
+
     def test_submit_paste_logged_in(self):
         # Paste should automatically be associated with user who is logged in
         user = util.testing.UserFactory.generate(username='username', password='password')
