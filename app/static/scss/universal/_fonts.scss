@@ -25,6 +25,11 @@
 }
 
 @font-face {
+    font-family: "uni-sans-book-italic";
+    src: url("/static/fonts/uni-sans-book-italic.ttf");
+}
+
+@font-face {
     font-family: "ubuntu-mono-regular";
     src: url("/static/fonts/ubuntu-mono-regular.ttf");
 }
@@ -36,6 +41,10 @@
 
 .sans-serif.regular {
     font-family: "uni-sans-book", sans-serif;
+}
+
+.sans-serif.regular.italic {
+    font-family: "uni-sans-book-italic", sans-serif;
 }
 
 .sans-serif.light {

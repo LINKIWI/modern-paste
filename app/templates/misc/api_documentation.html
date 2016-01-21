@@ -19,22 +19,164 @@
 {% endblock %}
 
 {% block content %}
+    <div class="main-header-container">
+        <div class="main-header dark-link-alt">
+            <p class="main-title sans-serif regular white size-8 spaced">API DOCUMENTATION</p>
+            <p class="sans-serif semibold light-gray size-2 less-spaced">Interface with Modern Paste's backend programmatically in your apps</p>
+        </div>
+    </div>
     <div class="api-documentation-container">
-        <p class="sans-serif regular gray size-6 less-spaced">
-            <span>CREATE A NEW PASTE</span>
-            <span class="sans-serif semibold blue size-2">AUTHENTICATION REQUIRED</span>
-        </p>
-        <p class="sans-serif regular light-gray size-3 less-spaced">Endpoint to create a new anonymous or authorized paste</p>
-        <br/><br/>
-        <p class="sans-serif semibold gray size-2 less-spaced">ENDPOINT</p>
-        <pre><code>
-    {{ full_uri('paste', 'PasteSubmitURI') }}
-        </code></pre>
-        <br/>
-        <p class="sans-serif semibold gray size-2 less-spaced">SAMPLE USAGE</p>
-        <pre><code class="python">
-    def hello():
-        return 'hello'
-        </code></pre>
+        <div class="api-instructions">
+            <p class="sans-serif semibold gray size-2 less-spaced">MODERN PASTE API</p>
+            <br/>
+            <p class="api-description sans-serif regular gray size-2 less-spaced">
+                The documentation that follows describes the JSON-based, HTTP API used to interface directly with
+                Modern Paste's Python backend. Below, each API is listed with its action, description, endpoint URL,
+                required request parameters, response data, and example request executed from a Python client.
+                <br/><br/>
+                All endpoints will respond only to the HTTP POST verb, with the
+                <span class="ubuntu-mono regular">application/json</span> content type with key-value pairs for
+                the request parameters (as applicable).
+            </p>
+            <br/><br/>
+            <p class="sans-serif semibold gray size-2 less-spaced">AUTHENTICATION</p>
+            <br/>
+            <p class="api-description sans-serif regular gray size-2 less-spaced">
+                There are three types of API endpoints: those that require authentication, those that can optionally
+                be authenticated for slightly modified behavior, and those for which no authentication is required.
+                Authentication-sensitive endpoints are labeled as <span class="sans-serif semibold">authentication required</span>
+                and <span class="sans-serif semibold">authentication optional</span>.
+                <br/><br/>
+                Endpoints for which no authentication is required can be requested directly with no additional required
+                action or parameters. Endpoints that require authentication (or those that optionally allow
+                authentication, and you would like to authenticate) must be authenticated with an API key.
+                <br/><br/>
+                In your POST request to the authentication-sensitive endpoint, include an additional key-value
+                pair in your JSON request parameters to authenticate the request via an API key. The key name is
+                <span class="ubuntu-mono regular">api_key</span>, and its value is the API key of the user for
+                which the request should be authenticated. Note that using the API key is, to the application, logically
+                equivalent to being logged in via the web interface.
+                <br/><br/>
+                The following is a Python example of how you might access the authentication-sensitive paste creation
+                endpoint when Modern Paste is hosted on the server at <span class="ubuntu-mono regular">localhost:5000</span>.
+            </p>
+            <br/>
+            <pre><code class="python">
+import requests
+
+# Create a new paste tied with an existing user account
+resp = requests.post(
+    'http://localhost:5000/api/paste/submit',
+    json={
+        'contents': 'test paste',
+        'api_key': 'BbK1F09sZZXL2335iqDGvGeQswQUcvUmzxMoWjp3yvZDxpWwRiP4YQL6PiUA8gy2',
+    },
+)
+assert set(resp.json().keys()) == {
+    'post_time',
+    'expiry_time',
+    'language',
+    'title',
+    'views',
+    'is_active',
+    'paste_id_repr',
+    'contents',
+}
+            </code></pre>
+            <br/><br/>
+            <p class="sans-serif semibold gray size-2 less-spaced">GENERIC ERROR RESPONSES</p>
+            <br/>
+            <p class="api-description sans-serif regular gray size-2 less-spaced">
+                Modern Paste has a set of generic JSON responses to requests that are either invalid or result in an
+                error that can be resolved on the client side. An error condition occurs when the HTTP status code
+                is not 200, or when the <span class="ubuntu-mono regular">success</span> key is <span class="ubuntu-mono regular">false</span>.
+                The failure names and failure descriptions are tabulated below.
+                TODO
+                <br/>
+            </p>
+        </div>
+
+        {% for endpoint in api_endpoints %}
+            <div class="api-item">
+                <p class="api-title">
+                    <span class="sans-serif regular gray size-6 less-spaced">{{ endpoint.name|upper }}</span>
+                    {% if endpoint.authentication|lower == 'optional' %}
+                        <span class="authentication-property sans-serif semibold blue size-1 less-spaced">AUTHENTICATION OPTIONAL</span>
+                    {% elif endpoint.authentication|lower == 'required' %}
+                        <span class="authentication-property sans-serif semibold blue size-1 less-spaced">AUTHENTICATION REQUIRED</span>
+                    {% endif %}
+                </p>
+                <p class="api-subtitle sans-serif regular light-gray size-3 less-spaced">{{ endpoint.short_description }}</p>
+                <br/><br/>
+                <p class="api-description sans-serif regular gray size-2 less-spaced">{{ endpoint.long_description }}</p>
+                <br/><br/>
+                <p class="api-heading sans-serif semibold gray size-2 less-spaced">ENDPOINT</p>
+                <pre><code>
+{{ full_uri(endpoint.uri_class[0], endpoint.uri_class[1]) }}
+                </code></pre>
+                <br/>
+                <p class="api-heading sans-serif semibold gray size-2 less-spaced">REQUEST PARAMETERS</p>
+                {% if endpoint.request_parameters|length == 0 %}
+                    <p class="api-heading sans-serif regular gray size-2 less-spaced">None</p>
+                    <br/>
+                {% else %}
+                    <table class="table table-hover table-striped sans-serif regular gray size-2" width="100%">
+                        <tr>
+                            <td width="20%"><span class="sans-serif semibold size-1 less-spaced">PARAMETER</span></td>
+                            <td width="80%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
+                        </tr>
+                        {% for parameter in endpoint.request_parameters %}
+                            <tr>
+                                <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
+                                <td width="80%"><span class="sans-serif regular size-2">
+                                    {{ parameter.value[0] }}
+                                    {% if not parameter.required %}
+                                        <span class="sans-serif regular italic">(optional)</span>
+                                    {% endif %}
+                                </span></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                <p class="api-heading sans-serif semibold gray size-2 less-spaced">RESPONSE PARAMETERS</p>
+                <table class="table table-hover table-striped sans-serif regular gray size-2" width="100%">
+                    <tr>
+                        <td width="20%"><span class="sans-serif semibold size-1 less-spaced">PARAMETER</span></td>
+                        <td width="80%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><span class="ubuntu-mono regular size-2">success</span></td>
+                        <td width="80%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">true</span> if the request was successful; <span class="ubuntu-mono regular">false</span> otherwise.</span></td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><span class="ubuntu-mono regular size-2">message</span></td>
+                        <td width="80%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">null</span> if the request was successful; a short message explaining the error otherwise.</span></td>
+                    </tr>
+                    <tr>
+                        <td width="20%"><span class="ubuntu-mono regular size-2">failure_name</span></td>
+                        <td width="80%"><span class="sans-serif regular size-2">The name of the failure. This field is not present on a successful request.</span></td>
+                    </tr>
+                    {% for parameter in endpoint.response_parameters %}
+                        <tr>
+                            <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
+                            <td width="80%"><span class="sans-serif regular size-2">{{ parameter.value }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <p class="api-heading sans-serif semibold gray size-2 less-spaced">SAMPLE USAGE</p>
+                <pre><code class="python">
+import requests
+
+resp = requests.post(
+    '{{ full_uri(endpoint.uri_class[0], endpoint.uri_class[1]) }}',
+    json={ {% for parameter in endpoint.request_parameters %}
+        '{{ parameter.key }}': '{{ parameter.value[1] }}',{% endfor %}{% if endpoint.authentication|lower == 'required' %}
+        'api_key': 'BbK1F09sZZXL2335iqDGvGeQswQUcvUmzxMoWjp3yvZDxpWwRiP4YQL6PiUA8gy2',{% endif %}
+    },
+)
+assert resp.status_code == 200
+                </code></pre>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

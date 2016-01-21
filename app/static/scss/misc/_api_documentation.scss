@@ -3,6 +3,27 @@
 
 .api-documentation-container {
     margin: 70px 0 50px 100px;
+    width: 800px;
+
+    .api-instructions {
+        margin-bottom: 150px;
+    }
+
+    .authentication-property {
+        margin-left: 15px;
+    }
+
+    .api-description {
+        width: 650px;
+    }
+
+    .api-heading {
+        margin-bottom: 10px;
+    }
+
+    .api-item {
+        margin-bottom: 80px;
+    }
 }
 
 pre {
@@ -11,7 +32,12 @@ pre {
     background-color: transparent !important;
     border-radius: initial !important;
     padding: 0 !important;
-    width: 1000px !important;
+    width: 800px !important;
     min-width: 500px;
-    margin-top: 10px;
+}
+
+.hljs {
+    // !important to override highlight.js defaults
+    padding: 5px 25px !important;
+    background-color: $darker-blue !important;
 }
