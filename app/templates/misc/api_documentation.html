@@ -25,6 +25,13 @@
             <p class="sans-serif semibold light-gray size-2 less-spaced">Interface with Modern Paste's backend programmatically in your apps</p>
         </div>
     </div>
+    <div class="api-listing light-link">
+        <p class="sans-serif semibold gray size-2 less-spaced">ENDPOINTS</p>
+        <br/>
+        {% for endpoint in api_endpoints %}
+            <p class="sans-serif regular size-2 less-spaced"><a href="#{{ endpoint.name|replace(' ', '-')|lower }}">{{ endpoint.name|upper }}</a></p>
+        {% endfor %}
+    </div>
     <div class="api-documentation-container">
         <div class="api-instructions">
             <p class="sans-serif semibold gray size-2 less-spaced">MODERN PASTE API</p>
@@ -108,7 +115,8 @@ assert set(resp.json().keys()) == {
         </div>
 
         {% for endpoint in api_endpoints %}
-            <div class="api-item" id="{{ endpoint.name|replace(' ', '-')|lower }}">
+            <a class="anchor" id="{{ endpoint.name|replace(' ', '-')|lower }}"></a>
+            <div class="api-item">
                 <p class="api-title">
                     <span class="sans-serif regular gray size-6 less-spaced">{{ endpoint.name|upper }}</span>
                     {% if endpoint.authentication|lower == 'optional' %}

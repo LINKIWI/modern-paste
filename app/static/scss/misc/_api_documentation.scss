@@ -1,6 +1,13 @@
 @import '../universal/colors';
 
 
+a.anchor {
+    display: block;
+    position: relative;
+    top: -150px;
+    visibility: hidden;
+}
+
 .api-documentation-container {
     margin: 70px 0 50px 100px;
     width: 800px;
@@ -24,6 +31,22 @@
     .api-item {
         margin-bottom: 80px;
     }
+}
+
+.api-listing {
+    position: absolute;
+    right: 0;
+    margin-right: 100px;
+    margin-top: 70px;
+    text-align: right;
+    background-color: $bright-white;
+    padding: 30px;
+}
+
+.api-listing.stick {
+    position: fixed;
+    top: 70px;
+    right: 0;
 }
 
 pre {
