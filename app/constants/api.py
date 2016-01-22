@@ -8,6 +8,8 @@ SUCCESS_CODE = 200
 
 
 # Predefined JSON responses
+# Ensure that the generic error responses documentation in app/templates/api_documentation.json is updated to reflect
+# the error responses in this file.
 AUTH_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'User needs to be authenticated to complete this request',

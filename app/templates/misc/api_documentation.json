@@ -1,0 +1,109 @@
+{
+  "generic_error_responses": [
+    {
+      "failure_name": "auth_failure",
+      "description": "This error is returned when attempting to access an authentication-required endpoint without authentication, or when attempting to access an authentication-optional endpoint with an invalid API key."
+    },
+    {
+      "failure_name": "incomplete_params_failure",
+      "description": "At least one required request parameter for the endpoint is missing from the request. Even if all required parameters are supplied as keys, this error may still be returned if the value of one of the required parameters is blank (e.g., an empty string). This error may also be returned if the <span class=\"ubuntu-mono regular\">Content-Type</span> of the request isn't explicitly specified as <span class=\"ubuntu-mono regular\">application/json</span>."
+    },
+    {
+      "failure_name": "nonexistent_user_failure",
+      "description": "The endpoint attempted to execute actions on a user that does not exist, or is no longer active."
+    },
+    {
+      "failure_name": "nonexistent_paste_failure",
+      "description": "The endpoint attempted to execute actions on a paste that does not exist, or is no longer active."
+    },
+    {
+      "failure_name": "undefined_failure",
+      "description": "The server encountered an undefined error (usually related to the database). No client-side actions can be taken to resolve the problem."
+    }
+  ],
+  "api_endpoints": [
+    {
+      "name": "Create a new paste",
+      "uri_class": ["paste", "PasteSubmitURI"],
+      "authentication": "optional",
+      "short_description": "Create a new anonymous or authorized paste",
+      "long_description": "Post a new paste, optionally tied to an existing user account. If the endpoint is authenticated with an API key, the paste will be posted under the user account associated with the API key. If no authentication is provided, the post will be posted anonymously. The endpoint exposes the same options available to the main web interface, including specifying the paste title, expiry, password, and language. Full details on required and optional request parameters are detailed below.",
+      "request_parameters": [
+        {
+          "key": "contents",
+          "value": [
+            "Paste contents",
+            "test paste"
+          ],
+          "required": true
+        },
+        {
+          "key": "expiry_time",
+          "value": [
+            "Unix timestamp at which the paste should expire; defaults to no expiry if no value is supplied",
+            "1453355837"
+          ],
+          "required": false
+        },
+        {
+          "key": "title",
+          "value": [
+            "Paste title; defaults to Untitled if no value is supplied",
+            "Paste title"
+          ],
+          "required": false
+        },
+        {
+          "key": "language",
+          "value": [
+            "Language of the paste; defaults to plain text if no value is supplied",
+            "python"
+          ],
+          "required": false
+        },
+        {
+          "key": "password",
+          "value": [
+            "Optionally add a password to restrict access to the paste; defaults to no password if no value is supplied",
+            "password123"
+          ],
+          "required": false
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "post_time",
+          "value": "Unix timestamp at which the paste was posted"
+        },
+        {
+          "key": "expiry_time",
+          "value": "Request input callback"
+        },
+        {
+          "key": "language",
+          "value": "Request input callback"
+        },
+        {
+          "key": "title",
+          "value": "Request input callback"
+        },
+        {
+          "key": "views",
+          "value": "The number of views the paste has; initialized to 0"
+        },
+        {
+          "key": "is_active",
+          "value": "This field will always be true for a new paste."
+        },
+        {
+          "key": "paste_id_repr",
+          "value": "The paste ID, represented as either a decrypted or encrypted ID (this is configured by the server administrator)"
+        },
+        {
+          "key": "contents",
+          "value": "Request input callback"
+        }
+      ]
+    }
+  ]
+}

@@ -89,15 +89,26 @@ assert set(resp.json().keys()) == {
             <p class="api-description sans-serif regular gray size-2 less-spaced">
                 Modern Paste has a set of generic JSON responses to requests that are either invalid or result in an
                 error that can be resolved on the client side. An error condition occurs when the HTTP status code
-                is not 200, or when the <span class="ubuntu-mono regular">success</span> key is <span class="ubuntu-mono regular">false</span>.
-                The failure names and failure descriptions are tabulated below.
-                TODO
-                <br/>
+                is not 200, or when the <span class="ubuntu-mono regular">success</span> key in the response JSON
+                is <span class="ubuntu-mono regular">false</span>. These failure names and descriptions are tabulated below.
             </p>
+            <br/>
+            <table class="table table-hover table-striped sans-serif regular gray size-2" width="100%">
+                <tr>
+                    <td width="20%"><span class="sans-serif semibold size-1 less-spaced">FAILURE NAME</span></td>
+                    <td width="80%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
+                </tr>
+                {% for response in generic_error_responses %}
+                    <tr>
+                        <td width="20%"><span class="ubuntu-mono regular size-2">{{ response.failure_name }}</span></td>
+                        <td width="80%"><span class="sans-serif regular size-2">{{ response.description|safe }}</span></td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
 
         {% for endpoint in api_endpoints %}
-            <div class="api-item">
+            <div class="api-item" id="{{ endpoint.name|replace(' ', '-')|lower }}">
                 <p class="api-title">
                     <span class="sans-serif regular gray size-6 less-spaced">{{ endpoint.name|upper }}</span>
                     {% if endpoint.authentication|lower == 'optional' %}
@@ -129,7 +140,7 @@ assert set(resp.json().keys()) == {
                             <tr>
                                 <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
                                 <td width="80%"><span class="sans-serif regular size-2">
-                                    {{ parameter.value[0] }}
+                                    {{ parameter.value[0]|safe }}
                                     {% if not parameter.required %}
                                         <span class="sans-serif regular italic">(optional)</span>
                                     {% endif %}
