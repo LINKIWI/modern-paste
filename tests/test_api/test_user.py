@@ -2,7 +2,6 @@ import json
 
 import mock
 from sqlalchemy.exc import SQLAlchemyError
-from flask.ext.login import current_user
 
 import constants.api
 import database.user
@@ -46,7 +45,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
         self.assertEqual('invalid_email_failure', json.loads(resp.data)['failure'])
- 
+
     def test_create_new_user_valid(self):
         resp = self.client.post(
             UserCreateURI.uri(),

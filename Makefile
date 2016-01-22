@@ -3,6 +3,7 @@ export PYTHONPATH := app:$(PYTHONPATH)
 
 all:
 	$(MAKE) dependencies
+	$(MAKE) check-style
 	$(MAKE) test-coverage
 	$(MAKE) default
 
@@ -35,6 +36,8 @@ dependencies:
 	gem list sass -i
 	if [ $$? -ne 0 ]; then gem install sass; fi;
 	pip install -r requirements.txt
+	pre-commit install
+	pre-commit autoupdate
 
 clean:
 	rm -rf app/static/build
@@ -46,3 +49,6 @@ test:
 test-coverage:
 	coverage run --source=app -m unittest discover -s tests -v
 	coverage report -m
+
+check-style:
+	pre-commit run --all-files

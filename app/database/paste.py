@@ -106,7 +106,7 @@ def get_recent_pastes(page_num, num_per_page):
     ).order_by(
         models.Paste.post_time.desc(),
     ).offset(
-        page_num*num_per_page,
+        page_num * num_per_page,
     ).limit(
         num_per_page,
     ).all()
@@ -128,7 +128,7 @@ def get_top_pastes(page_num, num_per_page):
     ).order_by(
         models.Paste.views.desc(),
     ).offset(
-        page_num*num_per_page,
+        page_num * num_per_page,
     ).limit(
         num_per_page,
     ).all()

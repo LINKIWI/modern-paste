@@ -25,4 +25,3 @@ if __name__ == '__main__':
     else:
         print 'Call this script with either the --create or --drop flag to create or drop the database, respectively'
         sys.exit(1)
-

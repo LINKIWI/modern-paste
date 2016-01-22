@@ -1,5 +1,6 @@
 # User
 
+
 class UsernameNotAvailableException(Exception):
     pass
 
@@ -14,11 +15,13 @@ class InvalidEmailException(Exception):
 
 # Paste
 
+
 class PasteDoesNotExistException(Exception):
     pass
 
 
-# Crytography
+# Cryptography
+
 
 class InvalidIDException(Exception):
     pass
