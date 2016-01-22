@@ -93,7 +93,7 @@
         },
         {
           "key": "is_active",
-          "value": "This field will always be true for a new paste."
+          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span> for a new paste."
         },
         {
           "key": "paste_id_repr",
@@ -102,6 +102,69 @@
         {
           "key": "contents",
           "value": "Request input callback"
+        }
+      ]
+    },
+    {
+      "name": "Get paste details",
+      "uri_class": ["paste", "PasteDetailsURI"],
+      "authentication": "none",
+      "short_description": "Get details for an existing paste",
+      "long_description": "Retrieve publicly accessible details for an existing, active paste, queried by paste ID. The paste ID will either be an encrypted string (if the server administrator has enabled this option), or a regular decrypted interger. For password-protected pastes, you must supply the <span class=\"ubuntu-mono regular\">password</span> request parameter, containing a plain-text representation of the paste's password.",
+      "request_parameters": [
+        {
+          "key": "paste_id",
+          "value": [
+            "Paste ID",
+            "5"
+          ],
+          "required": true
+        },
+        {
+          "key": "password",
+          "value": [
+            "Plain-text password of the paste, if it is password-protected. If the paste requested is password-protected, failing to provide this option will result in the <span class=\"ubuntu-mono regular\">auth_failure</span> error.",
+            "p4ssw0rd"
+          ],
+          "required": false
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "post_time",
+          "value": "Unix timestamp at which the paste was posted"
+        },
+        {
+          "key": "expiry_time",
+          "value": "Unix timestamp at which the paste expires; <span class=\"ubuntu-mono regular\">null</span> if the paste doesn't expire"
+        },
+        {
+          "key": "language",
+          "value": "Language of the paste"
+        },
+        {
+          "key": "title",
+          "value": "Title of the paste"
+        },
+        {
+          "key": "views",
+          "value": "The number of views the paste has"
+        },
+        {
+          "key": "is_active",
+          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span>, since inactive pastes are not returned by this endpoint."
+        },
+        {
+          "key": "paste_id_repr",
+          "value": "Request input callback"
+        },
+        {
+          "key": "contents",
+          "value": "Contents of the paste"
+        },
+        {
+          "key": "poster_username",
+          "value": "Username of poster; Anonymous if posted anonymously"
         }
       ]
     }

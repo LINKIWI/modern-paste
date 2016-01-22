@@ -41,6 +41,10 @@ a.anchor {
     text-align: right;
     background-color: $bright-white;
     padding: 30px;
+
+    .api-listing-item {
+        margin-bottom: 3px;
+    }
 }
 
 .api-listing.stick {

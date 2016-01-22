@@ -29,7 +29,7 @@
         <p class="sans-serif semibold gray size-2 less-spaced">ENDPOINTS</p>
         <br/>
         {% for endpoint in api_endpoints %}
-            <p class="sans-serif regular size-2 less-spaced"><a href="#{{ endpoint.name|replace(' ', '-')|lower }}">{{ endpoint.name|upper }}</a></p>
+            <p class="api-listing-item sans-serif regular size-2 less-spaced"><a href="#{{ endpoint.name|replace(' ', '-')|lower }}">{{ endpoint.name|upper }}</a></p>
         {% endfor %}
     </div>
     <div class="api-documentation-container">
@@ -178,7 +178,7 @@ assert set(resp.json().keys()) == {
                     {% for parameter in endpoint.response_parameters %}
                         <tr>
                             <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
-                            <td width="80%"><span class="sans-serif regular size-2">{{ parameter.value }}</span></td>
+                            <td width="80%"><span class="sans-serif regular size-2">{{ parameter.value|safe }}</span></td>
                         </tr>
                     {% endfor %}
                 </table>
