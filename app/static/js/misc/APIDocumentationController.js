@@ -13,6 +13,7 @@ modernPaste.misc.APIDocumentationController = function() {
     this.apiDocumentation = $('.api-documentation-container');
 
     hljs.initHighlightingOnLoad();
+    modernPaste.misc.APIDocumentationController.toggleApiListingVisibility.bind(this)();
 
     $('a').on('click', modernPaste.misc.APIDocumentationController.animateAnchorJump);
     $(window).scroll(modernPaste.misc.APIDocumentationController.lockApiListing.bind(this));
@@ -24,11 +25,7 @@ modernPaste.misc.APIDocumentationController = function() {
  */
 modernPaste.misc.APIDocumentationController.toggleApiListingVisibility = function() {
     var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    if (width > 1400) {
-        this.apiListing.show();
-    } else {
-        this.apiListing.hide();
-    }
+    width > 1400 ? this.apiListing.show() : this.apiListing.hide();
 };
 
 /**
@@ -47,13 +44,8 @@ modernPaste.misc.APIDocumentationController.animateAnchorJump = function() {
  * Stick the API listing to the page if the user has scrolled past the main header.
  */
 modernPaste.misc.APIDocumentationController.lockApiListing = function() {
-    var distance = $(window).scrollTop();
-
-    if (distance > this.apiDocumentation.offset().top - 140) {
-        this.apiListing.addClass('stick');
-    } else {
-        this.apiListing.removeClass('stick');
-    }
+    $(window).scrollTop() > this.apiDocumentation.offset().top - 140 ?
+        this.apiListing.addClass('stick') : this.apiListing.removeClass('stick');
 };
 
 
