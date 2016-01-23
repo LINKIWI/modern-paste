@@ -23,7 +23,7 @@
   ],
   "api_endpoints": [
     {
-      "name": "Create a new paste",
+      "name": "Create new paste",
       "uri_class": ["paste", "PasteSubmitURI"],
       "authentication": "optional",
       "short_description": "Create a new anonymous or authorized paste",
@@ -165,6 +165,37 @@
         {
           "key": "poster_username",
           "value": "Username of poster; Anonymous if posted anonymously"
+        }
+      ]
+    },
+    {
+      "name": "Deactivate paste",
+      "uri_class": ["paste", "PasteDeactivateURI"],
+      "authentication": "optional",
+      "short_description": "Deactivate an anonymous or authenticated paste",
+      "long_description": "Deactivate an existing paste. You can either deactivate the paste by either (1) supplying the deactivation token associated with the paste without any authentication, or (2) supplying authentication (API key) associated with the account that owns the paste. Note that for (2), the paste must be an authenticated paste (e.g. posted with authentication, and thereby posted to an existing user account). (1) is the only way to deactivate an anonymous paste, but may also be used for authenticated pastes. The paste ID will either be an encrypted string (if the server administrator has enabled this option), or a regular decrypted interger.",
+      "request_parameters": [
+        {
+          "key": "paste_id",
+          "value": [
+            "Paste ID",
+            "5"
+          ],
+          "required": true
+        },
+        {
+          "key": "deactivation_token",
+          "value": [
+            "Deactivation token associated with the paste, generated when it is first posted. While the endpoint will respond without this field, if attempting to deactivate an anonymous paste, the request will fail if this field is not provided.",
+            "GoX0ik10I6NfTyzQhIHwpPv4O1MQxULhRoCAERjqSNPeOG5TusvlI3lSHqzqc2sW"
+          ],
+          "required": false
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "paste_id",
+          "value": "Request input callback"
         }
       ]
     }
