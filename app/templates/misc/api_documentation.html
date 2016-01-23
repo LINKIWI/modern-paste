@@ -142,12 +142,14 @@ assert set(resp.json().keys()) == {
                     <table class="table table-hover table-striped sans-serif regular gray size-2" width="100%">
                         <tr>
                             <td width="20%"><span class="sans-serif semibold size-1 less-spaced">PARAMETER</span></td>
-                            <td width="80%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
+                            <td width="15%"><span class="sans-serif semibold size-1 less-spaced">TYPE</span></td>
+                            <td width="65%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
                         </tr>
                         {% for parameter in endpoint.request_parameters %}
                             <tr>
                                 <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
-                                <td width="80%"><span class="sans-serif regular size-2">
+                                <td width="15%"><span class="ubuntu-mono regular size-2">{{ parameter.type }}</span></td>
+                                <td width="65%"><span class="sans-serif regular size-2">
                                     {{ parameter.value[0]|safe }}
                                     {% if not parameter.required %}
                                         <span class="sans-serif regular italic">(optional)</span>
@@ -161,24 +163,29 @@ assert set(resp.json().keys()) == {
                 <table class="table table-hover table-striped sans-serif regular gray size-2" width="100%">
                     <tr>
                         <td width="20%"><span class="sans-serif semibold size-1 less-spaced">PARAMETER</span></td>
-                        <td width="80%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
+                        <td width="15%"><span class="sans-serif semibold size-1 less-spaced">TYPE</span></td>
+                        <td width="65%"><span class="sans-serif semibold size-1 less-spaced">DESCRIPTION</span></td>
                     </tr>
                     <tr>
                         <td width="20%"><span class="ubuntu-mono regular size-2">success</span></td>
-                        <td width="80%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">true</span> if the request was successful; <span class="ubuntu-mono regular">false</span> otherwise.</span></td>
+                        <td width="15%"><span class="ubuntu-mono regular size-2">boolean</span></td>
+                        <td width="65%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">true</span> if the request was successful; <span class="ubuntu-mono regular">false</span> otherwise.</span></td>
                     </tr>
                     <tr>
                         <td width="20%"><span class="ubuntu-mono regular size-2">message</span></td>
-                        <td width="80%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">null</span> if the request was successful; a short message explaining the error otherwise.</span></td>
+                        <td width="15%"><span class="ubuntu-mono regular size-2">string/null</span></td>
+                        <td width="65%"><span class="sans-serif regular size-2"><span class="ubuntu-mono regular">null</span> if the request was successful; a short message explaining the error otherwise.</span></td>
                     </tr>
                     <tr>
                         <td width="20%"><span class="ubuntu-mono regular size-2">failure_name</span></td>
-                        <td width="80%"><span class="sans-serif regular size-2">The name of the failure. This field is not present on a successful request.</span></td>
+                        <td width="15%"><span class="ubuntu-mono regular size-2">string</span></td>
+                        <td width="65%"><span class="sans-serif regular size-2">The name of the failure. This field is not present on a successful request.</span></td>
                     </tr>
                     {% for parameter in endpoint.response_parameters %}
                         <tr>
                             <td width="20%"><span class="ubuntu-mono regular size-2">{{ parameter.key }}</span></td>
-                            <td width="80%"><span class="sans-serif regular size-2">{{ parameter.value|safe }}</span></td>
+                            <td width="15%"><span class="ubuntu-mono regular size-2">{{ parameter.type }}</span></td>
+                            <td width="65%"><span class="sans-serif regular size-2">{{ parameter.value|safe }}</span></td>
                         </tr>
                     {% endfor %}
                 </table>

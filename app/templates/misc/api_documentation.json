@@ -35,7 +35,8 @@
             "Paste contents",
             "test paste"
           ],
-          "required": true
+          "required": true,
+          "type": "string"
         },
         {
           "key": "expiry_time",
@@ -43,7 +44,8 @@
             "Unix timestamp at which the paste should expire; defaults to no expiry if no value is supplied",
             "1453355837"
           ],
-          "required": false
+          "required": false,
+          "type": "number"
         },
         {
           "key": "title",
@@ -51,7 +53,8 @@
             "Paste title; defaults to Untitled if no value is supplied",
             "Paste title"
           ],
-          "required": false
+          "required": false,
+          "type": "string"
         },
         {
           "key": "language",
@@ -59,7 +62,8 @@
             "Language of the paste; defaults to plain text if no value is supplied",
             "python"
           ],
-          "required": false
+          "required": false,
+          "type": "string"
         },
         {
           "key": "password",
@@ -67,41 +71,50 @@
             "Optionally add a password to restrict access to the paste; defaults to no password if no value is supplied",
             "password123"
           ],
-          "required": false
+          "required": false,
+          "type": "string"
         }
       ],
       "response_parameters": [
         {
           "key": "post_time",
-          "value": "Unix timestamp at which the paste was posted"
+          "value": "Unix timestamp at which the paste was posted",
+          "type": "number"
         },
         {
           "key": "expiry_time",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "number"
         },
         {
           "key": "language",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "string"
         },
         {
           "key": "title",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "string"
         },
         {
           "key": "views",
-          "value": "The number of views the paste has; initialized to 0"
+          "value": "The number of views the paste has; initialized to 0",
+          "type": "number"
         },
         {
           "key": "is_active",
-          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span> for a new paste."
+          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span> for a new paste.",
+          "type": "boolean"
         },
         {
           "key": "paste_id_repr",
-          "value": "The paste ID, represented as either a decrypted or encrypted ID (this is configured by the server administrator)"
+          "value": "The paste ID, represented as either a decrypted or encrypted ID (this is configured by the server administrator)",
+          "type": "number/string"
         },
         {
           "key": "contents",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "string"
         }
       ]
     },
@@ -118,7 +131,8 @@
             "Paste ID",
             "5"
           ],
-          "required": true
+          "required": true,
+          "type": "number/string"
         },
         {
           "key": "password",
@@ -126,45 +140,55 @@
             "Plain-text password of the paste, if it is password-protected. If the paste requested is password-protected, failing to provide this option will result in the <span class=\"ubuntu-mono regular\">auth_failure</span> error.",
             "p4ssw0rd"
           ],
-          "required": false
+          "required": false,
+          "type": "string"
         }
       ],
       "response_parameters": [
         {
           "key": "post_time",
-          "value": "Unix timestamp at which the paste was posted"
+          "value": "Unix timestamp at which the paste was posted",
+          "type": "number"
         },
         {
           "key": "expiry_time",
-          "value": "Unix timestamp at which the paste expires; <span class=\"ubuntu-mono regular\">null</span> if the paste doesn't expire"
+          "value": "Unix timestamp at which the paste expires; <span class=\"ubuntu-mono regular\">null</span> if the paste doesn't expire",
+          "type": "number"
         },
         {
           "key": "language",
-          "value": "Language of the paste"
+          "value": "Language of the paste",
+          "type": "string"
         },
         {
           "key": "title",
-          "value": "Title of the paste"
+          "value": "Title of the paste",
+          "type": "string"
         },
         {
           "key": "views",
-          "value": "The number of views the paste has"
+          "value": "The number of views the paste has",
+          "type": "number"
         },
         {
           "key": "is_active",
-          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span>, since inactive pastes are not returned by this endpoint."
+          "value": "This field will always be <span class=\"ubuntu-mono regular\">true</span>, since inactive pastes are not returned by this endpoint.",
+          "type": "boolean"
         },
         {
           "key": "paste_id_repr",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "number/string"
         },
         {
           "key": "contents",
-          "value": "Contents of the paste"
+          "value": "Contents of the paste",
+          "type": "string"
         },
         {
           "key": "poster_username",
-          "value": "Username of poster; Anonymous if posted anonymously"
+          "value": "Username of poster; 'Anonymous' if posted anonymously",
+          "type": "string"
         }
       ]
     },
@@ -181,7 +205,8 @@
             "Paste ID",
             "5"
           ],
-          "required": true
+          "required": true,
+          "type": "number/string"
         },
         {
           "key": "deactivation_token",
@@ -189,13 +214,15 @@
             "Deactivation token associated with the paste, generated when it is first posted. While the endpoint will respond without this field, if attempting to deactivate an anonymous paste, the request will fail if this field is not provided.",
             "GoX0ik10I6NfTyzQhIHwpPv4O1MQxULhRoCAERjqSNPeOG5TusvlI3lSHqzqc2sW"
           ],
-          "required": false
+          "required": false,
+          "type": "string"
         }
       ],
       "response_parameters": [
         {
           "key": "paste_id",
-          "value": "Request input callback"
+          "value": "Request input callback",
+          "type": "number/string"
         }
       ]
     }
