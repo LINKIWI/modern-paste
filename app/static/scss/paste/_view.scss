@@ -1,4 +1,5 @@
 @import '../universal/colors';
+@import '../universal/mixins';
 
 
 .paste-load-splash {
@@ -49,5 +50,22 @@
     .paste-password-field {
         height: 15px;
         margin: 10px 0 20px 0;
+    }
+}
+
+.deactivation-token-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    padding: 20px 50px;
+    background-color: $error-red;
+    opacity: 0.9;
+    z-index: 7;
+    @include ease-out-transition(margin);
+
+    .paste-deactivation-link {
+        margin-top: 10px;
     }
 }

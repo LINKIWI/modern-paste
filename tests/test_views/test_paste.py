@@ -24,6 +24,10 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIn('PASTE NOT FOUND', views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
         paste = util.testing.PasteFactory.generate()
+        # Deactivation token should appear on the first view of the paste
+        self.assertIn(paste.deactivation_token, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
+        # It should no longer appear on subsequent views
+        self.assertNotIn(paste.deactivation_token, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
         self.assertIn(str(paste.paste_id), views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
         self.assertIn(paste.language, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
@@ -54,6 +58,32 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(
             'This paste either does not exist or has been deleted.',
             views.paste.paste_view_raw(util.cryptography.get_id_repr(paste.paste_id)).data,
+        )
+
+    def test_paste_deactivate(self):
+        # Non-existent paste
+        self.assertIn(
+            'There was an error deactivating this paste.',
+            views.paste.paste_deactivate(util.cryptography.get_id_repr(1), ''),
+        )
+
+        # Invalid deactivation token
+        paste = util.testing.PasteFactory.generate()
+        self.assertIn(
+            'There was an error deactivating this paste.',
+            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), 'invalid'),
+        )
+
+        # Correct deactivation
+        self.assertIn(
+            'This paste has been successfully deactivated.',
+            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), paste.deactivation_token),
+        )
+
+        # Already deactivated paste
+        self.assertIn(
+            'There was an error deactivating this paste.',
+            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), paste.deactivation_token),
         )
 
     def test_paste_archive(self):
