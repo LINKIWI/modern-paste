@@ -1,72 +1,67 @@
 @import 'colors';
 
-/**
-* Source and font definitions
-*/
+
+// Source and font definitions
 
 @font-face {
-    font-family: "uni-sans-book";
-    src: url("/static/fonts/uni-sans-book.ttf");
+    font-family: 'uni-sans-book';
+    src: url('/static/fonts/uni-sans-book.ttf');
 }
 
 @font-face {
-    font-family: "uni-sans-light";
-    src: url("/static/fonts/uni-sans-light.ttf");
+    font-family: 'uni-sans-light';
+    src: url('/static/fonts/uni-sans-light.ttf');
 }
 
 @font-face {
-    font-family: "uni-sans-semibold";
-    src: url("/static/fonts/uni-sans-semibold.ttf");
+    font-family: 'uni-sans-semibold';
+    src: url('/static/fonts/uni-sans-semibold.ttf');
 }
 
 @font-face {
-    font-family: "uni-sans-bold";
-    src: url("/static/fonts/uni-sans-heavy.ttf");
+    font-family: 'uni-sans-bold';
+    src: url('/static/fonts/uni-sans-heavy.ttf');
 }
 
 @font-face {
-    font-family: "uni-sans-book-italic";
-    src: url("/static/fonts/uni-sans-book-italic.ttf");
+    font-family: 'uni-sans-book-italic';
+    src: url('/static/fonts/uni-sans-book-italic.ttf');
 }
 
 @font-face {
-    font-family: "ubuntu-mono-regular";
-    src: url("/static/fonts/ubuntu-mono-regular.ttf");
+    font-family: 'ubuntu-mono-regular';
+    src: url('/static/fonts/ubuntu-mono-regular.ttf');
 }
 
 
-/**
-* Font classes
-*/
+// Font classes
 
 .sans-serif.regular {
-    font-family: "uni-sans-book", sans-serif;
-}
+    font-family: 'uni-sans-book', sans-serif;
 
-.sans-serif.regular.italic {
-    font-family: "uni-sans-book-italic", sans-serif;
+    &.italic {
+        font-family: 'uni-sans-book-italic', sans-serif;
+    }
 }
 
 .sans-serif.light {
-    font-family: "uni-sans-light", sans-serif;
+    font-family: 'uni-sans-light', sans-serif;
 }
 
 .sans-serif.semibold {
-    font-family: "uni-sans-semibold", sans-serif;
+    font-family: 'uni-sans-semibold', sans-serif;
 }
 
 .sans-serif.bold {
-    font-family: "uni-sans-bold", sans-serif;
+    font-family: 'uni-sans-bold', sans-serif;
 }
 
 .ubuntu-mono.regular {
-    font-family: "ubuntu-mono-regular", monospace;
+    font-family: 'ubuntu-mono-regular', monospace;
 }
 
 
-/**
-* Size modifiers
-*/
+// Size modifiers
 
 .size-1 {
     font-size: 12px;
@@ -74,10 +69,6 @@
 
 .size-2 {
     font-size: 14px;
-}
-
-.size-3 {
-    font-size: 15px;
 }
 
 .size-3 {
@@ -105,9 +96,7 @@
 }
 
 
-/**
-* Letter spacing
-*/
+// Letter spacing
 
 .spaced {
     letter-spacing: 2px;
@@ -122,9 +111,7 @@
 }
 
 
-/**
-* Font colors
-*/
+// Font colors
 
 .white {
     color: $white;

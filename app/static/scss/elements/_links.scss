@@ -1,7 +1,9 @@
 @import '../universal/colors';
 
 
-.dark-link a:link, .dark-link a:visited, .dark-link a:active {
+.dark-link a:link,
+.dark-link a:visited,
+.dark-link a:active {
     color: $light-blue;
     text-decoration: none;
 }
@@ -10,7 +12,9 @@
     border-bottom: 2px solid $light-blue;
 }
 
-.dark-link-alt a:link, .dark-link-alt a:visited, .dark-link-alt a:active {
+.dark-link-alt a:link,
+.dark-link-alt a:visited,
+.dark-link-alt a:active {
     color: $white;
     text-decoration: none;
 }
@@ -19,7 +23,9 @@
     border-bottom: 2px solid $white;
 }
 
-.light-link a:link, .light-link a:visited, .light-link a:active {
+.light-link a:link,
+.light-link a:visited,
+.light-link a:active {
     color: $blue;
     text-decoration: none;
 }

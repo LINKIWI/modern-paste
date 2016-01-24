@@ -3,23 +3,23 @@
 
 
 #alert {
+    @include background-blur(23px, $transparent-black);
+    @include ease-out-transition(opacity);
+    background-color: $pure-black;
+    opacity: 0;
+    padding: 20px;
     position: fixed;
     right: 70px;
     top: 120px;
-    width: 340px;
-    padding: 20px;
-    opacity: 0;
     visibility: hidden;
-    background-color: black;
+    width: 340px;
     z-index: 8;
-    @include background-blur(23px, rgba(0, 0, 0, 0.63));
-    @include ease-out-transition(opacity);
-}
 
-#alert.alert-error {
-    background-color: $error-red;
-}
+    &.alert-error {
+        background-color: $error-red;
+    }
 
-#alert.alert-success {
-    background-color: $success-green;
+    &.alert-success {
+        background-color: $success-green;
+    }
 }

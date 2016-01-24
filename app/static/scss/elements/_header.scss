@@ -3,66 +3,66 @@
 
 
 #header {
-    position: fixed;
-    z-index: 7;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
+    @include ease-out-transition(margin);
     background-color: $white;
     display: table;
-    @include ease-out-transition(margin);
+    height: 70px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 7;
 
     .container {
         display: table-row;
     }
 
     .menu-button {
-        width: 20px;
-        height: 20px;
-        padding-right: 25px;
         cursor: pointer;
-        vertical-align: text-bottom;
+        height: 20px;
         margin-bottom: 2px;
+        padding-right: 25px;
+        vertical-align: text-bottom;
+        width: 20px;
     }
 
     .title-section {
-        padding-left: 50px;
         display: table-cell;
+        padding-left: 50px;
         vertical-align: middle;
     }
 
     .user-section {
+        display: table-cell;
         padding-right: 30px;
         text-align: right;
-        display: table-cell;
         vertical-align: middle;
     }
 
     .user-header {
-        padding: 20px;
         cursor: pointer;
+        padding: 20px;
 
         .user-menu-arrow {
-            width: 10px;
+            @include ease-out-transition(transform);
+            @include rotate(90deg);
             height: 10px;
             margin-left: 10px;
-            @include rotate(90deg);
-            @include ease-out-transition(transform);
+            width: 10px;
         }
     }
 }
 
 #user-header-dropdown {
-    position: fixed;
-    top: 70px;
-    right: 40px;
-    width: 120px;
-    padding: 10px 20px;
     background-color: $white;
-    z-index: 7;
-    text-align: right;
     display: none;  // Dropdown should default to not being shown
+    padding: 10px 20px;
+    position: fixed;
+    right: 40px;
+    text-align: right;
+    top: 70px;
+    width: 120px;
+    z-index: 7;
 
     .dropdown-item {
         margin: 10px 0;
@@ -70,10 +70,10 @@
 }
 
 .main-header-container {
-    width: 100%;
+    background-color: $dark-blue;
     height: 100px;
     padding: 50px 0;
-    background-color: $dark-blue;
+    width: 100%;
 
     .main-header {
         margin-left: 100px;

@@ -3,15 +3,16 @@
 
 
 .archive-container {
-    width: 800px;
-    min-width: 500px;
     margin: 70px 0 150px 100px;
+    min-width: 500px;
+    width: 800px;
 
     .separator {
         height: 5px;
     }
 
-    .paste-posted, .paste-views {
+    .paste-posted,
+    .paste-views {
         text-align: right;
     }
 
@@ -19,12 +20,11 @@
         margin-top: 50px;
     }
 
-    .previous-button, .next-button {
+    .previous-button,
+    .next-button {
+        @include no-user-select;
         cursor: pointer;
         margin-right: 30px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
     }
 
     .previous-button {
@@ -32,21 +32,22 @@
     }
 
     .right-arrow {
-        width: 20px;
         height: 20px;
-        vertical-align: text-top;
         margin-left: 5px;
+        vertical-align: text-top;
+        width: 20px;
     }
 
     .left-arrow {
-        width: 20px;
-        height: 20px;
-        vertical-align: text-top;
-        margin-right: 5px;
         @include rotate(180deg);
+        height: 20px;
+        margin-right: 5px;
+        vertical-align: text-top;
+        width: 20px;
     }
 
-    td, th {
+    td,
+    th {
         padding: 8px 0;
     }
 }

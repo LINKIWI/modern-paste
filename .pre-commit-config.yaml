@@ -10,3 +10,7 @@
     -   id: end-of-file-fixer
     -   id: flake8
     -   id: requirements-txt-fixer
+-   repo: git://github.com/pre-commit/mirrors-scss-lint
+    sha: f840ac610d8d9d76b666062416241f2156b3f388
+    hooks:
+    -   id: scss-lint

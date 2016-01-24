@@ -1,6 +1,6 @@
-@import "../universal/colors";
-@import "../universal/fonts";
-@import "../universal/mixins";
+@import '../universal/colors';
+@import '../universal/fonts';
+@import '../universal/mixins';
 
 
 .paste-submit-splash {
@@ -12,24 +12,24 @@
 }
 
 .minimal-input-field {
-    margin-top: 10px;
-    height: 20px;
-    width: 100%;
-    overflow: hidden;
-    border: none;
     background-color: transparent;
-    resize: none;
+    border: none;
+    height: 20px;
+    margin-top: 10px;
     outline: none;
+    overflow: hidden;
+    resize: none;
+    width: 100%;
 }
 
 .underlined-input-field {
     border-bottom: 2px solid $lighter-gray;
-    padding: 0 0 5px 0;
+    padding: 0 0 5px;
 }
 
 .paste-title-container {
     height: 50px;
-    padding: 20px 30px 10px 30px;
+    padding: 20px 30px 10px;
     width: 100%;
 }
 
@@ -39,16 +39,16 @@
     width: 100%;
 
     .language-selector {
-        width: 150px;
         margin-top: 10px;
+        width: 150px;
     }
 }
 
 .more-options-container {
-    height: 25px;
-    padding: 10px 30px;
-    overflow: hidden;
     @include ease-out-transition(height);
+    height: 25px;
+    overflow: hidden;
+    padding: 10px 30px;
 
     .option-description {
         margin-top: 20px;
@@ -59,11 +59,11 @@
     }
 
     .arrow {
+        @include ease-out-transition(transform);
         @include rotate(90deg);
-        width: 8px;
         height: 8px;
         margin-left: 5px;
-        @include ease-out-transition(transform);
+        width: 8px;
     }
 }
 
@@ -77,15 +77,15 @@
 }
 
 #footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    display: table;
-    background-color: $dark-blue;
-    z-index: 7;
     @include ease-out-transition(margin);
+    background-color: $dark-blue;
+    bottom: 0;
+    display: table;
+    height: 80px;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 7;
 
     .statistics-section {
         display: table-cell;
@@ -102,25 +102,26 @@
 
     .submit-section {
         display: table-cell;
-        vertical-align: middle;
         text-align: right;
+        vertical-align: middle;
 
         .submit-arrow {
             margin-right: 5px;
         }
 
         .submit-button {
-            width: 80px;
             margin: 0 40px;
             padding: 10px 30px;
+            width: 80px;
         }
     }
 }
 
+// scss-lint:disable SelectorFormat
 .CodeMirror {
-    font-family: "ubuntu-mono-regular", monospace !important;
-    margin-bottom: 90px !important;
+    font-family: 'ubuntu-mono-regular', monospace !important;
     height: auto !important;
+    margin-bottom: 90px !important;
 }
 
 .CodeMirror-scroll {

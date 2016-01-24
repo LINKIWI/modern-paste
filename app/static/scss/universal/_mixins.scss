@@ -22,3 +22,10 @@
     -moz-box-shadow: 0 0 $radius 0 $color;
     box-shadow: 0 0 $radius 0 $color;
 }
+
+@mixin no-user-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

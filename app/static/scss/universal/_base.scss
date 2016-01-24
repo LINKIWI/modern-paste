@@ -3,12 +3,13 @@
 
 
 * {
+    box-sizing: initial;
     margin: 0;
-    padding: 0;
-    box-sizing: initial;  // Undoing random useless Bootstrap CSS properties
+    padding: 0;  // Undoing random useless Bootstrap CSS properties
 }
 
-html, body {
+html,
+body {
     height: 100%;
     line-height: initial;
 }
@@ -22,20 +23,20 @@ p {
 }
 
 #menu-panel {
-    position: fixed;
-    z-index: 7;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    padding: 50px 30px;
-    background-color: $darker-blue;
-    margin-left: -310px;
     @include ease-out-transition(margin);
+    background-color: $darker-blue;
+    height: 100%;
+    left: 0;
+    margin-left: -310px;
+    padding: 50px 30px;
+    position: fixed;
+    top: 0;
+    width: 250px;
+    z-index: 7;
 
     .title {
-        text-align: center;
         margin-bottom: 50px;
+        text-align: center;
     }
 
     .menu-panel-item {
@@ -43,9 +44,9 @@ p {
     }
 
     .open-source-note {
+        bottom: 150px;
         position: absolute;
         width: 200px;
-        bottom: 150px;
     }
 }
 
@@ -54,6 +55,6 @@ p {
 }
 
 .content {
-    padding-top: 70px;
     overflow: hidden;
+    padding-top: 70px;
 }

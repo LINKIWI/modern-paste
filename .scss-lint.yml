@@ -1,0 +1,16 @@
+exclude:
+    - 'app/static/scss/elements/_spinner.scss'  # Library
+    - 'app/static/scss/universal/_mixins.scss'  # Contains custom vendor prefix mixins
+
+linters:
+    Indentation:
+        width: 4
+
+    ImportantRule:
+        enabled: false
+
+    IdSelector:
+        enabled: false
+
+    BorderZero:
+        convention: none

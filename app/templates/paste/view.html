@@ -55,7 +55,7 @@
     </div>
 
     {% if deactivation_token is not none %}
-        <div class="deactivation-token-banner dark-link-alt">
+        <div id="footer" class="deactivation-token-banner dark-link-alt">
             <p class="sans-serif semibold white size-2 less-spaced">PASTE DEACTIVATION TOKEN</p>
             <p class="sans-serif regular white size-1 less-spaced">The link to deactivate this paste is below. Make sure to keep it somewhere safe; this is the only time you'll see it!</p>
             <p class="paste-deactivation-link sans-serif regular white size-1 less-spaced"><a href="{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=paste_id, deactivation_token=deactivation_token) }}">{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=paste_id, deactivation_token=deactivation_token) }}</a></p>

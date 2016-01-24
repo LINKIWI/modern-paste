@@ -1,7 +1,7 @@
 @import '../universal/colors';
 
 
-a.anchor {
+.anchor {
     display: block;
     position: relative;
     top: -150px;
@@ -34,38 +34,38 @@ a.anchor {
 }
 
 .api-listing {
-    position: absolute;
-    right: 0;
+    background-color: $bright-white;
     margin-right: 100px;
     margin-top: 70px;
-    text-align: right;
-    background-color: $bright-white;
-    padding: 30px;
     min-width: 200px;
+    padding: 30px;
+    position: absolute;
+    right: 0;
+    text-align: right;
+
+    &.stick {
+        position: fixed;
+        right: 0;
+        top: 70px;
+    }
 
     .api-listing-item {
         margin-bottom: 3px;
     }
 }
 
-.api-listing.stick {
-    position: fixed;
-    top: 70px;
-    right: 0;
-}
-
 pre {
     // !important to override highlight.js defaults
-    border: none !important;
     background-color: transparent !important;
+    border: none !important;
     border-radius: initial !important;
+    min-width: 500px;
     padding: 0 !important;
     width: 800px !important;
-    min-width: 500px;
 }
 
 .hljs {
     // !important to override highlight.js defaults
-    padding: 5px 25px !important;
     background-color: $darker-blue !important;
+    padding: 5px 25px !important;
 }
