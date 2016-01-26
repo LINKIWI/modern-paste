@@ -1,7 +1,5 @@
 goog.provide('modernPaste.misc.APIDocumentationController');
 
-goog.require('modernPaste.universal.URIController');
-
 
 /**
  * This controller handles UI elements on the API documentation page.

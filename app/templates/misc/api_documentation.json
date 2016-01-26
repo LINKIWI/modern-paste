@@ -225,6 +225,74 @@
           "type": "number/string"
         }
       ]
+    },
+    {
+      "name": "Get recent pastes",
+      "uri_class": ["paste", "RecentPastesURI"],
+      "authentication": "none",
+      "short_description": "Retrieve a paged enumeration of recently posted pastes",
+      "long_description": "Query the database for a listing of recent pastes, ordered from most recent to least recent. In order to limit the size of the database query, results are paginated: specify the number of pastes to retrieve per query and specify the page number of the query. Both anonymous and authenticated pastes are returned.",
+      "request_parameters": [
+        {
+          "key": "page_num",
+          "value": [
+            "Page number of the list for which to retrieve pastes. The first page is 0, and there is no last page (though the endpoint will return empty results if there are no more results to display).",
+            "0"
+          ],
+          "required": true,
+          "type": "number"
+        },
+        {
+          "key": "num_per_page",
+          "value": [
+            "The number of pastes to retrieve per page. It is recommended to not make this number too large, so to limit the size of the database query.",
+            "20"
+          ],
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "pastes",
+          "value": "Array of paste details, ordered (descending) by post time. The paste details fields are exactly identical to those returned by the Paste Details API endpoint above.",
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "name": "Get top pastes",
+      "uri_class": ["paste", "TopPastesURI"],
+      "authentication": "none",
+      "short_description": "Retrieve a paged enumeration of top pastes",
+      "long_description": "Query the database for a listing of most-viewed pastes, ordered from the highest number of views to the least number of views. In order to limit the size of the database query, results are paginated: specify the number of pastes to retrieve per query and specify the page number of the query. Both anonymous and authenticated pastes are returned.",
+      "request_parameters": [
+        {
+          "key": "page_num",
+          "value": [
+            "Page number of the list for which to retrieve pastes. The first page is 0, and there is no last page (though the endpoint will return empty results if there are no more results to display).",
+            "0"
+          ],
+          "required": true,
+          "type": "number"
+        },
+        {
+          "key": "num_per_page",
+          "value": [
+            "The number of pastes to retrieve per page. It is recommended to not make this number too large, so to limit the size of the database query.",
+            "20"
+          ],
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "pastes",
+          "value": "Array of paste details, ordered (descending) by number of views. The paste details fields are exactly identical to those returned by the Paste Details API endpoint above.",
+          "type": "array"
+        }
+      ]
     }
   ]
 }
