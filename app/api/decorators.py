@@ -16,11 +16,14 @@ from uri.user import UserLoginInterfaceURI
 from util.exception import *
 
 
-# Dictionary of the context/environment that should be made available to all templates rendered with @render_view
-context_config = {
-    'is_dev_environment': config.BUILD_ENVIRONMENT == DEV,
-    'languages': config.LANGUAGES,
-}
+def context_config():
+    """
+    Dictionary of the context that should be made available to all templates rendered with @render_view
+    """
+    return {
+        'is_dev_environment': config.BUILD_ENVIRONMENT == DEV,
+        'languages': config.LANGUAGES,
+    }
 
 
 def render_view(func):
@@ -37,9 +40,9 @@ def render_view(func):
     def decorated_view(*args, **kwargs):
         template, context = func(*args, **kwargs)
         if 'config' in context:
-            context['config'].update(context_config)
+            context['config'].update(context_config())
         else:
-            context['config'] = context_config
+            context['config'] = context_config()
         return render_template(template, **context)
     return decorated_view
 
