@@ -100,9 +100,11 @@ class TestPaste(util.testing.DatabaseTestCase):
 
     def test_get_all_pastes_for_user(self):
         user = util.testing.UserFactory.generate()
-        with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
-            pastes = [util.testing.PasteFactory.generate(user_id=user.user_id) for i in range(30)]
-            util.testing.PasteFactory.generate(user_id=user.user_id + 2)  # Generate pastes for a different user
+        pastes = []
+        for i in range(30):
+            with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
+                pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id))
+                util.testing.PasteFactory.generate(user_id=user.user_id + 2)  # Generate pastes for a different user
         queried_pastes = database.paste.get_all_pastes_for_user(user.user_id)
         post_times = [paste.post_time for paste in queried_pastes]
         # Ensure pastes are sorted in reverse chronological order

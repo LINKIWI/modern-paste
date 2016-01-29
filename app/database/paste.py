@@ -144,5 +144,5 @@ def get_all_pastes_for_user(user_id):
     return models.Paste.query.filter_by(
         user_id=user_id,
     ).order_by(
-        models.Paste.views.desc(),
+        models.Paste.post_time.desc(),
     ).all()
