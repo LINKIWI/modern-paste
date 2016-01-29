@@ -141,4 +141,8 @@ def get_all_pastes_for_user(user_id):
     :param user_id: User ID for which to retrieve all the pastes
     :return: A list of models.Paste objects belonging to the user ID (can be an empty list)
     """
-    return models.Paste.query.filter_by(user_id=user_id).all()
+    return models.Paste.query.filter_by(
+        user_id=user_id,
+    ).order_by(
+        models.Paste.views.desc(),
+    ).all()
