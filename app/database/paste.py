@@ -134,15 +134,24 @@ def get_top_pastes(page_num, num_per_page):
     ).all()
 
 
-def get_all_pastes_for_user(user_id):
+def get_all_pastes_for_user(user_id, active_only=False):
     """
     Gets all pastes for the specified user ID.
 
     :param user_id: User ID for which to retrieve all the pastes
+    :param active_only: Set this flag to True to only query for active and non-expired pastes
     :return: A list of models.Paste objects belonging to the user ID (can be an empty list)
     """
-    return models.Paste.query.filter_by(
-        user_id=user_id,
-    ).order_by(
-        models.Paste.post_time.desc(),
-    ).all()
+    if active_only:
+        return models.Paste.query.filter_by(
+            user_id=user_id,
+            is_active=True,
+        ).order_by(
+            models.Paste.post_time.desc(),
+        ).all()
+    else:
+        return models.Paste.query.filter_by(
+            user_id=user_id,
+        ).order_by(
+            models.Paste.post_time.desc(),
+        ).all()

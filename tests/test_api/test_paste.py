@@ -360,6 +360,19 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
         self.assertEqual([], json.loads(resp.data)['pastes'])
 
+    def test_pastes_for_user_no_inactive(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        pastes = [util.testing.PasteFactory.generate(user_id=user.user_id).as_dict() for i in range(10)]
+        [database.paste.deactivate_paste(util.cryptography.get_decid(paste['paste_id_repr'], force=True)) for paste in pastes]
+        resp = self.client.post(
+            PastesForUserURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual(0, len(json.loads(resp.data)['pastes']))
+
     def test_pastes_for_user_valid(self):
         user = util.testing.UserFactory.generate(username='username', password='password')
         self.api_login_user('username', 'password')

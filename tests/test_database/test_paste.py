@@ -101,13 +101,25 @@ class TestPaste(util.testing.DatabaseTestCase):
     def test_get_all_pastes_for_user(self):
         user = util.testing.UserFactory.generate()
         pastes = []
-        for i in range(30):
+        inactive_pastes = []
+        for i in range(15):
             with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
                 pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id))
                 util.testing.PasteFactory.generate(user_id=user.user_id + 2)  # Generate pastes for a different user
-        queried_pastes = database.paste.get_all_pastes_for_user(user.user_id)
-        post_times = [paste.post_time for paste in queried_pastes]
+        for i in range(15):
+            with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
+                inactive_pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id))
+                database.paste.deactivate_paste(inactive_pastes[i].paste_id)
+        queried_all_pastes = database.paste.get_all_pastes_for_user(user.user_id, active_only=False)
+        queried_active_pastes = database.paste.get_all_pastes_for_user(user.user_id, active_only=True)
+        all_post_times = [paste.post_time for paste in queried_all_pastes]
+        active_post_times = [paste.post_time for paste in queried_active_pastes]
         # Ensure pastes are sorted in reverse chronological order
-        self.assertEqual(post_times, sorted(post_times, reverse=True))
-        for paste in queried_pastes:
-            self.assertIn(paste, pastes)
+        self.assertEqual(all_post_times, sorted(all_post_times, reverse=True))
+        self.assertEqual(active_post_times, sorted(active_post_times, reverse=True))
+        self.assertEqual(30, len(queried_all_pastes))
+        self.assertEqual(15, len(queried_active_pastes))
+        for paste in queried_all_pastes:
+            self.assertIn(paste, pastes + inactive_pastes)
+        for paste in queried_active_pastes:
+            self.assertTrue(paste.is_active)

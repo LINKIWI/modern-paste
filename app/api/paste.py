@@ -103,7 +103,10 @@ def pastes_for_user():
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_SUCCESS,
             constants.api.MESSAGE: None,
-            'pastes': [paste.as_dict() for paste in database.paste.get_all_pastes_for_user(current_user.user_id)],
+            'pastes': [
+                paste.as_dict()
+                for paste in database.paste.get_all_pastes_for_user(current_user.user_id, active_only=True)
+            ],
         }), constants.api.SUCCESS_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
