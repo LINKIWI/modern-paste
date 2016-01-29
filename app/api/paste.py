@@ -5,6 +5,7 @@ from modern_paste import app
 from uri.paste import *
 from util.exception import *
 from api.decorators import require_form_args
+from api.decorators import require_login_api
 from api.decorators import optional_login_api
 import constants.api
 import database.paste
@@ -92,9 +93,28 @@ def paste_details():
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
+@app.route(PastesForUserURI.path, methods=['POST'])
+@require_login_api
+def pastes_for_user():
+    """
+    Get all pastes for the currently logged in user.
+    """
+    try:
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'pastes': [paste.as_dict() for paste in database.paste.get_all_pastes_for_user(current_user.user_id)],
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
 @app.route(RecentPastesURI.path, methods=['POST'])
 @require_form_args(['page_num', 'num_per_page'])
 def recent_pastes():
+    """
+    Get details for the most recent pastes.
+    """
     try:
         data = flask.request.get_json()
         return flask.jsonify({
@@ -111,6 +131,9 @@ def recent_pastes():
 @app.route(TopPastesURI.path, methods=['POST'])
 @require_form_args(['page_num', 'num_per_page'])
 def top_pastes():
+    """
+    Get details for the top pastes.
+    """
     try:
         data = flask.request.get_json()
         return flask.jsonify({

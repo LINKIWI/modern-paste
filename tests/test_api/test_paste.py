@@ -340,6 +340,54 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
             self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
 
+    def test_pastes_for_user_unauthorized(self):
+        resp = self.client.post(
+            PastesForUserURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.AUTH_FAILURE, json.loads(resp.data))
+
+    def test_pastes_for_user_empty(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            PastesForUserURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual([], json.loads(resp.data)['pastes'])
+
+    def test_pastes_for_user_valid(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        pastes = [util.testing.PasteFactory.generate(user_id=user.user_id).as_dict() for i in range(10)]
+        resp = self.client.post(
+            PastesForUserURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual(len(pastes), len(json.loads(resp.data)['pastes']))
+        for paste in json.loads(resp.data)['pastes']:
+            self.assertIn(paste, pastes)
+
+    def test_pastes_for_user_server_error(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        for i in range(3):
+            util.testing.PasteFactory.generate(user_id=user.user_id)
+        with mock.patch.object(database.paste, 'get_all_pastes_for_user', side_effect=SQLAlchemyError):
+            resp = self.client.post(
+                PastesForUserURI.uri(),
+                data=json.dumps({}),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
+
     def test_recent_pastes_invalid(self):
         resp = self.client.post(
             RecentPastesURI.uri(),
