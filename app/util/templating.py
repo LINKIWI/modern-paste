@@ -42,6 +42,13 @@ def import_static_resources():
         if path.startswith('lib'):
             return import_string.format(url='/static/{path}'.format(path=path))
         if config.BUILD_ENVIRONMENT == constants.build_environment.PROD:
+            if path.count('/') == 2:  # Multipart controller
+                controller_namespace = path.split('/')
+                controller_name = controller_namespace[1][0].upper() + controller_namespace[1][1:] + 'Controller.js'
+                return import_string.format(url='/static/build/js/{js_module}/{path}'.format(
+                    js_module=controller_namespace[0],
+                    path=controller_name,
+                ))
             return import_string.format(url='/static/build/js/{path}'.format(path=path))
         return import_string.format(url='/static/js/{path}'.format(path=path))
 

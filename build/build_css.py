@@ -11,6 +11,11 @@ import constants
 
 
 def abort_if_error(return_code):
+    """
+    Abort the build if the return code of a subprocess call is nonzero.
+
+    :param return_code: Return code of subprocess call
+    """
     if return_code != 0:
         sys.exit(return_code)
 

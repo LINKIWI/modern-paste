@@ -1,4 +1,4 @@
-goog.provide('modernPaste.user.AccountPastesController');
+goog.provide('modernPaste.user.account.AccountPastesController');
 
 goog.require('modernPaste.universal.AlertController');
 goog.require('modernPaste.universal.CommonController');
@@ -12,30 +12,30 @@ goog.require('modernPaste.universal.URIController');
  *
  * @constructor
  */
-modernPaste.user.AccountPastesController = function() {
+modernPaste.user.account.AccountPastesController = function() {
     this.pasteItemTemplate = $('.paste-item-template');
     this.userPastesContainer = $('.pastes-settings .user-pastes-container');
 
-    modernPaste.user.AccountPastesController.loadUserPastes.bind(this)();
+    modernPaste.user.account.AccountPastesController.loadUserPastes.bind(this)();
 };
 
 /**
  * Request the server to return a reverse chronologically sorted list of all the user's pastes.
  */
-modernPaste.user.AccountPastesController.loadUserPastes = function() {
+modernPaste.user.account.AccountPastesController.loadUserPastes = function() {
     $.ajax({
         'method': 'POST',
         'url': modernPaste.universal.URIController.uris.PastesForUserURI
     })
-    .done(modernPaste.user.AccountPastesController.loadPastesIntoList.bind(this))
-    .fail(modernPaste.user.AccountPastesController.showPasteLoadError.bind(this));
+    .done(modernPaste.user.account.AccountPastesController.loadPastesIntoList.bind(this))
+    .fail(modernPaste.user.account.AccountPastesController.showPasteLoadError.bind(this));
 };
 
 /**
  * Load all the user's pastes into the table, setting all of its details fields and initializing
  * all event handlers related to actions on that particular paste.
  */
-modernPaste.user.AccountPastesController.loadPastesIntoList = function(data) {
+modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(data) {
     data.pastes.forEach(function(paste) {
         var pasteTableRow = $(this.pasteItemTemplate.html());
 
@@ -89,19 +89,19 @@ modernPaste.user.AccountPastesController.loadPastesIntoList = function(data) {
         // TODO: prevent default on all of these
         pasteTableRow.find('.paste-download-icon').on(
             'click',
-            modernPaste.user.AccountPastesController.downloadPaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.downloadPaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
         pasteTableRow.find('.paste-set-password-icon').on(
             'click',
-            modernPaste.user.AccountPastesController.setPastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.setPastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
         pasteTableRow.find('.paste-remove-password-icon').on(
             'click',
-            modernPaste.user.AccountPastesController.removePastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.removePastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
         pasteTableRow.find('.paste-deactivate-icon').on(
             'click',
-            modernPaste.user.AccountPastesController.deactivatePaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.deactivatePaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
 
         this.userPastesContainer.append(pasteTableRow);
@@ -115,7 +115,7 @@ modernPaste.user.AccountPastesController.loadPastesIntoList = function(data) {
 /**
  * Show a generic error message in case the user's pastes cannot be retrieved from the server.
  */
-modernPaste.user.AccountPastesController.showPasteLoadError = function() {
+modernPaste.user.account.AccountPastesController.showPasteLoadError = function() {
     modernPaste.universal.AlertController.displayErrorAlert(
         'There was an error retrieving pastes from the server. Please try again later.'
     );
@@ -128,7 +128,7 @@ modernPaste.user.AccountPastesController.showPasteLoadError = function() {
  * @param pasteDownloadContents A JQuery object representing a hidden link to temporarily store the
  *                              contents of the paste for download.
  */
-modernPaste.user.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents) {
+modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents) {
     var fileExtension = modernPaste.universal.CommonController.getFileExtensionForType(pasteDetails.language);
     pasteDownloadContents.attr('download', pasteDetails.title + fileExtension);
     pasteDownloadContents.attr('href', 'data:text/plain;base64,' + window.btoa(pasteDetails.contents));
@@ -140,7 +140,7 @@ modernPaste.user.AccountPastesController.downloadPaste = function(pasteDetails, 
  *
  * @param pasteDetails
  */
-modernPaste.user.AccountPastesController.setPastePassword = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.setPastePassword = function(pasteDetails) {
 
 };
 
@@ -149,7 +149,7 @@ modernPaste.user.AccountPastesController.setPastePassword = function(pasteDetail
  *
  * @param pasteDetails
  */
-modernPaste.user.AccountPastesController.removePastePassword = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.removePastePassword = function(pasteDetails) {
 
 };
 
@@ -158,6 +158,6 @@ modernPaste.user.AccountPastesController.removePastePassword = function(pasteDet
  *
  * @param pasteDetails
  */
-modernPaste.user.AccountPastesController.deactivatePaste = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.deactivatePaste = function(pasteDetails) {
 
 };

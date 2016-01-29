@@ -1,6 +1,6 @@
-goog.provide('modernPaste.user.AccountController');
+goog.provide('modernPaste.user.account.AccountController');
 
-goog.require('modernPaste.user.AccountPastesController');
+goog.require('modernPaste.user.account.AccountPastesController');
 
 
 /**
@@ -10,7 +10,7 @@ goog.require('modernPaste.user.AccountPastesController');
  *
  * @constructor
  */
-modernPaste.user.AccountController = function() {
+modernPaste.user.account.AccountController = function() {
     this.settingsLinks = $('.settings-item');
     var settingsContainersObjects = this.settingsLinks.map(function(link) {
         // Each settings-item has a data-section field which is the name of the class of the settings container.
@@ -25,13 +25,13 @@ modernPaste.user.AccountController = function() {
         return settingsContainersObjects[key];
     }.bind(this));
 
-    this.settingsLinks.on('click', modernPaste.user.AccountController.switchSettingsSection.bind(this));
+    this.settingsLinks.on('click', modernPaste.user.account.AccountController.switchSettingsSection.bind(this));
 };
 
 /**
  * There is some admittedly very complicated logic going on here.
  */
-modernPaste.user.AccountController.switchSettingsSection = function(evt) {
+modernPaste.user.account.AccountController.switchSettingsSection = function(evt) {
     evt.preventDefault();
 
     this.settingsLinks.removeClass('active sans-serif semibold');
@@ -49,6 +49,6 @@ modernPaste.user.AccountController.switchSettingsSection = function(evt) {
 
 
 $(document).ready(function() {
-    new modernPaste.user.AccountController();
-    new modernPaste.user.AccountPastesController();
+    new modernPaste.user.account.AccountController();
+    new modernPaste.user.account.AccountPastesController();
 });

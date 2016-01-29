@@ -110,6 +110,10 @@ class TestTemplating(unittest.TestCase):
             '<script src="/static/build/js/otherpath.js" type="text/javascript"></script>',
             import_js(['path.js', 'otherpath.js'])
         )
+        self.assertEqual(
+            '<script src="/static/build/js/multipart/ControllerController.js" type="text/javascript"></script>',
+            import_js(['multipart/controller/MainController.js', 'multipart/controller/MainSubController.js'])
+        )
 
     def test_get_uri_path(self):
         uri = util.templating.get_uri_path()['uri']
