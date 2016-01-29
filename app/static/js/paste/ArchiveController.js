@@ -1,7 +1,8 @@
 goog.provide('modernPaste.paste.ArchiveController');
 
-goog.require('modernPaste.universal.URIController');
 goog.require('modernPaste.universal.AlertController');
+goog.require('modernPaste.universal.CommonController');
+goog.require('modernPaste.universal.URIController');
 
 
 /**
@@ -107,7 +108,7 @@ modernPaste.paste.ArchiveController.loadPastesIntoList = function(data) {
             )
         );
         pasteTableRow.find('.paste-posted').text(
-            modernPaste.paste.ArchiveController.unixTimestampToRelativeTime(paste.post_time)
+            modernPaste.universal.CommonController.unixTimestampToRelativeTime(paste.post_time)
         );
         pasteTableRow.find('.paste-views').text(paste.views);
         this.pasteListContainer.append(pasteTableRow);
@@ -137,32 +138,6 @@ modernPaste.paste.ArchiveController.showPasteLoadError = function() {
     modernPaste.universal.AlertController.displayErrorAlert(
         'There was an error retrieving pastes from the server. Please try again later.'
     );
-};
-
-/**
- * Convert a UNIX timestamp to a relative time, e.g. "3 hours ago."
- * This function will return units of days, hours, minutes, and seconds.
- *
- * @param unixTimestampString Timestamp as a string
- * @returns {string} A string representing a relative time.
- */
-modernPaste.paste.ArchiveController.unixTimestampToRelativeTime = function(unixTimestampString) {
-    var timestampDate = new Date(parseInt(unixTimestampString, 10)*1000);
-    var currentDate = new Date();
-    var deltaDate = currentDate - timestampDate;
-    var deltaDays = deltaDate/(1000*60*60*24);
-    var deltaHours = deltaDays*24;
-    var deltaMinutes = deltaHours*60;
-    var deltaSeconds = deltaMinutes*60;
-    if (deltaDays >= 1) {
-        return Math.round(deltaDays) + ' day' + (Math.round(deltaDays) == 1 ? '' : 's') + ' ago';
-    } else if (deltaHours >= 1) {
-        return Math.round(deltaHours) + ' hour' + (Math.round(deltaHours) == 1 ? '' : 's') + ' ago';
-    } else if (deltaMinutes >= 1) {
-        return Math.round(deltaMinutes) + ' minute' + (Math.round(deltaMinutes) == 1 ? '' : 's') + ' ago';
-    } else {
-        return Math.round(deltaSeconds) + ' second' + (Math.round(deltaSeconds) == 1 ? '' : 's') + ' ago';
-    }
 };
 
 

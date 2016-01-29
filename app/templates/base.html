@@ -19,6 +19,7 @@
             'lib/closure-library/closure/goog/base.js',
             'lib/pace/pace.min.js',
             'lib/bootstrap/dist/js/bootstrap.min.js',
+            'universal/CommonController.js',
             'universal/SplashController.js',
             'universal/URIController.js',
             'universal/AlertController.js',
@@ -41,16 +42,19 @@
             <span class="sans-serif light white size-6 spaced">modern</span><span class="sans-serif regular white size-6 spaced">paste</span>
         </div>
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
+            <a href="{{ uri('paste', 'PastePostInterfaceURI') }}">NEW PASTE</a>
+        </p>
+        <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
             <a href="{{ uri('user', 'UserLoginInterfaceURI') }}">LOGIN</a>
         </p>
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
             <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
         </p>
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
-            <a href="{{ uri('paste', 'PastePostInterfaceURI') }}">NEW PASTE</a>
+            <a href="{{ uri('paste', 'PasteArchiveInterfaceURI') }}">ARCHIVE</a>
         </p>
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
-            <a href="{{ uri('paste', 'PasteArchiveInterfaceURI') }}">ARCHIVE</a>
+            <a href="{{ uri('misc', 'APIDocumentationInterfaceURI') }}">API</a>
         </p>
         <p class="open-source-note dark-link sans-serif light light-gray size-2">
             <span class="sans-serif regular">modernpaste</span> is a modern, feature-rich, python-powered open source alternative to pastebin

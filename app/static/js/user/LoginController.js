@@ -11,6 +11,8 @@ goog.require('modernPaste.universal.SplashController');
  * @constructor
  */
 modernPaste.user.LoginController = function() {
+    this.urlParams = modernPaste.universal.URIController.getURLParameters();
+
     this.loginSplash = $('.login-splash.splash');
     this.usernameField = $('.login-container .username-field');
     this.passwordField = $('.login-container .password-field');
@@ -45,7 +47,11 @@ modernPaste.user.LoginController.attemptUserLogin = function(evt) {
  * Redirect the user to the home page on successful login.
  */
 modernPaste.user.LoginController.handleLoginSuccess = function(data) {
-    window.location.href = modernPaste.universal.URIController.uris.HomeURI;
+    if (this.urlParams.hasOwnProperty('redirect_url')) {
+        window.location.href = this.urlParams.redirect_url;
+    } else {
+        window.location.href = modernPaste.universal.URIController.uris.HomeURI;
+    }
 };
 
 /**
