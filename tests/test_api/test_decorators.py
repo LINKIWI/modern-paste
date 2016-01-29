@@ -30,7 +30,7 @@ class TestDecorators(util.testing.DatabaseTestCase):
             self.assertEqual(1, render_template_mock.call_count)
             render_template_mock.assert_called_with(
                 'template name',
-                config=api.decorators.context_config,
+                config=api.decorators.context_config(),
             )
 
         with mock.patch.object(api.decorators, 'render_template') as render_template_mock:
@@ -41,7 +41,7 @@ class TestDecorators(util.testing.DatabaseTestCase):
             self.assertEqual(1, render_template_mock.call_count)
             render_template_mock.assert_called_with(
                 'template name',
-                config=api.decorators.context_config,
+                config=api.decorators.context_config(),
                 key='value',
             )
 
@@ -51,7 +51,7 @@ class TestDecorators(util.testing.DatabaseTestCase):
                 return 'template name', {'config': {'key': 'value'}}
             template_with_config_context()
             self.assertEqual(1, render_template_mock.call_count)
-            expect_config = dict(api.decorators.context_config)
+            expect_config = dict(api.decorators.context_config())
             expect_config['key'] = 'value'
             render_template_mock.assert_called_with(
                 'template name',

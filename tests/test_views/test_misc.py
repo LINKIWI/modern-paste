@@ -1,3 +1,4 @@
+import mock
 import json
 import os
 
@@ -6,9 +7,19 @@ import util.testing
 
 import views.misc
 import constants.api
+import constants.build_environment
 
 
 class TestMisc(util.testing.DatabaseTestCase):
+    @mock.patch('config.BUILD_ENVIRONMENT', constants.build_environment.DEV)
+    def test_dev_banner_dev(self):
+        # Not specific to API documentation page.
+        self.assertIn('dev-banner', views.misc.api_documentation_interface())
+
+    @mock.patch('config.BUILD_ENVIRONMENT', constants.build_environment.PROD)
+    def test_dev_banner_prod(self):
+        self.assertNotIn('dev-banner', views.misc.api_documentation_interface())
+
     def test_api_documentation_interface(self):
         api_documentation = views.misc.api_documentation_interface()
 
