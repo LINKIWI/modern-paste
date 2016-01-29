@@ -1,7 +1,8 @@
 goog.provide('modernPaste.paste.ViewController');
 
-goog.require('modernPaste.universal.URIController');
 goog.require('modernPaste.universal.AlertController');
+goog.require('modernPaste.universal.CommonController');
+goog.require('modernPaste.universal.URIController');
 
 
 /**
@@ -158,30 +159,7 @@ modernPaste.paste.ViewController.convertUnixTimestamp = function(unixTimestampSt
 modernPaste.paste.ViewController.downloadPasteAsFile = function(evt) {
     evt.preventDefault();
 
-    // Necessary to determine the appropriate file extension
-    // This mapping is obviously not exhaustive, but covers popular languages
-    var fileExtensions = {
-        'text': '.txt',
-        'coffeescript': '.coffee',
-        'css': '.css',
-        'htmlmixed': '.html',
-        'javascript': '.js',
-        'jinja2': '.html',
-        'markdown': '.md',
-        'php': '.php',
-        'python': '.py',
-        'sass': '.scss',
-        'sql': '.sql',
-        'verilog': '.v',
-        'yaml': '.yml'
-    };
-
-    // If the file extension is unknown, default to having no file extension.
-    var fileExtension = '';
-    if (fileExtensions.hasOwnProperty(this.pasteLanguage.text().toLowerCase())) {
-        fileExtension = fileExtensions[this.pasteLanguage.text().toLowerCase()];
-    }
-
+    var fileExtension = modernPaste.universal.CommonController.getFileExtensionForType(this.pasteLanguage.text());
     this.pasteDownloadContent.attr('download', this.pasteTitle.text() + fileExtension);
     this.pasteDownloadContent.attr('href', 'data:text/plain;base64,' + window.btoa(this.pasteContents.getValue()));
     this.pasteDownloadContent[0].click();

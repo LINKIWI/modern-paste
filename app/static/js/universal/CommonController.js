@@ -45,6 +45,40 @@ modernPaste.universal.CommonController.truncateText = function(text, characterLi
     return text.length > characterLimit ? text.substring(0, characterLimit) + '...' : text;
 };
 
+/**
+ * Get the file extension for the given file type.
+ *
+ * @param fileType A string representing the paste language.
+ * @returns {string} A string representing the associated file extension.
+ */
+modernPaste.universal.CommonController.getFileExtensionForType = function(fileType) {
+    // Necessary to determine the appropriate file extension
+    // This mapping is obviously not exhaustive, but covers popular languages
+    var fileExtensions = {
+        'text': '.txt',
+        'coffeescript': '.coffee',
+        'css': '.css',
+        'htmlmixed': '.html',
+        'javascript': '.js',
+        'jinja2': '.html',
+        'markdown': '.md',
+        'php': '.php',
+        'python': '.py',
+        'sass': '.scss',
+        'sql': '.sql',
+        'verilog': '.v',
+        'yaml': '.yml'
+    };
+
+    // If the file extension is unknown, default to having no file extension.
+    var fileExtension = '';
+    if (fileExtensions.hasOwnProperty(fileType.toLowerCase())) {
+        fileExtension = fileExtensions[fileType.toLowerCase()];
+    }
+
+    return fileExtension;
+};
+
 
 $(document).ready(function() {
     new modernPaste.universal.CommonController();
