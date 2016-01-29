@@ -107,6 +107,11 @@
           "type": "boolean"
         },
         {
+          "key": "is_password_protected",
+          "value": "Whether the paste is protected by a password.",
+          "type": "boolean"
+        },
+        {
           "key": "paste_id_repr",
           "value": "The paste ID, represented as either a decrypted or encrypted ID (this is configured by the server administrator)",
           "type": "number/string"
@@ -176,6 +181,11 @@
           "type": "boolean"
         },
         {
+          "key": "is_password_protected",
+          "value": "Whether the paste is protected by a password.",
+          "type": "boolean"
+        },
+        {
           "key": "paste_id_repr",
           "value": "Request input callback",
           "type": "number/string"
@@ -189,6 +199,21 @@
           "key": "poster_username",
           "value": "Username of poster; 'Anonymous' if posted anonymously",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Get pastes for user",
+      "uri_class": ["paste", "PastesForUserURI"],
+      "authentication": "required",
+      "short_description": "Get all pastes for the authenticated user",
+      "long_description": "Retrieve a list of paste details for the user, authenticated via an API key. The pastes will be returned in an array whose elements have the same key-value pairs as the Paste Details API endpoint.",
+      "request_parameters": [],
+      "response_parameters": [
+        {
+          "key": "pastes",
+          "value": "Array of paste details. The paste details fields are exactly identical to those returned by the Paste Details API endpoint above.",
+          "type": "array"
         }
       ]
     },

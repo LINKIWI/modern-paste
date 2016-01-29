@@ -56,4 +56,5 @@ class Paste(db.Model):
             'title': self.title,
             'language': self.language,
             'views': self.views,
+            'is_password_protected': self.password_hash is not None,
         }
