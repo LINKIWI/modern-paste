@@ -2,6 +2,7 @@ from flask import redirect
 from flask.ext.login import logout_user
 
 from api.decorators import hide_if_logged_in
+from api.decorators import require_login_frontend
 from api.decorators import render_view
 from modern_paste import app
 from uri.main import *
@@ -20,6 +21,13 @@ def user_login_interface():
 @render_view
 def user_register_interface():
     return 'user/register.html', {}
+
+
+@app.route(UserAccountInterfaceURI.path, methods=['GET'])
+@require_login_frontend
+@render_view
+def user_account_interface():
+    return 'user/account.html', {}
 
 
 @app.route(UserLogoutInterfaceURI.path, methods=['GET'])

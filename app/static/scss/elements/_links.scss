@@ -33,3 +33,11 @@
 .light-link a:hover {
     border-bottom: 2px solid $blue;
 }
+
+.icon-link a:link,
+.icon-link a:visited,
+.icon-link a:active,
+.icon-link a:hover {
+    color: transparent;
+    text-decoration: none;
+}

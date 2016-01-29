@@ -1,0 +1,54 @@
+@import '../universal/colors';
+
+
+.account-section-container {
+    margin: 70px 0 150px 100px;
+    width: 800px;
+
+    .hidden-setting {
+        display: none;  // Settings sections that are hidden by default
+    }
+
+    .account-settings-list-group {
+        float: left;
+        width: 300px;
+
+        .header-list-group-item {
+            height: 40px;
+        }
+    }
+
+    .settings-section-container {
+        margin-left: 400px;
+        min-width: 400px;
+        width: 700px;
+
+        .settings-header {
+            margin-bottom: 70px;
+        }
+    }
+
+    .pastes-settings {
+        td,
+        th {
+            padding: 8px 0;
+        }
+
+        .separator {
+            height: 5px;
+        }
+
+        .paste-actions {
+            text-align: right;
+        }
+
+        .action-icon {
+            color: $darker-blue;
+        }
+    }
+
+    .form-control {
+        height: 15px;
+        width: 500px;
+    }
+}

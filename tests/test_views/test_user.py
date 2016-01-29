@@ -3,6 +3,7 @@ from flask.ext.login import current_user
 import util.testing
 import views.user
 from uri.main import *
+from uri.user import *
 
 
 class TestUser(util.testing.DatabaseTestCase):
@@ -38,3 +39,14 @@ class TestUser(util.testing.DatabaseTestCase):
         redirect_resp = views.user.user_register_interface()
         self.assertEqual(302, redirect_resp.status_code)
         self.assertEqual(HomeURI.uri(), redirect_resp.location)
+
+    def test_user_account_interface(self):
+        redirect_resp = views.user.user_account_interface()
+        self.assertEqual(302, redirect_resp.status_code)
+        self.assertIn(UserLoginInterfaceURI.uri(), redirect_resp.location)
+        self.assertFalse(current_user.is_authenticated)
+
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        self.assertTrue(current_user.is_authenticated)
+        self.assertIn('Modify your account settings', views.user.user_account_interface())

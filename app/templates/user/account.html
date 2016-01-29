@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Account - Modern Paste
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    {{ import_js([
+        'user/AccountPastesController.js',
+        'user/AccountController.js',
+    ])|safe }}
+{% endblock %}
+
+{% block content %}
+    <div class="account-header-container main-header-container">
+        <div class="main-header dark-link-alt">
+            <p class="main-title sans-serif regular white size-8 spaced">ACCOUNT</p>
+            <p class="sans-serif semibold light-gray size-2 less-spaced">Modify your account settings</p>
+        </div>
+    </div>
+    <div class="account-section-container">
+        <!--Left side bar for settings sections-->
+        <div class="account-settings-list-group list-group sans-serif regular gray less-spaced size-2">
+            <p href="#" class="header-list-group-item list-group-item">
+                <span class="sans-serif semibold size-2">ACCOUNT SETTINGS</span>
+                <br/>
+                {{ current_user.username }}
+            </p>
+            <a href="#" class="pastes-list-group-item settings-item list-group-item sans-serif semibold active" data-section="pastes-settings">MY PASTES</a>
+            <a href="#" class="user-profile-list-group-item settings-item list-group-item" data-section="user-profile-settings">USER PROFILE</a>
+            <a href="#" class="api-key-list-group-item settings-item list-group-item" data-section="api-key-settings">API KEY</a>
+            <a href="#" class="deactivate-list-group-item settings-item list-group-item" data-section="deactivate-settings">DEACTIVATE</a>
+        </div>
+        <!--My pastes-->
+        <div class="pastes-settings settings-section-container">
+            <div class="settings-header">
+                <p class="sans-serif semibold gray less-spaced size-4">MANAGE YOUR PASTES</p>
+                <p class="sans-serif regular light-gray less-spaced size-2">View, modify, and delete pastes you've posted</p>
+            </div>
+            <div class="settings-contents">
+                <table width="100%">
+                    <tr class="paste-item-header" valign="middle">
+                        <td width="60%">
+                            <p class="paste-title sans-serif semibold gray size-2 less-spaced">TITLE</p>
+                        </td>
+                        <td width="15%">
+                            <p class="paste-posted sans-serif semibold gray size-2 less-spaced">POSTED</p>
+                        </td>
+                        <td width="25%">
+                            <p class="paste-actions sans-serif semibold gray size-2 less-spaced">ACTIONS</p>
+                        </td>
+                    </tr>
+                    <tr class="separator"></tr>
+                </table>
+                <table class="user-pastes-container" width="100%">
+                </table>
+            </div>
+        </div>
+        <!--User profile-->
+        <div class="user-profile-settings settings-section-container hidden-setting">
+            <div class="settings-header">
+                <p class="sans-serif semibold gray less-spaced size-4">EDIT YOUR USER PROFILE</p>
+                <p class="sans-serif regular light-gray less-spaced size-2">Modify your name, email, and password</p>
+            </div>
+            <div class="settings-contents">
+                TODO
+            </div>
+        </div>
+        <!--API key-->
+        <div class="api-key-settings settings-section-container hidden-setting">
+            <div class="settings-header">
+                <p class="sans-serif semibold gray less-spaced size-4">API KEY</p>
+                <p class="sans-serif regular light-gray less-spaced size-2">View or regenerate your API key</p>
+            </div>
+            <div class="settings-contents">
+                TODO
+            </div>
+        </div>
+        <!--Deactivate-->
+        <div class="deactivate-settings settings-section-container hidden-setting">
+            <div class="settings-header">
+                <p class="sans-serif semibold gray less-spaced size-4">DEACTIVATE ACCOUNT</p>
+                <p class="sans-serif regular light-gray less-spaced size-2">Deactivate your Modern Paste account</p>
+            </div>
+            <div class="settings-contents">
+                TODO
+            </div>
+        </div>
+    </div>
+    <template class="paste-item-template">
+        <tr class="paste-item" valign="middle">
+            <td width="60%">
+                <p class="sans-serif regular gray size-2 less-spaced light-link">
+                    <a class="paste-title" href=""></a>
+                </p>
+            </td>
+            <td width="15%">
+                <p class="paste-posted sans-serif regular gray size-2 less-spaced"></p>
+            </td>
+            <td width="25%">
+                <p class="paste-actions sans-serif regular gray size-2 less-spaced icon-link">
+                    <a href="#" class="paste-download-icon" data-toggle="tooltip" data-placement="auto" title="Download" download>
+                        <span class="action-icon fa-stack">
+                            <i class="fa fa-circle-thin fa-stack-2x"></i>
+                            <i class="fa fa-arrow-down fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a class="paste-download-contents hidden"></a>
+                    <a href="#" class="paste-fork-icon" data-toggle="tooltip" data-placement="auto" title="Fork">
+                        <span class="action-icon fa-stack">
+                            <i class="fa fa-circle-thin fa-stack-2x"></i>
+                            <i class="fa fa-code-fork fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a href="#" class="paste-set-password-icon" data-toggle="tooltip" data-placement="auto" title="Set password">
+                        <span class="action-icon fa-stack">
+                            <i class="fa fa-circle-thin fa-stack-2x"></i>
+                            <i class="fa fa-lock fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a href="#" class="paste-remove-password-icon" data-toggle="tooltip" data-placement="auto" title="Remove password">
+                        <span class="action-icon fa-stack">
+                            <i class="fa fa-circle-thin fa-stack-2x"></i>
+                            <i class="fa fa-unlock fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a href="#" class="paste-deactivate-icon" data-toggle="tooltip" data-placement="auto" title="Deactivate">
+                        <span class="action-icon fa-stack">
+                            <i class="fa fa-circle-thin fa-stack-2x"></i>
+                            <i class="fa fa-trash fa-stack-1x"></i>
+                        </span>
+                    </a>
+                </p>
+            </td>
+        </tr>
+    </template>
+{% endblock %}

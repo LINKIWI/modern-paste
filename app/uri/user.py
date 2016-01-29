@@ -13,6 +13,10 @@ class UserRegisterInterfaceURI(URI):
     path = '/register'
 
 
+class UserAccountInterfaceURI(URI):
+    path = '/account'
+
+
 class UserCreateURI(URI):
     api_endpoint = True
     path = '/api/user/create'
