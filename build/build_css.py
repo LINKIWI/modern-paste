@@ -10,6 +10,11 @@ import config
 import constants
 
 
+def abort_if_error(return_code):
+    if return_code != 0:
+        sys.exit(return_code)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -63,8 +68,9 @@ if __name__ == '__main__':
         scss_file_path = '{directory}/{scss_file}'.format(directory=directory, scss_file=scss_file)
         css_file_path = 'app/static/build/css/{css_file}'.format(css_file=scss_file.replace('.scss', '.css'))
         print 'Compiling CSS {scss_path} --> {css_path}'.format(scss_path=scss_file_path, css_path=css_file_path)
-        subprocess.call([
+        abort_if_error(subprocess.call([
             'sass',
             '{scss_path}:{css_path}'.format(scss_path=scss_file_path, css_path=css_file_path),
             '--style', style,
-        ])
+        ]))
+    print 'CSS build complete.'

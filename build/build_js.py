@@ -10,6 +10,11 @@ import config
 import constants
 
 
+def abort_if_error(return_code):
+    if return_code != 0:
+        sys.exit(return_code)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -67,9 +72,10 @@ if __name__ == '__main__':
     print 'Javascript build started.'
     for js_file, js_output_file in zip(js_files, js_output_files):
         print 'Compiling {js_file} --> {js_output_file}'.format(js_file=js_file, js_output_file=js_output_file)
-        subprocess.call([
+        abort_if_error(subprocess.call([
             'java', '-jar', CLOSURE_COMPILER_JAR,
             '--js', js_file,
             '--js', 'app/static/js/universal/**.js',
             '--js_output_file', js_output_file,
-        ])
+        ]))
+    print 'Javascript build complete.'
