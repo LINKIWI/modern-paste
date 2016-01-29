@@ -20,11 +20,14 @@ modernPaste.universal.AlertController = function() {
 modernPaste.universal.AlertController.displayAlert = function(alertType, message) {
     this.alertContainer = $('#alert');
     this.alertMessage = this.alertContainer.find('.alert-message');
+    this.alertTitle = this.alertContainer.find('.alert-title');
 
     this.alertContainer.removeClass();
     if (alertType === this.ALERT_TYPE_SUCCESS) {
+        this.alertTitle.text('');
         this.alertContainer.addClass('alert-success');
     } else if (alertType === this.ALERT_TYPE_FAILURE) {
+        this.alertTitle.text('There was an error processing your request.');
         this.alertContainer.addClass('alert-error');
     }
 
