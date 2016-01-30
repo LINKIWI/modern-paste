@@ -33,7 +33,7 @@ modernPaste.misc.APIDocumentationController.animateAnchorJump = function() {
     $('html, body').animate({
         'scrollTop': $( $.attr(this, 'href') ).offset().top
     }, {
-        'duration': 1000,
+        'duration': 700,
         'easing': 'easeOutQuint'
     });
 };

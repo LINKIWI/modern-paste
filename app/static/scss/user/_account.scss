@@ -2,7 +2,7 @@
 
 
 .account-section-container {
-    margin: 70px 0 150px 100px;
+    margin: 70px 0 50px 100px;
     width: 800px;
 
     .hidden-setting {
@@ -29,6 +29,14 @@
 
         .settings-header {
             margin-bottom: 70px;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section-title {
+            margin-bottom: 5px;
         }
     }
 
@@ -59,4 +67,8 @@
 
 .modal-body {
     padding: 30px 20px;
+}
+
+.account-splash {
+    z-index: 4;
 }

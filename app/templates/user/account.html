@@ -9,6 +9,7 @@
 
     {{ import_js([
         'user/account/AccountPastesController.js',
+        'user/account/AccountAPIKeyController.js',
         'user/account/AccountController.js',
     ])|safe }}
 {% endblock %}
@@ -81,7 +82,29 @@
                 <p class="sans-serif regular light-gray less-spaced size-2">View or regenerate your API key</p>
             </div>
             <div class="settings-contents">
-                TODO
+                <div class="settings-section light-link">
+                    <p class="settings-section-title sans-serif semibold gray size-2 less-spaced">VIEW API KEY</p>
+                    <p class="settings-section-text sans-serif regular gray size-2">
+                        This is the API key associated with your account. Use it to authenticate requests to the
+                        <a href="{{ uri('misc', 'APIDocumentationInterfaceURI') }}">Modern Paste API</a>. Note that
+                        all authentication-sensitive requests made through the API via your API key will modify
+                        your account the same way as if you were logged in and performing actions via the web interface.
+                        <span class="sans-serif semibold red">Never expose your API key; treat it like a password!</span>
+                    </p>
+                </div>
+                <fieldset class="email-form-group form-group">
+                    <input type="text" class="api-key-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" value="{{ current_user.api_key }}" readonly>
+                </fieldset>
+                <br/><br/>
+                <div class="settings-section light-link">
+                    <p class="settings-section-title sans-serif semibold gray size-2 less-spaced">GENERATE NEW API KEY</p>
+                    <p class="settings-section-text sans-serif regular gray size-2">
+                        To generate a new API key, click the below button. This should be done if your API key is ever
+                        publicly exposed. <span class="sans-serif semibold red">Note that your old API key will no
+                        longer authenticate requests.</span>
+                    </p>
+                </div>
+                <button type="button" class="regenerate-api-key-button btn btn-primary sans-serif semibold white size-1 less-spaced" autocomplete="off">GENERATE NEW API KEY</button>
             </div>
         </div>
 
@@ -133,6 +156,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="account-splash splash">
+        <div class="spinner"><div></div></div>
     </div>
 
     <template class="paste-item-template">

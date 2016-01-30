@@ -1,6 +1,7 @@
 goog.provide('modernPaste.user.account.AccountController');
 
 goog.require('modernPaste.user.account.AccountPastesController');
+goog.require('modernPaste.user.account.AccountAPIKeyController');
 
 
 /**
@@ -51,4 +52,5 @@ modernPaste.user.account.AccountController.switchSettingsSection = function(evt)
 $(document).ready(function() {
     new modernPaste.user.account.AccountController();
     new modernPaste.user.account.AccountPastesController();
+    new modernPaste.user.account.AccountAPIKeyController();
 });
