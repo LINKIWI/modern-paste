@@ -1,4 +1,5 @@
 import models
+import database.paste
 import util.cryptography
 import util.testing
 from modern_paste import login_manager
@@ -116,12 +117,12 @@ def authenticate_user(username, password):
     :raises UserDoesNotExistException: If no user exists with the given username
     """
     user = get_user_by_username(username)
-    return util.cryptography.secure_hash(password) == user.password_hash
+    return user.is_active and util.cryptography.secure_hash(password) == user.password_hash
 
 
 def deactivate_user(user_id):
     """
-    Deactivate the specified user by ID.
+    Deactivate the specified user by ID. This procedure also deactivates all of the user's pastes.
 
     :param user_id: User ID to deactivate
     :return: An instance of models.User of the deactivated user
@@ -130,6 +131,8 @@ def deactivate_user(user_id):
     user = get_user_by_id(user_id)
     user.is_active = False
     session.commit()
+    for paste in database.paste.get_all_pastes_for_user(user.user_id, active_only=True):
+        database.paste.deactivate_paste(paste.paste_id)
     return user
 
 

@@ -44,6 +44,7 @@ modernPaste.user.account.AccountDeactivateController.showDeactivateAccountModal 
  */
 modernPaste.user.account.AccountDeactivateController.deactivateAccount = function() {
     this.deactivateAccountButton.prop('disabled', true);
+    this.accountDeactivateModal.modal('hide');
     modernPaste.universal.SplashController.showSplash(this.accountSplash);
 
     $.ajax({
@@ -59,7 +60,6 @@ modernPaste.user.account.AccountDeactivateController.deactivateAccount = functio
  */
 modernPaste.user.account.AccountDeactivateController.onDeactivateSuccess = function() {
     this.deactivateAccountButton.prop('disabled', false);
-    this.accountDeactivateModal.modal('hide');
     modernPaste.universal.SplashController.hideSplash(this.accountSplash);
 
     modernPaste.universal.AlertController.displaySuccessAlert(
@@ -76,7 +76,6 @@ modernPaste.user.account.AccountDeactivateController.onDeactivateSuccess = funct
  */
 modernPaste.user.account.AccountDeactivateController.showDeactivateFailure = function() {
     this.deactivateAccountButton.prop('disabled', false);
-    this.accountDeactivateModal.modal('hide');
     modernPaste.universal.SplashController.hideSplash(this.accountSplash);
 
     modernPaste.universal.AlertController.displayErrorAlert(

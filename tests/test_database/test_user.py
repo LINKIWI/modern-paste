@@ -3,6 +3,7 @@ from util.exception import *
 import util.testing
 import util.cryptography
 import database.user
+import database.paste
 
 
 class TestUser(util.testing.DatabaseTestCase):
@@ -127,11 +128,19 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertTrue(database.user.authenticate_user('userNAME', 'password'))
         self.assertTrue(database.user.authenticate_user('uSeRnAME', 'password'))
 
+    def test_authenticate_inactive_user(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        database.user.deactivate_user(user.user_id)
+        self.assertFalse(database.user.authenticate_user('username', 'password'))
+
     def test_deactivate_user(self):
-        util.testing.UserFactory.generate()
-        self.assertTrue(database.user.get_user_by_id(1).is_active)
-        database.user.deactivate_user(1)
-        self.assertFalse(database.user.get_user_by_id(1).is_active)
+        user = util.testing.UserFactory.generate()
+        [util.testing.PasteFactory.generate(user_id=user.user_id) for i in range(15)]
+        self.assertTrue(database.user.get_user_by_id(user.user_id).is_active)
+        self.assertEqual(15, len(database.paste.get_all_pastes_for_user(user.user_id, active_only=True)))
+        database.user.deactivate_user(user.user_id)
+        self.assertFalse(database.user.get_user_by_id(user.user_id).is_active)
+        self.assertEqual(0, len(database.paste.get_all_pastes_for_user(user.user_id, active_only=True)))
 
     def test_is_username_available(self):
         self.assertTrue(database.user.is_username_available('username'))

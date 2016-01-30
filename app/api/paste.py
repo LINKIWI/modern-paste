@@ -102,8 +102,7 @@ def paste_details():
         paste_details_dict['poster_username'] = 'Anonymous'
         if paste.user_id:
             poster = database.user.get_user_by_id(paste.user_id)
-            if poster.is_active:
-                paste_details_dict['poster_username'] = poster.username
+            paste_details_dict['poster_username'] = poster.username
         if not paste.password_hash or (data.get('password') and paste.password_hash == util.cryptography.secure_hash(data.get('password'))):
             return flask.jsonify({
                 constants.api.RESULT: constants.api.RESULT_SUCCESS,

@@ -412,8 +412,8 @@ class TestPaste(util.testing.DatabaseTestCase):
             }),
             content_type='application/json',
         )
-        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
-        self.assertEqual('Anonymous', json.loads(resp.data)['details']['poster_username'])
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
 
     def test_paste_details_nonexistent(self):
         resp = self.client.post(
