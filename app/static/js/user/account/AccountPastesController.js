@@ -186,7 +186,7 @@ modernPaste.user.account.AccountPastesController.removePastePasswordModal = func
 };
 
 /**
- * TODO
+ * Request the server to remove the paste's password.
  *
  * @param pasteDetails Object describing paste details for this particular paste.
  */
@@ -194,6 +194,47 @@ modernPaste.user.account.AccountPastesController.removePastePassword = function(
     evt.preventDefault();
 
     this.passwordRemoveConfirmModal.find('.remove-password-button').prop('disabled', true);
+    $.ajax({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteSetPasswordURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+            'paste_id': pasteDetails.paste_id_repr,
+            'password': null
+        })
+    })
+    .done(modernPaste.user.account.AccountPastesController.showPasteRemovePasswordSuccess.bind(this, pasteDetails))
+    .fail(modernPaste.user.account.AccountPastesController.showPasteRemovePasswordFailure.bind(this));
+};
+
+/**
+ * Display a generic success message if the paste password removal was successful.
+ *
+ * @param pasteDetails Object describing paste details for this particular paste.
+ */
+modernPaste.user.account.AccountPastesController.showPasteRemovePasswordSuccess = function(pasteDetails) {
+    this.passwordRemoveConfirmModal.find('.remove-password-button').prop('disabled', false);
+    this.passwordRemoveConfirmModal.modal('hide');
+    modernPaste.universal.AlertController.displaySuccessAlert(
+        'The password for paste ' + modernPaste.universal.CommonController.truncateText(pasteDetails.title, 25) + ' was successfully removed.'
+    );
+};
+
+/**
+ * Display a generic error message if the paste password removal fails.
+ */
+modernPaste.user.account.AccountPastesController.showPasteRemovePasswordFailure = function() {
+    this.passwordRemoveConfirmModal.find('.remove-password-button').prop('disabled', false);
+    this.passwordRemoveConfirmModal.modal('hide');
+    modernPaste.universal.AlertController.displayErrorAlert(
+        modernPaste.universal.AlertController.selectErrorMessage(
+            data,
+            {
+                'nonexistent_paste_failure': 'This paste either does not exist or has been deactivated.',
+                'auth_failure': 'You need to be logged in to the account that owns this paste in order to remove its password.'
+            }
+        )
+    );
 };
 
 /**
@@ -268,7 +309,6 @@ modernPaste.user.account.AccountPastesController.showPasteDeactivationSuccess = 
  * Display an alert indicating paste deactivation failure.
  */
 modernPaste.user.account.AccountPastesController.showPasteDeactivationFailure = function(data) {
-    console.log(data.responseJSON);
     this.deactivateConfirmModal.find('.deactivate-button').prop('disabled', false);
     this.deactivateConfirmModal.modal('hide');
     modernPaste.universal.AlertController.displayErrorAlert(
