@@ -76,4 +76,5 @@ $(document).ready(function() {
     new modernPaste.user.account.AccountController();
     new modernPaste.user.account.AccountPastesController();
     new modernPaste.user.account.AccountAPIKeyController();
+    new modernPaste.user.account.AccountDeactivateController();
 });

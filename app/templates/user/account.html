@@ -10,6 +10,7 @@
     {{ import_js([
         'user/account/AccountPastesController.js',
         'user/account/AccountAPIKeyController.js',
+        'user/account/AccountDeactivateController.js',
         'user/account/AccountController.js',
     ])|safe }}
 {% endblock %}
@@ -122,12 +123,19 @@
                 <p class="sans-serif regular light-gray less-spaced size-2">Deactivate your Modern Paste account</p>
             </div>
             <div class="settings-contents">
-                TODO
+                <div class="settings-section light-link">
+                    <p class="settings-section-title sans-serif semibold gray size-2 less-spaced">DEACTIVATE YOUR ACCOUNT</p>
+                    <p class="settings-section-text sans-serif regular gray size-2">
+                        This action will completely deactivate your Modern Paste account. This will also deactivate all
+                        pastes posted under this account. Click the below button to continue.
+                    </p>
+                </div>
+                <button type="button" class="deactivate-account-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE MY ACCOUNT</button>
             </div>
         </div>
     </div>
 
-    <!--Modal for deactivation confirmation-->
+    <!--Modal for paste deactivation confirmation-->
     <div class="deactivate-confirm-modal modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content light-link">
@@ -141,6 +149,25 @@
                 <div class="modal-footer">
                     <button type="button" class="cancel-button btn btn-default sans-serif semibold gray size-1 less-spaced" data-dismiss="modal">CANCEL</button>
                     <button type="button" class="deactivate-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal for account deactivation confirmation-->
+    <div class="user-deactivate-confirm-modal modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content light-link">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title sans-serif semibold gray size-3 less-spaced">DEACTIVATE ACCOUNT</p>
+                </div>
+                <div class="modal-body">
+                    <p class="sans-serif regular gray size-2">You are about to deactivate your account. Note that this will deactivate all pastes posted under your account. Are you sure you want to continue?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-button btn btn-default sans-serif semibold gray size-1 less-spaced" data-dismiss="modal">CANCEL</button>
+                    <button type="button" class="user-deactivate-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE</button>
                 </div>
             </div>
         </div>

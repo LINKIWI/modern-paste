@@ -2,6 +2,7 @@ goog.provide('modernPaste.user.account.AccountAPIKeyController');
 
 goog.require('modernPaste.universal.AlertController');
 goog.require('modernPaste.universal.URIController');
+goog.require('modernPaste.universal.SplashController');
 
 
 /**
