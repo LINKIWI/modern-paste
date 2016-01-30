@@ -106,12 +106,12 @@ modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(d
             modernPaste.user.account.AccountPastesController.deactivatePasteModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
 
-        // Number of total pastes
-        this.numPastes.text('' + data.pastes.length + ' TOTAL ACTIVE PASTES');
-
         // Add element to DOM
         this.userPastesContainer.append(pasteTableRow);
     }.bind(this));
+
+    // Number of total pastes
+    this.numPastes.text('' + data.pastes.length + ' TOTAL ACTIVE PASTES');
 
     // Initialize all tooltips
     // This needs to be done after all the paste rows are completed loading.

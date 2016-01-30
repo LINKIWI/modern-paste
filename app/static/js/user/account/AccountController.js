@@ -13,6 +13,10 @@ goog.require('modernPaste.user.account.AccountAPIKeyController');
  */
 modernPaste.user.account.AccountController = function() {
     this.settingsLinks = $('.settings-item');
+    this.settingsSectionContainers = $('.settings-section-container');
+    this.desktopSettingsListGroup = $('.account-section-container .account-settings-list-group');
+    this.mobileSettingsListGroup = $('.account-section-container .mobile-account-settings-list-group');
+
     var settingsContainersObjects = this.settingsLinks.map(function(link) {
         // Each settings-item has a data-section field which is the name of the class of the settings container.
         // This goes through each of the settings items, and creates a JQuery object of the settings container.
@@ -26,7 +30,10 @@ modernPaste.user.account.AccountController = function() {
         return settingsContainersObjects[key];
     }.bind(this));
 
+    modernPaste.user.account.AccountController.changeListGroupView.bind(this)();
+
     this.settingsLinks.on('click', modernPaste.user.account.AccountController.switchSettingsSection.bind(this));
+    $(window).resize(modernPaste.user.account.AccountController.changeListGroupView.bind(this));
 };
 
 /**
@@ -36,7 +43,7 @@ modernPaste.user.account.AccountController.switchSettingsSection = function(evt)
     evt.preventDefault();
 
     this.settingsLinks.removeClass('active sans-serif semibold');
-    var clickedSettingsLink = $(evt.target);
+    var clickedSettingsLink = $('.' + $(evt.target).attr('class').split(/\s+/)[0]);
     var correspondingSettingsContainer = $('.' + clickedSettingsLink.data('section'))[0];
     this.settingsContainers.forEach(function(container) {
         if (container[0] === correspondingSettingsContainer) {
@@ -46,6 +53,22 @@ modernPaste.user.account.AccountController.switchSettingsSection = function(evt)
             $(container).hide();
         }
     });
+};
+
+/**
+ * Change the list group view type (desktop/mobile) depending on the current browser width.
+ */
+modernPaste.user.account.AccountController.changeListGroupView = function() {
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    if (width > 1250) {
+        this.mobileSettingsListGroup.hide();
+        this.desktopSettingsListGroup.show();
+        this.settingsSectionContainers.css('margin-left', '400px');
+    } else {
+        this.mobileSettingsListGroup.show();
+        this.desktopSettingsListGroup.hide();
+        this.settingsSectionContainers.css('margin-left', 0);
+    }
 };
 
 
