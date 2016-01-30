@@ -27,6 +27,11 @@ class UserDeactivateURI(URI):
     path = '/api/user/deactivate'
 
 
+class UserAPIKeyRegenerateURI(URI):
+    api_endpoint = True
+    path = '/api/user/api_key/regenerate'
+
+
 class CheckUsernameAvailabilityURI(URI):
     api_endpoint = True
     path = '/api/user/check_username_availability'

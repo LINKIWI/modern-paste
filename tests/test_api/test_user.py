@@ -145,6 +145,31 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
             self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
 
+    def test_api_key_regenerate(self):
+        old_api_key = util.testing.UserFactory.generate(username='username', password='password').api_key
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserAPIKeyRegenerateURI.uri(),
+            data=json.dumps({}),
+            content_type='application/json',
+        )
+        new_key = json.loads(resp.data)['api_key']
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual(64, len(new_key))
+        self.assertNotEqual(old_api_key, new_key)
+
+    def test_api_key_regenerate_server_error(self):
+        with mock.patch.object(database.user, 'generate_new_api_key', side_effect=SQLAlchemyError):
+            util.testing.UserFactory.generate(username='username', password='password')
+            self.api_login_user('username', 'password')
+            resp = self.client.post(
+                UserAPIKeyRegenerateURI.uri(),
+                data=json.dumps({}),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
+
     def test_check_username_availability_invalid_data(self):
         resp = self.client.post(
             CheckUsernameAvailabilityURI.uri(),

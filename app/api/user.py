@@ -68,6 +68,19 @@ def deactivate_user():
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
+@app.route(UserAPIKeyRegenerateURI.path, methods=['POST'])
+@require_login_api
+def api_key_regenerate():
+    try:
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'api_key': database.user.generate_new_api_key(current_user.user_id).api_key,
+        }), constants.api.SUCCESS_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
 @app.route(CheckUsernameAvailabilityURI.path, methods=['POST'])
 @require_form_args(['username'])
 def check_username_availability():
