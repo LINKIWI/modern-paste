@@ -192,13 +192,91 @@ class TestPaste(util.testing.DatabaseTestCase):
             resp = self.client.post(
                 PasteDeactivateURI.uri(),
                 data=json.dumps({
-                    'paste_id': paste.paste_id,
+                    'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                     'deactivation_token': paste.deactivation_token,
                 }),
                 content_type='application/json',
             )
             self.assertEqual(resp.status_code, constants.api.UNDEFINED_FAILURE_CODE)
             self.assertEqual(json.loads(resp.data), constants.api.UNDEFINED_FAILURE)
+
+    def test_set_paste_password(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id)
+        old_password_hash = paste.password_hash
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertNotEqual(database.paste.get_paste_by_id(paste.paste_id).password_hash, old_password_hash)
+
+    def test_set_paste_password_unauth(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id)
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertEqual('auth_failure', json.loads(resp.data)[constants.api.FAILURE])
+
+    def test_add_paste_password(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id, password=None)
+        self.assertIsNone(paste.password_hash)
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+
+    def test_remove_paste_password(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id, password='password')
+        self.assertIsNotNone(paste.password_hash)
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                'password': None,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertIsNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+
+    def test_set_paste_password_server_error(self):
+        with mock.patch.object(database.paste, 'set_paste_password', side_effect=SQLAlchemyError):
+            user = util.testing.UserFactory.generate(username='username', password='password')
+            self.api_login_user('username', 'password')
+            paste = util.testing.PasteFactory.generate(user_id=user.user_id)
+            resp = self.client.post(
+                PasteSetPasswordURI.uri(),
+                data=json.dumps({
+                    'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                    'password': 'password',
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
 
     def test_paste_details_invalid(self):
         resp = self.client.post(

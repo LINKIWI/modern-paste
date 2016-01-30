@@ -60,6 +60,35 @@ def deactivate_paste():
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
+@app.route(PasteSetPasswordURI.path, methods=['POST'])
+@require_form_args(['paste_id', 'password'], allow_blank_values=True)
+@require_login_api
+def set_paste_password():
+    """
+    Modify a paste's password, unset it, or set a new one.
+    """
+    data = flask.request.get_json()
+    try:
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(data['paste_id']), active_only=True)
+        if paste.user_id != current_user.user_id:
+            return flask.jsonify({
+                constants.api.RESULT: constants.api.RESULT_FAULURE,
+                constants.api.MESSAGE: 'User does not own the specified paste',
+                constants.api.FAILURE: 'auth_failure',
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+            }), constants.api.AUTH_FAILURE_CODE
+        database.paste.set_paste_password(paste.paste_id, data['password'])
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+        }), constants.api.SUCCESS_CODE
+    except (PasteDoesNotExistException, InvalidIDException):
+        return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
 @app.route(PasteDetailsURI.path, methods=['POST'])
 @require_form_args(['paste_id'])
 def paste_details():

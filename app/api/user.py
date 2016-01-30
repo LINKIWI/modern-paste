@@ -71,6 +71,9 @@ def deactivate_user():
 @app.route(UserAPIKeyRegenerateURI.path, methods=['POST'])
 @require_login_api
 def api_key_regenerate():
+    """
+    Generate a new API key for the currently logged-in user.
+    """
     try:
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_SUCCESS,
