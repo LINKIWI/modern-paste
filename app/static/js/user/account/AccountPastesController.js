@@ -15,6 +15,9 @@ goog.require('modernPaste.universal.URIController');
 modernPaste.user.account.AccountPastesController = function() {
     this.pasteItemTemplate = $('.paste-item-template');
     this.userPastesContainer = $('.pastes-settings .user-pastes-container');
+    this.numPastes = $('.pastes-settings .num-pastes');
+    this.deactivateConfirmModal = $('.deactivate-confirm-modal');
+    this.passwordRemoveConfirmModal = $('.password-remove-confirm-modal');
 
     modernPaste.user.account.AccountPastesController.loadUserPastes.bind(this)();
 };
@@ -86,7 +89,6 @@ modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(d
         );
 
         // Initialize icon event handlers
-        // TODO: prevent default on all of these
         pasteTableRow.find('.paste-download-icon').on(
             'click',
             modernPaste.user.account.AccountPastesController.downloadPaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
@@ -97,13 +99,17 @@ modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(d
         );
         pasteTableRow.find('.paste-remove-password-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.removePastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.removePastePasswordModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
         pasteTableRow.find('.paste-deactivate-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.deactivatePaste.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.deactivatePasteModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
 
+        // Number of total pastes
+        this.numPastes.text('' + data.pastes.length + ' TOTAL ACTIVE PASTES');
+
+        // Add element to DOM
         this.userPastesContainer.append(pasteTableRow);
     }.bind(this));
 
@@ -128,7 +134,9 @@ modernPaste.user.account.AccountPastesController.showPasteLoadError = function()
  * @param pasteDownloadContents A JQuery object representing a hidden link to temporarily store the
  *                              contents of the paste for download.
  */
-modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents) {
+modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents, clickedObject, evt) {
+    evt.preventDefault();
+
     var fileExtension = modernPaste.universal.CommonController.getFileExtensionForType(pasteDetails.language);
     pasteDownloadContents.attr('download', pasteDetails.title + fileExtension);
     pasteDownloadContents.attr('href', 'data:text/plain;base64,' + window.btoa(pasteDetails.contents));
@@ -140,24 +148,145 @@ modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteD
  *
  * @param pasteDetails
  */
-modernPaste.user.account.AccountPastesController.setPastePassword = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.setPastePassword = function(pasteDetails, clickedObject, evt) {
+    evt.preventDefault();
+};
 
+/**
+ * Show the modal for removing the passowrd from a password-protected paste, where the user can confirm or cancel.
+ *
+ * @param pasteDetails Object describing paste details for this particular paste.
+ */
+modernPaste.user.account.AccountPastesController.removePastePasswordModal = function(pasteDetails, clickedObject, evt) {
+    evt.preventDefault();
+
+    // Set modal text
+    var pasteLink = '<a href="' +
+        modernPaste.universal.URIController.formatURI(
+            modernPaste.universal.URIController.uris.PasteViewInterfaceURI,
+            {
+                'paste_id': pasteDetails.paste_id_repr
+            }
+        ) +
+        '">' + pasteDetails.title + '</a>';
+    this.passwordRemoveConfirmModal.find('.remove-password-confirm-text').html(
+        'You are about to remove the password from the paste ' + pasteLink + '. Are you sure you want to continue?'
+    );
+    this.passwordRemoveConfirmModal.modal('show');
+
+    // Cancel and deactivate event handlers
+    this.passwordRemoveConfirmModal.find('.remove-password-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.removePastePassword.bind(this, pasteDetails)
+    );
+    this.passwordRemoveConfirmModal.find('.cancel-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.hideModal.bind(this)
+    );
 };
 
 /**
  * TODO
  *
- * @param pasteDetails
+ * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.removePastePassword = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.removePastePassword = function(pasteDetails, evt) {
+    evt.preventDefault();
 
+    this.passwordRemoveConfirmModal.find('.remove-password-button').prop('disabled', true);
 };
 
 /**
- * TODO
+ * Show the modal for deactivating a paste, where the user can confirm or cancel.
  *
- * @param pasteDetails
+ * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.deactivatePaste = function(pasteDetails) {
+modernPaste.user.account.AccountPastesController.deactivatePasteModal = function(pasteDetails, clickedObject, evt) {
+    evt.preventDefault();
 
+    // Set modal text
+    var pasteLink = '<a href="' +
+        modernPaste.universal.URIController.formatURI(
+            modernPaste.universal.URIController.uris.PasteViewInterfaceURI,
+            {
+                'paste_id': pasteDetails.paste_id_repr
+            }
+        ) +
+        '">' + pasteDetails.title + '</a>';
+    this.deactivateConfirmModal.find('.deactivate-confirm-text').html(
+        'You are about to deactivate the paste ' + pasteLink + '. Are you sure you want to continue?'
+    );
+    this.deactivateConfirmModal.modal('show');
+
+    // Cancel and deactivate event handlers
+    this.deactivateConfirmModal.find('.deactivate-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.deactivatePaste.bind(this, pasteDetails)
+    );
+    this.deactivateConfirmModal.find('.cancel-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.hideModal.bind(this)
+    );
+};
+
+/**
+ * Send a request to the server to deactivate the requested paste, after the user has confirmed the action.
+ *
+ * @param pasteDetails Object describing paste details for the paste to be deactivated.
+ */
+modernPaste.user.account.AccountPastesController.deactivatePaste = function(pasteDetails, evt) {
+    evt.preventDefault();
+
+    this.deactivateConfirmModal.find('.deactivate-button').prop('disabled', true);
+    $.ajax({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteDeactivateURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+            'paste_id': pasteDetails.paste_id_repr
+        })
+    })
+    .done(modernPaste.user.account.AccountPastesController.showPasteDeactivationSuccess.bind(this, pasteDetails))
+    .fail(modernPaste.user.account.AccountPastesController.showPasteDeactivationFailure.bind(this));
+};
+
+/**
+ * Display an alert indicating paste deactivation success.
+ *
+ * @param pasteDetails Object describing paste details for the paste to be deactivated.
+ */
+modernPaste.user.account.AccountPastesController.showPasteDeactivationSuccess = function(pasteDetails) {
+    this.deactivateConfirmModal.find('.deactivate-button').prop('disabled', false);
+    this.deactivateConfirmModal.modal('hide');
+    modernPaste.universal.AlertController.displaySuccessAlert(
+        'Paste ' + modernPaste.universal.CommonController.truncateText(pasteDetails.title, 25) + ' was successfully deactivated.'
+    );
+    $('#' + pasteDetails.paste_id_repr).fadeOut();
+};
+
+/**
+ * Display an alert indicating paste deactivation failure.
+ */
+modernPaste.user.account.AccountPastesController.showPasteDeactivationFailure = function(data) {
+    console.log(data.responseJSON);
+    this.deactivateConfirmModal.find('.deactivate-button').prop('disabled', false);
+    this.deactivateConfirmModal.modal('hide');
+    modernPaste.universal.AlertController.displayErrorAlert(
+        modernPaste.universal.AlertController.selectErrorMessage(
+            data,
+            {
+                'nonexistent_paste_failure': 'This paste either does not exist or has already been deactivated.',
+                'auth_failure': 'You need to be logged in to deactivate this paste.'
+            }
+        )
+    );
+};
+
+/**
+ * If the user chooses to cancel from any confirmation dialog, hide the modal.
+ */
+modernPaste.user.account.AccountPastesController.hideModal = function(evt) {
+    evt.preventDefault();
+
+    $('.modal').modal('hide');
 };

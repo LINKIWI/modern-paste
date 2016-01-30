@@ -13,8 +13,12 @@
         float: left;
         width: 300px;
 
+        a {
+            outline: none;
+        }
+
         .header-list-group-item {
-            height: 40px;
+            height: 50px;
         }
     }
 
@@ -51,4 +55,8 @@
         height: 15px;
         width: 500px;
     }
+}
+
+.modal-body {
+    padding: 30px 20px;
 }

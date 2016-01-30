@@ -20,11 +20,12 @@
             <p class="sans-serif semibold light-gray size-2 less-spaced">Modify your account settings</p>
         </div>
     </div>
+
     <div class="account-section-container">
         <!--Left side bar for settings sections-->
         <div class="account-settings-list-group list-group sans-serif regular gray less-spaced size-2">
-            <p href="#" class="header-list-group-item list-group-item">
-                <span class="sans-serif semibold size-2">ACCOUNT SETTINGS</span>
+            <p class="header-list-group-item list-group-item">
+                <span class="sans-serif semibold size-3">ACCOUNT SETTINGS</span>
                 <br/>
                 {{ current_user.username }}
             </p>
@@ -33,6 +34,7 @@
             <a href="#" class="api-key-list-group-item settings-item list-group-item" data-section="api-key-settings">API KEY</a>
             <a href="#" class="deactivate-list-group-item settings-item list-group-item" data-section="deactivate-settings">DEACTIVATE</a>
         </div>
+
         <!--My pastes-->
         <div class="pastes-settings settings-section-container">
             <div class="settings-header">
@@ -40,6 +42,8 @@
                 <p class="sans-serif regular light-gray less-spaced size-2">View, modify, and delete pastes you've posted</p>
             </div>
             <div class="settings-contents">
+                <p class="num-pastes sans-serif regular light-gray size-1 less-spaced">LOADING PASTES...</p>
+                <br/>
                 <table width="100%">
                     <tr class="paste-item-header" valign="middle">
                         <td width="60%">
@@ -58,6 +62,7 @@
                 </table>
             </div>
         </div>
+
         <!--User profile-->
         <div class="user-profile-settings settings-section-container hidden-setting">
             <div class="settings-header">
@@ -68,6 +73,7 @@
                 TODO
             </div>
         </div>
+
         <!--API key-->
         <div class="api-key-settings settings-section-container hidden-setting">
             <div class="settings-header">
@@ -78,6 +84,7 @@
                 TODO
             </div>
         </div>
+
         <!--Deactivate-->
         <div class="deactivate-settings settings-section-container hidden-setting">
             <div class="settings-header">
@@ -89,6 +96,45 @@
             </div>
         </div>
     </div>
+
+    <!--Modal for deactivation confirmation-->
+    <div class="deactivate-confirm-modal modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content light-link">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title sans-serif semibold gray size-3 less-spaced">DEACTIVATE PASTE</p>
+                </div>
+                <div class="modal-body">
+                    <p class="deactivate-confirm-text sans-serif regular gray size-2">You are about to deactivate this paste. Are you sure you want to continue?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-button btn btn-default sans-serif semibold gray size-1 less-spaced" data-dismiss="modal">CANCEL</button>
+                    <button type="button" class="deactivate-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal for password removal confirmation-->
+    <div class="password-remove-confirm-modal modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content light-link">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title sans-serif semibold gray size-3 less-spaced">REMOVE PASTE PASSWORD</p>
+                </div>
+                <div class="modal-body">
+                    <p class="remove-password-confirm-text sans-serif regular gray size-2">You are about to remove the password from this paste. Are you sure you want to continue?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-button btn btn-default sans-serif semibold gray size-1 less-spaced" data-dismiss="modal">CANCEL</button>
+                    <button type="button" class="remove-password-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">REMOVE PASSWORD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <template class="paste-item-template">
         <tr class="paste-item" valign="middle">
             <td width="60%">
