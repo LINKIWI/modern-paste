@@ -18,6 +18,7 @@ modernPaste.user.account.AccountPastesController = function() {
     this.numPastes = $('.pastes-settings .num-pastes');
     this.deactivateConfirmModal = $('.deactivate-confirm-modal');
     this.passwordRemoveConfirmModal = $('.password-remove-confirm-modal');
+    this.passwordSetModal = $('.password-set-modal');
 
     modernPaste.user.account.AccountPastesController.loadUserPastes.bind(this)();
 };
@@ -95,7 +96,7 @@ modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(d
         );
         pasteTableRow.find('.paste-set-password-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.setPastePassword.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.setPastePasswordModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
         );
         pasteTableRow.find('.paste-remove-password-icon').on(
             'click',
@@ -144,12 +145,88 @@ modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteD
 };
 
 /**
- * TODO
+ * Show the dialog prompting the user to enter a password to set for the paste.
  *
- * @param pasteDetails
+ * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.setPastePassword = function(pasteDetails, clickedObject, evt) {
+modernPaste.user.account.AccountPastesController.setPastePasswordModal = function(pasteDetails, clickedObject, evt) {
     evt.preventDefault();
+
+    // Set modal text
+    var pasteLink = '<a href="' +
+        modernPaste.universal.URIController.formatURI(
+            modernPaste.universal.URIController.uris.PasteViewInterfaceURI,
+            {
+                'paste_id': pasteDetails.paste_id_repr
+            }
+        ) +
+        '">' + pasteDetails.title + '</a>';
+    this.passwordSetModal.find('.set-password-text').html(
+        'Enter the password to set for the paste ' + pasteLink + ' below. You will need to enter this password any time you want to view this paste.'
+    );
+    this.passwordSetModal.modal('show');
+
+    // Cancel and deactivate event handlers
+    this.passwordSetModal.find('.set-password-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.setPastePassword.bind(this, pasteDetails)
+    );
+    this.passwordSetModal.find('.cancel-button').on(
+        'click',
+        modernPaste.user.account.AccountPastesController.hideModal.bind(this)
+    );
+};
+
+/**
+ * Request the server to set a password for this paste.
+ *
+ * @param pasteDetails Object describing paste details for this particular paste.
+ */
+modernPaste.user.account.AccountPastesController.setPastePassword = function(pasteDetails, evt) {
+    evt.preventDefault();
+
+    this.passwordSetModal.find('.set-password-button').prop('disabled', true);
+    $.ajax({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteSetPasswordURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+            'paste_id': pasteDetails.paste_id_repr,
+            'password': this.passwordSetModal.find('.set-paste-password-field').val()
+        })
+    })
+    .done(modernPaste.user.account.AccountPastesController.showPasteSetPasswordSuccess.bind(this, pasteDetails))
+    .fail(modernPaste.user.account.AccountPastesController.showPasteSetPasswordFailure.bind(this));
+};
+
+/**
+ * Display a generic success message if the paste password set was successful.
+ *
+ * @param pasteDetails Object describing paste details for this particular paste.
+ */
+modernPaste.user.account.AccountPastesController.showPasteSetPasswordSuccess = function(pasteDetails) {
+    this.passwordSetModal.find('.set-password-button').prop('disabled', false);
+    this.passwordSetModal.modal('hide');
+    modernPaste.universal.AlertController.displaySuccessAlert(
+        'The password for paste ' + modernPaste.universal.CommonController.truncateText(pasteDetails.title, 25) + ' was successfully changed.'
+    );
+};
+
+/**
+ * Display a generic error message if the paste password set fails.
+ */
+modernPaste.user.account.AccountPastesController.showPasteSetPasswordFailure = function() {
+    this.passwordSetModal.find('.set-password-button').prop('disabled', false);
+    this.passwordSetModal.modal('hide');
+    modernPaste.universal.AlertController.displayErrorAlert(
+        modernPaste.universal.AlertController.selectErrorMessage(
+            data,
+            {
+                'nonexistent_paste_failure': 'This paste either does not exist or has been deactivated.',
+                'auth_failure': 'You need to be logged in to the account that owns this paste in order to set its password.'
+            }
+        )
+    );
 };
 
 /**
@@ -302,7 +379,7 @@ modernPaste.user.account.AccountPastesController.showPasteDeactivationSuccess = 
     modernPaste.universal.AlertController.displaySuccessAlert(
         'Paste ' + modernPaste.universal.CommonController.truncateText(pasteDetails.title, 25) + ' was successfully deactivated.'
     );
-    $('#' + pasteDetails.paste_id_repr).fadeOut();
+    $('#' + pasteDetails.paste_id_repr.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1')).fadeOut();
 };
 
 /**
