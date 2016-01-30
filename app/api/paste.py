@@ -39,7 +39,7 @@ def deactivate_paste():
     """
     data = flask.request.get_json()
     try:
-        paste = database.paste.get_paste_by_id(data['paste_id'])
+        paste = database.paste.get_paste_by_id(data['paste_id'], active_only=True)
         if (current_user.is_authenticated and current_user.user_id == paste.user_id) or data.get('deactivation_token') == paste.deactivation_token:
             database.paste.deactivate_paste(paste.paste_id)
             return flask.jsonify({

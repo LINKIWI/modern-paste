@@ -171,6 +171,21 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         self.assertFalse(database.paste.get_paste_by_id(paste.paste_id).is_active)
 
+    def test_deactivate_paste_already_deactivated(self):
+        # Deactivate paste using deactivation token
+        paste = util.testing.PasteFactory.generate()
+        database.paste.deactivate_paste(paste.paste_id)
+        resp = self.client.post(
+            PasteDeactivateURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+                'deactivation_token': paste.deactivation_token,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
+
     def test_deactivate_paste_server_error(self):
         with mock.patch.object(database.paste, 'deactivate_paste', side_effect=SQLAlchemyError):
             paste = util.testing.PasteFactory.generate()
