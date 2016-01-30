@@ -62,6 +62,22 @@ def get_paste_by_id(paste_id, active_only=False):
     return paste
 
 
+def set_paste_password(paste_id, password):
+    """
+    Set a paste's password. This can either change a password that already exists, set a password that did not
+    previously exist, or remove a password that already exists.
+
+    :param paste_id: Paste ID for which to set the password
+    :param password: New password to set for the paste, can be None to remove any existing password
+    :return: An instance of models.Paste of the affected paste
+    :raises PasteDoesNotExistException: If the paste does not exist
+    """
+    paste = get_paste_by_id(paste_id, active_only=True)
+    paste.password_hash = util.cryptography.secure_hash(password) if password is not None else None
+    session.commit()
+    return paste
+
+
 def deactivate_paste(paste_id):
     """
     Deactivate the specified paste by ID.

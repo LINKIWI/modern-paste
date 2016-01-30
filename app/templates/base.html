@@ -87,10 +87,7 @@
             <div id="user-header-dropdown">
                 {% if current_user.is_authenticated %}
                     <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
-                        <a href="{{ uri('main', 'HomeURI') }}">MY ACCOUNT</a>
-                    </p>
-                    <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
-                        <a href="{{ uri('main', 'HomeURI') }}">API KEY</a>
+                        <a href="{{ uri('user', 'UserAccountInterfaceURI') }}">MY ACCOUNT</a>
                     </p>
                     <p class="dropdown-item light-link sans-serif semibold gray size-2 spaced">
                         <a href="{{ uri('user', 'UserLogoutInterfaceURI') }}">LOGOUT</a>

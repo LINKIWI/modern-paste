@@ -54,6 +54,35 @@ class TestPaste(util.testing.DatabaseTestCase):
             active_only=True,
         )
 
+    def test_set_paste_password(self):
+        paste = util.testing.PasteFactory.generate()
+        old_password_hash = str(paste.password_hash)
+        database.paste.set_paste_password(paste.paste_id, 'new password')
+        new_password_hash = str(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+        self.assertEqual(util.cryptography.secure_hash('new password'), new_password_hash)
+        self.assertNotEqual(new_password_hash, old_password_hash)
+
+        paste = util.testing.PasteFactory.generate()
+        database.paste.deactivate_paste(paste.paste_id)
+        self.assertRaises(
+            PasteDoesNotExistException,
+            database.paste.set_paste_password,
+            paste_id=paste.paste_id,
+            password='password',
+        )
+
+    def test_add_paste_password(self):
+        paste = util.testing.PasteFactory.generate(password=None)
+        self.assertIsNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+        database.paste.set_paste_password(paste.paste_id, 'new password')
+        self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+
+    def test_remove_paste_password(self):
+        paste = util.testing.PasteFactory.generate(password='old password')
+        self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+        database.paste.set_paste_password(paste.paste_id, None)
+        self.assertIsNone(database.paste.get_paste_by_id(paste.paste_id).password_hash)
+
     def test_deactivate_paste(self):
         util.testing.PasteFactory.generate()
         self.assertTrue(database.paste.get_paste_by_id(1).is_active)
