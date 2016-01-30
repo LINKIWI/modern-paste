@@ -37,6 +37,8 @@ dependencies:
 	pip install -r requirements.txt
 	pre-commit install
 	pre-commit autoupdate
+	git submodule init
+	git submodule update
 
 clean:
 	rm -rf app/static/build
