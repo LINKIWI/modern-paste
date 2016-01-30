@@ -217,6 +217,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertNotEqual(database.paste.get_paste_by_id(paste.paste_id).password_hash, old_password_hash)
 
     def test_set_paste_password_unauth(self):
+        # Modifying your own paste without authorization
         user = util.testing.UserFactory.generate(username='username', password='password')
         paste = util.testing.PasteFactory.generate(user_id=user.user_id)
         resp = self.client.post(
@@ -229,6 +230,36 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
         self.assertEqual('auth_failure', json.loads(resp.data)[constants.api.FAILURE])
+
+    def test_set_paste_password_invalid_auth(self):
+        # Modifying someone else's paste
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id + 1)
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertEqual('auth_failure', json.loads(resp.data)[constants.api.FAILURE])
+
+    def test_set_paste_password_nonexistent(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            PasteSetPasswordURI.uri(),
+            data=json.dumps({
+                'paste_id': -1,
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
 
     def test_add_paste_password(self):
         user = util.testing.UserFactory.generate(username='username', password='password')
