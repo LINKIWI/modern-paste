@@ -33,8 +33,7 @@ prod:
 	python build/build_css.py --prod
 
 dependencies:
-	gem list sass -i
-	if [ $$? -ne 0 ]; then gem install sass; fi;
+	gem install sass
 	pip install -r requirements.txt
 	pre-commit install
 	pre-commit autoupdate
