@@ -104,11 +104,11 @@ class TestPaste(util.testing.DatabaseTestCase):
         inactive_pastes = []
         for i in range(15):
             with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
-                pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id))
+                pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id, expiry_time=None))
                 util.testing.PasteFactory.generate(user_id=user.user_id + 2)  # Generate pastes for a different user
         for i in range(15):
             with mock.patch.object(time, 'time', return_value=time.time() + random.randint(-10000, 10000)):
-                inactive_pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id))
+                inactive_pastes.append(util.testing.PasteFactory.generate(user_id=user.user_id, expiry_time=None))
                 database.paste.deactivate_paste(inactive_pastes[i].paste_id)
         queried_all_pastes = database.paste.get_all_pastes_for_user(user.user_id, active_only=False)
         queried_active_pastes = database.paste.get_all_pastes_for_user(user.user_id, active_only=True)
@@ -123,3 +123,9 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertIn(paste, pastes + inactive_pastes)
         for paste in queried_active_pastes:
             self.assertTrue(paste.is_active)
+
+    def test_get_all_pastes_for_user_expired(self):
+        user = util.testing.UserFactory.generate()
+        [util.testing.PasteFactory.generate(user_id=user.user_id, expiry_time=int(time.time()) - 1000) for i in range(15)]
+        self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=False))
+        self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=True))

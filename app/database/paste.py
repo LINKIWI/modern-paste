@@ -136,7 +136,8 @@ def get_top_pastes(page_num, num_per_page):
 
 def get_all_pastes_for_user(user_id, active_only=False):
     """
-    Gets all pastes for the specified user ID.
+    Gets all pastes for the specified user ID. Only return pastes that have not expired, and optionally filter by
+    whether the paste is active.
 
     :param user_id: User ID for which to retrieve all the pastes
     :param active_only: Set this flag to True to only query for active and non-expired pastes
@@ -146,12 +147,16 @@ def get_all_pastes_for_user(user_id, active_only=False):
         return models.Paste.query.filter_by(
             user_id=user_id,
             is_active=True,
+        ).filter(
+            or_(models.Paste.expiry_time.is_(None), models.Paste.expiry_time > time.time()),
         ).order_by(
             models.Paste.post_time.desc(),
         ).all()
     else:
         return models.Paste.query.filter_by(
             user_id=user_id,
+        ).filter(
+            or_(models.Paste.expiry_time.is_(None), models.Paste.expiry_time > time.time()),
         ).order_by(
             models.Paste.post_time.desc(),
         ).all()

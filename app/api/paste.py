@@ -39,7 +39,7 @@ def deactivate_paste():
     """
     data = flask.request.get_json()
     try:
-        paste = database.paste.get_paste_by_id(data['paste_id'], active_only=True)
+        paste = database.paste.get_paste_by_id(util.cryptography.get_decid(data['paste_id']), active_only=True)
         if (current_user.is_authenticated and current_user.user_id == paste.user_id) or data.get('deactivation_token') == paste.deactivation_token:
             database.paste.deactivate_paste(paste.paste_id)
             return flask.jsonify({
@@ -51,9 +51,10 @@ def deactivate_paste():
         return flask.jsonify({
             constants.api.RESULT: constants.api.RESULT_FAULURE,
             constants.api.MESSAGE: fail_msg,
+            constants.api.FAILURE: 'auth_failure',
             'paste_id': util.cryptography.get_id_repr(paste.paste_id),
         }), constants.api.AUTH_FAILURE_CODE
-    except PasteDoesNotExistException:
+    except (PasteDoesNotExistException, InvalidIDException):
         return flask.jsonify(constants.api.NONEXISTENT_PASTE_FAILURE), constants.api.NONEXISTENT_PASTE_FAILURE_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
