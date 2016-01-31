@@ -11,25 +11,26 @@ from requests.utils import quote
 import config
 import database.user
 from constants.api import *
-from constants.build_environment import *
 from uri.user import UserLoginInterfaceURI
 from util.exception import *
 
 
 def context_config():
     """
-    Dictionary of the context that should be made available to all templates rendered with @render_view
+    Dictionary of the context that should be made available to all templates rendered with @render_view.
+    By default, all fields in config are included.
     """
     return {
-        'is_dev_environment': config.BUILD_ENVIRONMENT == DEV,
-        'languages': config.LANGUAGES,
+        config_item: getattr(config, config_item)
+        for config_item in dir(config)
+        if config_item == config_item.upper()
     }
 
 
 def render_view(func):
     """
     Render this view endpoint's specified template with the provided context, with additional context parameters
-    as specified by _render_template_with_additional_context.
+    as specified by context_config().
 
         @app.route('/', methods=['GET'])
         @render_view

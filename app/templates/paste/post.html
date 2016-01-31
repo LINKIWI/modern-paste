@@ -18,7 +18,7 @@
         'paste/PostController.js',
     ])|safe }}
 
-    {% for language in config.languages %}
+    {% for language in config.LANGUAGES %}
         {% if language != 'text' %}
             {{ import_js(['lib/codemirror/mode/' ~ language ~ '/' ~ language ~ '.js'], defer=True)|safe }}
         {% endif %}
@@ -35,7 +35,7 @@
     <div class="paste-language-container section-label">
         <p class="sans-serif regular size-1 light-gray less-spaced">PASTE LANGUAGE</p>
         <select class="language-selector ubuntu-mono regular gray" name="languages" autocomplete="off">
-            {% for language in config.languages %}
+            {% for language in config.LANGUAGES %}
                 <option value="{{ language|lower }}">{{ language|title }}</option>
             {% endfor %}
         </select>

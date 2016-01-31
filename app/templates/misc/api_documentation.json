@@ -23,6 +23,10 @@
     {
       "failure_name": "unauthenticated_pastes_disabled_failure",
       "description": "The server administrator has required that users be signed in to post new pastes. You must authenticate this request with an API key."
+    },
+    {
+      "failure_name": "user_registration_disabled_failure",
+      "description": "The server administrator has disabled new user registration."
     }
   ],
   "api_endpoints": [

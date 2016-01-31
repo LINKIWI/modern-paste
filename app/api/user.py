@@ -3,6 +3,7 @@ from uri.user import *
 import flask
 from modern_paste import app
 
+import config
 import constants.api
 import database.user
 from flask.ext.login import current_user
@@ -18,8 +19,14 @@ def create_new_user():
     """
     API endpoint for creating a new user.
     """
+    if not config.ENABLE_USER_REGISTRATION:
+        return (
+            flask.jsonify(constants.api.USER_REGISTRATION_DISABLED_FAILURE),
+            constants.api.USER_REGISTRATION_DISABLED_FAILURE_CODE,
+        )
+
+    data = flask.request.get_json()
     try:
-        data = flask.request.get_json()
         new_user = database.user.create_new_user(
             username=data['username'],
             password=data['password'],

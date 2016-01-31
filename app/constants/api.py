@@ -46,6 +46,12 @@ UNAUTHENTICATED_PASTES_DISABLED_FAILURE = {
     FAILURE: 'unauthenticated_pastes_disabled_failure',
 }
 UNAUTHENTICATED_PASTES_DISABLED_FAILURE_CODE = 403
+USER_REGISTRATION_DISABLED_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'The server administrator has disabled new user registration.',
+    FAILURE: 'user_registration_disabled_failure',
+}
+USER_REGISTRATION_DISABLED_FAILURE_CODE = 403
 UNDEFINED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'Undefined server-side failure',

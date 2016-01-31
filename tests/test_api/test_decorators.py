@@ -6,6 +6,7 @@ from flask.ext.login import current_user
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 
+import config
 import api.decorators
 import constants.api
 import database.user
@@ -21,6 +22,11 @@ from uri.main import *
 
 
 class TestDecorators(util.testing.DatabaseTestCase):
+    def test_context_config(self):
+        config_constants = api.decorators.context_config()
+        for config_item in filter(lambda item: item == item.upper(), dir(config)):
+            self.assertIn(config_item, config_constants)
+
     def test_render_view(self):
         with mock.patch.object(api.decorators, 'render_template') as render_template_mock:
             @render_view

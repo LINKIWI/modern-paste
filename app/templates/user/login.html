@@ -17,6 +17,10 @@
         <div class="login-header">
             <p class="sans-serif regular gray size-8 spaced">LOGIN</p>
             <p class="sans-serif semibold light-gray size-2 less-spaced">Log in to view, control, and delete your pastes</p>
+            {% if config.REQUIRE_LOGIN_TO_PASTE %}
+                <br/>
+                <p class="sans-serif semibold red size-2 less-spaced">The server administrator has required users to be signed in to post new pastes.</p>
+            {% endif %}
         </div>
         <form>
             <fieldset class="form-group">

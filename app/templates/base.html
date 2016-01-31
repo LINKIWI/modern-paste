@@ -123,7 +123,7 @@
         {% endfor %}
     </div>
 
-    {% if config.is_dev_environment %}
+    {% if config.BUILD_ENVIRONMENT == 'dev' %}
         <div id="dev-banner">
             <p class="sans-serif semibold white size-1 spaced">DEV</p>
         </div>
