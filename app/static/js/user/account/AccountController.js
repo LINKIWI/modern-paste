@@ -75,6 +75,7 @@ modernPaste.user.account.AccountController.changeListGroupView = function() {
 $(document).ready(function() {
     new modernPaste.user.account.AccountController();
     new modernPaste.user.account.AccountPastesController();
+    new modernPaste.user.account.AccountUserProfileController();
     new modernPaste.user.account.AccountAPIKeyController();
     new modernPaste.user.account.AccountDeactivateController();
 });

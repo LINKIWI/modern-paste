@@ -9,6 +9,7 @@
 
     {{ import_js([
         'user/account/AccountPastesController.js',
+        'user/account/AccountUserProfileController.js',
         'user/account/AccountAPIKeyController.js',
         'user/account/AccountDeactivateController.js',
         'user/account/AccountController.js',
@@ -79,7 +80,36 @@
                 <p class="sans-serif regular light-gray less-spaced size-2">Modify your name, email, and password</p>
             </div>
             <div class="settings-contents">
-                TODO
+                <div class="settings-section light-link">
+                    <p class="settings-section-title sans-serif semibold gray size-2 less-spaced">MODIFY PERSONAL PROFILE</p>
+                    <p class="settings-section-text sans-serif regular gray size-2">
+                        Change your name and/or email associated with your account. Both of these fields are optional.
+                    </p>
+                </div>
+                <fieldset class="name-form-group form-group">
+                    <input type="text" class="name-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" value="{% if current_user.name is not none %}{{ current_user.name }}{% endif %}" placeholder="Name (optional)">
+                </fieldset>
+                <fieldset class="email-form-group form-group">
+                    <input type="text" class="email-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" value="{% if current_user.email is not none %}{{ current_user.email }}{% endif %}" placeholder="Email (optional)">
+                </fieldset>
+                <br/><br/>
+                <div class="settings-section light-link">
+                    <p class="settings-section-title sans-serif semibold gray size-2 less-spaced">CHANGE PASSWORD</p>
+                    <p class="settings-section-text sans-serif regular gray size-2">
+                        Update your account password.
+                    </p>
+                </div>
+                <fieldset class="current-password-form-group form-group">
+                    <input type="password" class="current-password-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" placeholder="Current password">
+                </fieldset>
+                <fieldset class="password-form-group form-group">
+                    <input type="password" class="new-password-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" placeholder="New password">
+                </fieldset>
+                <fieldset class="password-confirm-form-group form-group">
+                    <input type="password" class="confirm-new-password-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" placeholder="Confirm new password">
+                </fieldset>
+                <br/><br/>
+                <button type="button" class="save-user-profile-button btn btn-primary sans-serif semibold white size-1 less-spaced" autocomplete="off">SAVE SETTINGS</button>
             </div>
         </div>
 
@@ -100,7 +130,7 @@
                         <span class="sans-serif semibold red">Never expose your API key; treat it like a password!</span>
                     </p>
                 </div>
-                <fieldset class="email-form-group form-group">
+                <fieldset class="form-group">
                     <input type="text" class="api-key-field form-control sans-serif regular gray size-2 less-spaced" data-toggle="tooltip" autocomplete="off" value="{{ current_user.api_key }}" readonly>
                 </fieldset>
                 <br/><br/>
