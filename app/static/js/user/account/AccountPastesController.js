@@ -96,15 +96,15 @@ modernPaste.user.account.AccountPastesController.loadPastesIntoList = function(d
         );
         pasteTableRow.find('.paste-set-password-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.setPastePasswordModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.setPastePasswordModal.bind(this, paste)
         );
         pasteTableRow.find('.paste-remove-password-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.removePastePasswordModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.removePastePasswordModal.bind(this, paste)
         );
         pasteTableRow.find('.paste-deactivate-icon').on(
             'click',
-            modernPaste.user.account.AccountPastesController.deactivatePasteModal.bind(this, paste, pasteTableRow.find('.paste-download-contents'))
+            modernPaste.user.account.AccountPastesController.deactivatePasteModal.bind(this, paste)
         );
 
         // Add element to DOM
@@ -135,7 +135,7 @@ modernPaste.user.account.AccountPastesController.showPasteLoadError = function()
  * @param pasteDownloadContents A JQuery object representing a hidden link to temporarily store the
  *                              contents of the paste for download.
  */
-modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents, clickedObject, evt) {
+modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteDetails, pasteDownloadContents, evt) {
     evt.preventDefault();
 
     var fileExtension = modernPaste.universal.CommonController.getFileExtensionForType(pasteDetails.language);
@@ -149,7 +149,7 @@ modernPaste.user.account.AccountPastesController.downloadPaste = function(pasteD
  *
  * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.setPastePasswordModal = function(pasteDetails, clickedObject, evt) {
+modernPaste.user.account.AccountPastesController.setPastePasswordModal = function(pasteDetails, evt) {
     evt.preventDefault();
 
     // Set modal text
@@ -234,7 +234,7 @@ modernPaste.user.account.AccountPastesController.showPasteSetPasswordFailure = f
  *
  * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.removePastePasswordModal = function(pasteDetails, clickedObject, evt) {
+modernPaste.user.account.AccountPastesController.removePastePasswordModal = function(pasteDetails, evt) {
     evt.preventDefault();
 
     // Set modal text
@@ -319,7 +319,7 @@ modernPaste.user.account.AccountPastesController.showPasteRemovePasswordFailure 
  *
  * @param pasteDetails Object describing paste details for this particular paste.
  */
-modernPaste.user.account.AccountPastesController.deactivatePasteModal = function(pasteDetails, clickedObject, evt) {
+modernPaste.user.account.AccountPastesController.deactivatePasteModal = function(pasteDetails, evt) {
     evt.preventDefault();
 
     // Set modal text
