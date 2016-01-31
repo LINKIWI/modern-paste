@@ -4,7 +4,6 @@ Nothing here is user-configurable; all config variables you can set yourself are
 Generally speaking, don't touch this file unless you know what you're doing.
 """
 
-import os
 import config
 import constants
 
@@ -23,4 +22,4 @@ SQLALCHEMY_TEST_DATABASE_URI = 'mysql://{database_user}:{database_password}@loca
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask session secret key
-SECRET_KEY = os.urandom(32)
+SECRET_KEY = config.FLASK_SECRET_KEY
