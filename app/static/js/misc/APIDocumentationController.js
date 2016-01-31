@@ -14,8 +14,8 @@ modernPaste.misc.APIDocumentationController = function() {
     modernPaste.misc.APIDocumentationController.toggleApiListingVisibility.bind(this)();
 
     $('a').on('click', modernPaste.misc.APIDocumentationController.animateAnchorJump);
-    $(window).scroll(modernPaste.misc.APIDocumentationController.lockApiListing.bind(this));
-    $(window).resize(modernPaste.misc.APIDocumentationController.toggleApiListingVisibility.bind(this));
+    $(window).on('scroll', modernPaste.misc.APIDocumentationController.lockApiListing.bind(this));
+    $(window).on('resize', modernPaste.misc.APIDocumentationController.toggleApiListingVisibility.bind(this));
 };
 
 /**

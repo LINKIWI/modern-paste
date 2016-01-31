@@ -44,12 +44,18 @@
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
             <a href="{{ uri('paste', 'PastePostInterfaceURI') }}">NEW PASTE</a>
         </p>
-        <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
-            <a href="{{ uri('user', 'UserLoginInterfaceURI') }}">LOGIN</a>
-        </p>
-        <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
-            <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
-        </p>
+        {% if current_user.is_authenticated %}
+            <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
+                <a href="{{ uri('user', 'UserAccountInterfaceURI') }}">MY ACCOUNT</a>
+            </p>
+        {% else %}
+            <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
+                <a href="{{ uri('user', 'UserLoginInterfaceURI') }}">LOGIN</a>
+            </p>
+            <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
+                <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
+            </p>
+        {% endif %}
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
             <a href="{{ uri('paste', 'PasteArchiveInterfaceURI') }}">ARCHIVE</a>
         </p>
