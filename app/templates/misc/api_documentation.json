@@ -19,6 +19,10 @@
     {
       "failure_name": "undefined_failure",
       "description": "The server encountered an undefined error (usually related to the database). No client-side actions can be taken to resolve the problem."
+    },
+    {
+      "failure_name": "unauthenticated_pastes_disabled_failure",
+      "description": "The server administrator has required that users be signed in to post new pastes. You must authenticate this request with an API key."
     }
   ],
   "api_endpoints": [

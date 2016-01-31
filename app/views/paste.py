@@ -1,17 +1,19 @@
 import flask
 
-from modern_paste import app
-
+import config
 import database.paste
+import util.cryptography
+from api.decorators import render_view
+from api.decorators import require_login_frontend
+from modern_paste import app
 from uri.main import *
 from uri.paste import *
-from api.decorators import render_view
 from util.exception import *
-import util.cryptography
 
 
 @app.route(HomeURI.path, methods=['GET'])
 @app.route(PastePostInterfaceURI.path, methods=['GET'])
+@require_login_frontend(only_if=config.REQUIRE_LOGIN_TO_PASTE)
 @render_view
 def paste_post():
     """

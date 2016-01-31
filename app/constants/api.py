@@ -1,3 +1,6 @@
+from uri.misc import APIDocumentationInterfaceURI
+
+
 # Result of call
 RESULT = 'success'
 RESULT_SUCCESS = True
@@ -34,6 +37,15 @@ NONEXISTENT_PASTE_FAILURE = {
     FAILURE: 'nonexistent_paste_failure',
 }
 NONEXISTENT_PASTE_FAILURE_CODE = 404
+UNAUTHENTICATED_PASTES_DISABLED_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'The server administrator has required that users be signed in to post a paste. If you have an account, '
+             'authenticate this paste with an API key to post a paste. See {api_url} for more details.'.format(
+                 api_url=APIDocumentationInterfaceURI.uri(),
+             ),
+    FAILURE: 'unauthenticated_pastes_disabled_failure',
+}
+UNAUTHENTICATED_PASTES_DISABLED_FAILURE_CODE = 403
 UNDEFINED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'Undefined server-side failure',

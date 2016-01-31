@@ -204,7 +204,7 @@ class TestDecorators(util.testing.DatabaseTestCase):
 
     def test_require_login_frontend(self):
         with app.test_request_context():
-            @require_login_frontend
+            @require_login_frontend()
             def login_required():
                 return 'success'
             self.assertEqual(login_required().status_code, 302)  # Redirect
@@ -214,6 +214,11 @@ class TestDecorators(util.testing.DatabaseTestCase):
                 'password': 'password',
             }
             login_user(user)
+            self.assertEqual(login_required(), 'success')
+
+            @require_login_frontend(only_if=False)
+            def conditional_login_required():
+                return 'success'
             self.assertEqual(login_required(), 'success')
 
     def test_hide_if_logged_in(self):

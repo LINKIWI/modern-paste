@@ -128,17 +128,23 @@ def optional_login_api(func):
     return decorator
 
 
-def require_login_frontend(func):
+def require_login_frontend(only_if=True):
     """
     Same logic as the API require_login, but this decorator is intended for use for frontend interfaces.
     It returns a redirect to the login page, along with a post-login redirect_url as a GET parameter.
+
+    :param only_if: Optionally specify a boolean condition that needs to be true for the frontend login to be required.
+                    This is semantically equivalent to "require login for this view endpoint only if <condition>,
+                    otherwise, no login is required"
     """
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if not current_user.is_authenticated:
-            return redirect(UserLoginInterfaceURI.uri(redirect_url=quote(request.url, safe='')))
-        return func(*args, **kwargs)
-    return decorated_view
+    def decorator(func):
+        @wraps(func)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated and only_if:
+                return redirect(UserLoginInterfaceURI.uri(redirect_url=quote(request.url, safe='')))
+            return func(*args, **kwargs)
+        return decorated_view
+    return decorator
 
 
 def hide_if_logged_in(redirect_uri):

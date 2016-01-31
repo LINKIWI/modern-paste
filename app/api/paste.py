@@ -2,6 +2,7 @@ import flask
 from flask_login import current_user
 from modern_paste import app
 
+import config
 from uri.paste import *
 from util.exception import *
 from api.decorators import require_form_args
@@ -20,6 +21,12 @@ def submit_paste():
     """
     Endpoint for submitting a new paste.
     """
+    if config.REQUIRE_LOGIN_TO_PASTE and not current_user.is_authenticated:
+        return (
+            flask.jsonify(constants.api.UNAUTHENTICATED_PASTES_DISABLED_FAILURE),
+            constants.api.UNAUTHENTICATED_PASTES_DISABLED_FAILURE_CODE,
+        )
+
     data = flask.request.get_json()
     try:
         data['user_id'] = current_user.user_id if current_user.is_authenticated else None

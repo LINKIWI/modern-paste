@@ -24,7 +24,7 @@ def user_register_interface():
 
 
 @app.route(UserAccountInterfaceURI.path, methods=['GET'])
-@require_login_frontend
+@require_login_frontend()
 @render_view
 def user_account_interface():
     return 'user/account.html', {}

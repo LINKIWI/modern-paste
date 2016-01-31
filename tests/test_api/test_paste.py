@@ -5,6 +5,7 @@ import time
 import mock
 from sqlalchemy.exc import SQLAlchemyError
 
+import config
 import constants.api
 import database.paste
 import database.user
@@ -24,6 +25,30 @@ class TestPaste(util.testing.DatabaseTestCase):
         )
         self.assertEqual(resp.status_code, constants.api.INCOMPLETE_PARAMS_FAILURE_CODE)
         self.assertEqual(json.loads(resp.data), constants.api.INCOMPLETE_PARAMS_FAILURE)
+
+    def test_submit_paste_login_required(self):
+        # Config requires authentication to post paste
+        config.REQUIRE_LOGIN_TO_PASTE = True
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': 'paste',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.UNAUTHENTICATED_PASTES_DISABLED_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.UNAUTHENTICATED_PASTES_DISABLED_FAILURE, json.loads(resp.data))
+
+        user = util.testing.UserFactory.generate()
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': 'paste',
+                'api_key': user.api_key,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
 
     def test_submit_paste_no_auth(self):
         # Successful paste without authentication

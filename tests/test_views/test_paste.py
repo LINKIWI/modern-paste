@@ -11,6 +11,9 @@ import views.paste
 class TestPaste(util.testing.DatabaseTestCase):
     def test_paste_post(self):
         self.assertIsNotNone(views.paste.paste_post())
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        self.assertIn('PASTE TITLE', views.paste.paste_post())
 
     def test_paste_view(self):
         self.assertIn('PASTE NOT FOUND', views.paste.paste_view(-1))

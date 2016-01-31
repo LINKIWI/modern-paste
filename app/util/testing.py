@@ -7,6 +7,7 @@ from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from flask.ext.testing import TestCase
 
+import config
 import constants.api
 import database.paste
 import database.user
@@ -102,6 +103,10 @@ class DatabaseTestCase(TestCase):
         """
         Initializes the test Flask application by setting the app config parameters appropriately.
         """
+        # Default config parameters for test environment
+        config.REQUIRE_LOGIN_TO_PASTE = False
+        config.ENABLE_USER_REGISTRATION = True
+
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_TEST_DATABASE_URI']
         return app
