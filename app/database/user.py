@@ -38,6 +38,30 @@ def create_new_user(username, password, signup_ip, name=None, email=None):
     return new_user
 
 
+def update_user_details(user_id, name, email, new_password):
+    """
+    Update an existing user, identified by user_id, with the provided fields. If name or email is None, this will
+    remove these fields from the user entry. If new_password is None, the user's password will not be updated.
+
+    :param user_id: User ID of the user to update
+    :param name: Updated name, can be empty string or None to indicate no update
+    :param email: Updated email, can be empty string or None to indicate no update
+    :param new_password: New password, if updating the user's password
+    :return: models.User object representing the updated user
+    :raises InvalidEmailException: If an invalid email is passed
+    """
+    if email and not is_email_address_valid(email):
+        raise InvalidEmailException('{email_addr} is not a valid email address'.format(email_addr=email))
+
+    user = get_user_by_id(user_id, active_only=True)
+    user.name = name
+    user.email = email
+    if new_password:
+        user.password_hash = util.cryptography.secure_hash(new_password)
+    session.commit()
+    return user
+
+
 def get_user_by_id(user_id, active_only=False):
     """
     Get a User object by user_id, whose attributes match those in the database.

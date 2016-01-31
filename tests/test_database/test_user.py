@@ -35,6 +35,22 @@ class TestUser(util.testing.DatabaseTestCase):
             database.user.get_user_by_username('username3')
         )
 
+    def test_update_user_details(self):
+        user = util.testing.UserFactory.generate(name='old_name', email='old@email.com', password='old_password')
+        database.user.update_user_details(user.user_id, name='new_name', email='new@email.com', new_password='new_password')
+        new_user = database.user.get_user_by_id(user.user_id)
+        self.assertEqual('new_name', new_user.name)
+        self.assertEqual('new@email.com', new_user.email)
+        self.assertEqual(util.cryptography.secure_hash('new_password'), new_user.password_hash)
+
+    def test_remove_user_details(self):
+        user = util.testing.UserFactory.generate(name='old_name', email='old@email.com', password='old_password')
+        database.user.update_user_details(user.user_id, name=None, email=None, new_password=None)
+        new_user = database.user.get_user_by_id(user.user_id)
+        self.assertIsNone(new_user.name)
+        self.assertIsNone(new_user.email)
+        self.assertEqual(util.cryptography.secure_hash('old_password'), new_user.password_hash)
+
     def test_get_user_by_id(self):
         self.assertRaises(
             UserDoesNotExistException,

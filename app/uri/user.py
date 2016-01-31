@@ -22,6 +22,11 @@ class UserCreateURI(URI):
     path = '/api/user/create'
 
 
+class UserUpdateDetailsURI(URI):
+    api_endpoint = True
+    path = '/api/user/update'
+
+
 class UserDeactivateURI(URI):
     api_endpoint = True
     path = '/api/user/deactivate'

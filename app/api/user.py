@@ -58,6 +58,47 @@ def create_new_user():
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
 
+@app.route(UserUpdateDetailsURI.path, methods=['POST'])
+@require_login_api
+def update_user_details():
+    """
+    Update the user profile of the currently logged-in user.
+    """
+    data = {
+        field: value
+        for field, value in flask.request.get_json().items()
+        if value
+    }
+    try:
+        if data.get('new_password') and (not data.get('current_password') or not database.user.authenticate_user(current_user.username, data.get('current_password'))):
+            return flask.jsonify({
+                constants.api.RESULT: constants.api.RESULT_FAULURE,
+                constants.api.MESSAGE: 'Attempting to change user password and either current password was not '
+                                       'supplied or is incorrect',
+                constants.api.FAILURE: 'auth_failure',
+            }), constants.api.AUTH_FAILURE_CODE
+        new_user = database.user.update_user_details(
+            user_id=current_user.user_id,
+            name=data.get('name'),
+            email=data.get('email'),
+            new_password=data.get('new_password'),
+        )
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_SUCCESS,
+            constants.api.MESSAGE: None,
+            'name': new_user.name,
+            'email': new_user.email,
+        }), constants.api.SUCCESS_CODE
+    except InvalidEmailException:
+        return flask.jsonify({
+            constants.api.RESULT: constants.api.RESULT_FAULURE,
+            constants.api.MESSAGE: 'Email address {email_addr} is invalid'.format(email_addr=data.get('email')),
+            constants.api.FAILURE: 'invalid_email_failure',
+        }), constants.api.INCOMPLETE_PARAMS_FAILURE_CODE
+    except:
+        return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
+
+
 @app.route(UserDeactivateURI.path, methods=['POST'])
 @require_login_api
 def deactivate_user():
@@ -97,8 +138,8 @@ def check_username_availability():
     """
     Check if the specified username is available for registration.
     """
+    data = flask.request.get_json()
     try:
-        data = flask.request.get_json()
         return flask.jsonify({
             'username': data['username'],
             'is_available': database.user.is_username_available(data['username']),
@@ -113,8 +154,8 @@ def validate_email_address():
     """
     Check if the provided email address is valid.
     """
+    data = flask.request.get_json()
     try:
-        data = flask.request.get_json()
         return flask.jsonify({
             'email': data['email'],
             'is_valid': database.user.is_email_address_valid(data['email']),

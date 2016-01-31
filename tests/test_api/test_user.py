@@ -96,6 +96,99 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
             self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
 
+    def test_update_user_details(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserUpdateDetailsURI.uri(),
+            data=json.dumps({
+                'name': 'name',
+                'email': 'email@email.com',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual('name', database.user.get_user_by_id(user.user_id).name)
+        self.assertEqual('email@email.com', database.user.get_user_by_id(user.user_id).email)
+        self.assertTrue(database.user.authenticate_user('username', 'password'))
+
+    def test_update_user_password(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserUpdateDetailsURI.uri(),
+            data=json.dumps({
+                'current_password': 'password',
+                'new_password': 'new_password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertFalse(database.user.authenticate_user('username', 'password'))
+        self.assertTrue(database.user.authenticate_user('username', 'new_password'))
+
+    def test_update_user_details_invalid_email(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserUpdateDetailsURI.uri(),
+            data=json.dumps({
+                'name': 'name',
+                'email': 'email',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.INCOMPLETE_PARAMS_FAILURE_CODE, resp.status_code)
+        self.assertEqual('invalid_email_failure', json.loads(resp.data)['failure'])
+
+    def test_update_user_details_wrong_current_password(self):
+        util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserUpdateDetailsURI.uri(),
+            data=json.dumps({
+                'current_password': 'invalid',
+                'new_password': 'new_password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_FAILURE_CODE, resp.status_code)
+        self.assertTrue(database.user.authenticate_user('username', 'password'))
+        self.assertFalse(database.user.authenticate_user('username', 'invalid'))
+
+    def test_remove_user_details(self):
+        user = util.testing.UserFactory.generate(username='username', password='password')
+        self.api_login_user('username', 'password')
+        resp = self.client.post(
+            UserUpdateDetailsURI.uri(),
+            data=json.dumps({
+                'name': None,
+                'email': None,
+                'new_password': None,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertIsNone(database.user.get_user_by_id(user.user_id).name)
+        self.assertIsNone(database.user.get_user_by_id(user.user_id).email)
+        self.assertTrue(database.user.authenticate_user('username', 'password'))
+
+    def test_update_user_details_server_error(self):
+        with mock.patch.object(database.user, 'update_user_details', side_effect=SQLAlchemyError):
+            util.testing.UserFactory.generate(username='username', password='password')
+            self.api_login_user('username', 'password')
+            resp = self.client.post(
+                UserUpdateDetailsURI.uri(),
+                data=json.dumps({
+                    'name': None,
+                    'email': None,
+                    'new_password': None,
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.UNDEFINED_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.UNDEFINED_FAILURE, json.loads(resp.data))
+
     def test_deactivate_user_not_logged_in(self):
         util.testing.UserFactory.generate()
         resp = self.client.post(
