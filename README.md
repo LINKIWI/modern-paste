@@ -13,8 +13,9 @@ Modern Paste
 + Backed by a robust, RESTful API
 + Apache WSGI-friendly
 + Easy to install and highly configurable
++ [Impressively well-tested](https://coveralls.io/github/LINKIWI/modern-paste)
 
-[Live demo site](https://demo.modernpaste.com)
+[**Live demo site**](https://demo.modernpaste.com)
 
 Modern Paste is intended for system administrators who wish to host their own installation of a code/text Pastebin on personal servers. It's free and open source: contributions from the developer community are encouraged and always welcome.
 
@@ -32,3 +33,77 @@ Modern Paste is intended for system administrators who wish to host their own in
 + RESTful API for externally creating, reading, and managing pastes
 + Ability to enforce security restrictions: can configure that only authenticated users can post pastes (ideal for private, non-public-facing installations)
 + Ability to encrypt the front-facing-display of paste IDs (e.g. so that `/paste/1` might display as `/paste/9~AEygplxfCPHW4eJctbjMnRi-rYnlYzizqToCmG3BY=`)
+
+## Installation
+
+*The following instructions assume an Apache web server, though any WSGI-aware server should work.*
+
+1. **Meet all prerequisites.**
+   It is assumed you have all the following installed: MySQL, Python, Java, Git, GNU make utility, and the package managers `pip` and `gem`. It is also assumed that MySQL is already configured (e.g. you know the password to the `root` (or equivalent) account. If not, please consult the instructions for your platform to install and configure all of the above.
+
+2. **Get the code.**
+   ```bash
+   $ cd /modern-paste/installation/directory
+   $ git clone https://github.com/LINKIWI/modern-paste
+   ```
+
+3. **Initialize the MySQL database for Modern Paste.**
+   You will need to create a new MySQL user that has R/W privileges to the Modern Paste databases. (You may use the default `root` user, but it is highly recommended to create a separate user that only has access to the databases that Modern Paste will use.)
+   First, generate a secure password for the new database user.
+   ```bash
+   $ pwgen -s 96 1
+   ```
+   Then, open up a session to your MySQL server as `root` (the below will prompt you for the `root` password to authenticate).
+   ```bash
+   $ mysql -u root -p
+   ```
+   You'll need to create the new user and all the databases Modern Paste will use. *If you only need a production environment and don't plan on running the unit tests on your local server, you may skip creation of the `dev` and `test` databases. However, it's recommended that you create all three.*
+   ```sql
+   CREATE USER 'modern_paste'@'localhost' IDENTIFIED BY '<password>';
+   CREATE DATABASE modern_paste;
+   CREATE DATABASE modern_paste_dev;
+   CREATE DATABASE modern_paste_test;
+   GRANT ALL ON modern_paste.* TO 'modern_paste'@'localhost';
+   GRANT ALL ON modern_paste_dev.* TO 'modern_paste'@'localhost';
+   GRANT ALL ON modern_paste_test.* TO 'modern_paste'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+   `<password>` is the output of `pwgen` above, or your own password. Please be aware that this password will be stored in plain text in the Modern Paste configuration file.
+
+4. **Modify the configuration file to customize your installation.**
+   In the directory the code was cloned to, modify the file `app/config.py` to customize your install of Modern Paste. Each setting is accompanied with fairly extensive documentation, but below is a summary of fields that you are **required** to set in order to continue (it's recommended you take a look at the other configuration options as well, but these are the bare minimum to get the app up and running):
+   + `DOMAIN` - Set this to the external domain name at which Modern Paste will be hosted. *This doesn't impact your web server configuration; it's only used for generating URLs within the app.*
+   + `DEFAULT_HTTPS` - Set this to `True` or `False` depending on whether you plan to host Modern Paste behind an SSL-secured domain. *This doesn't impact your web server configuration; it's only used for generating URLs within the app.*
+   + `BUILD_ENVIRONMENT` - Choose whether this particular installation should run in a dev or production environment. The production environment will use the `modern_paste` database and will serve minified CSS and [Closure](https://developers.google.com/closure/compiler/)-compiled Javascript. The dev environment will use the `modern_paste_dev` database and will serve unminified CSS and non-compiled Javascript.
+   + `DATABASE_PASSWORD` - The password for the `modern_paste` MySQL account from step 3.
+   + `DATABASE_NAME` and `DATABASE_USER` - If you created the user and databases in step 3 as it is shown above, there's no need to modify these from their default values.
+   + `FLASK_SECRET_KEY` - For security reasons, replace the string here with the output of `os.urandom(32)` from a Python shell.
+
+5. **Build the app.**
+   In the directory you cloned the repository to:
+   ```bash
+   $ sudo make
+   ```
+   This will:
+   + Install dependencies via `pip` and `gem`, and initialize this repository's submodules.
+   + Run all tests.
+   + Create all tables in the database.
+   + Compile CSS and Javascript depending on the `BUILD_ENVIRONMENT` constant set in `app/config.py`.
+
+6. **Add an Apache virtual host entry.**
+   Below is an example entry you can add to your virtual hosts file to serve the app via Apache over HTTP. If you don't already have `mod_wsgi` installed, [you should do so now](https://modwsgi.readthedocs.org/en/develop/).
+   ```apache
+   <VirtualHost *:80>
+       ServerName modernpaste.example.com
+       DocumentRoot /modern-paste/installation/directory
+       WSGIScriptAlias / /modern-paste/installation/directory/modern_paste.wsgi
+
+       ErrorLog ${APACHE_LOG_DIR}/modernpaste-error.log
+       CustomLog ${APACHE_LOG_DIR}/modernpaste-access.log combined
+   </VirtualHost>
+   ```
+   You're almost ready to go! Reload the Apache configuration:
+   ```bash
+   $ sudo service apache2 reload
+   ```
+   If you visit `http://modernpaste.example.com`, you should be presented with your installation of Modern Paste.
