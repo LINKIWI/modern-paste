@@ -1,10 +1,12 @@
-coveralls
+coverage
 flask
 flask-login
 flask-sqlalchemy
 flask-testing
 mock
 mysql-python
+pbr
 pre-commit
 pycrypto
 requests
+six
