@@ -128,6 +128,17 @@ To contribute, you should
 5. When you're ready to merge your work into the main Modern Paste repository, create a pull request to merge your work into the `dev` branch.
 6. If your build passes on Travis and your code is thoroughly tested, your work will be merged into `dev`, and eventually make its way into `master`.
 
+#### Development
+
+The app's backend infrastructure lives in `app/database` and `app/api`. Templates live in `app/templates`, and SCSS/Javascript lives in `app/static/scss` and `app/static/js`. SCSS and JS builds are handled automatically by the templating system.
+
+As a general guideline,
+
++ Operations that directly interact with the database (e.g. reading or creating a paste) should reside in the appropriate file in `database` module. Modern Paste follows the exceptional design pattern, and since these methods exist at the lowest level of the stack, these methods should throw exceptions that are handled at a higher level of the stack.
++ Any database method that will be queried from the frontend (by an AJAX call) should have a corresponding endpoint path defined in the relevant file in the `uri` module, and an API method in the relevant file in the `api` module.
++ All new SCSS should be in a [partial](http://sass-lang.com/guide), and imported by `app/static/scss/stylesheet.scss`. The templates fetch CSS from the `app/static/build` directory, so you should have a Sass watcher compiling your SCSS in the background: `sass --watch app/static/scss:app/static/build/css --style compressed`.
++ Modern Paste makes use of the [Google Closure Library](https://developers.google.com/closure/library/) and [Closure Compiler](https://developers.google.com/closure/compiler/). Place controllers under the appropriate module in `app/static/js` as `xxxxxController.js`, and be sure to import it in the template using the existing `import_js` templating utility. `make prod` will generate Closure-compiled controllers, and the `import_js` utility will automatically point to the compiled single file.
+
 #### Continuous Integration
 
 Modern Paste uses [Travis CI](https://travis-ci.org/LINKIWI/modern-paste) as a continuous integration system. The CI build

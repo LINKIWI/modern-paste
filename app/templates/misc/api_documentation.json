@@ -128,6 +128,11 @@
           "key": "contents",
           "value": "Request input callback",
           "type": "string"
+        },
+        {
+          "key": "url",
+          "value": "Full URL to the web interface for viewing the paste",
+          "type": "string"
         }
       ]
     },
@@ -207,6 +212,11 @@
           "key": "poster_username",
           "value": "Username of poster; 'Anonymous' if posted anonymously",
           "type": "string"
+        },
+        {
+          "key": "url",
+          "value": "Full URL to the web interface for viewing the paste",
+          "type": "string"
         }
       ]
     },
@@ -249,6 +259,40 @@
           ],
           "required": false,
           "type": "string"
+        }
+      ],
+      "response_parameters": [
+        {
+          "key": "paste_id",
+          "value": "Request input callback",
+          "type": "number/string"
+        }
+      ]
+    },
+    {
+      "name": "Set paste password",
+      "uri_class": ["paste", "PasteSetPasswordURI"],
+      "authentication": "required",
+      "short_description": "Set a password on paste posted from a user account",
+      "long_description": "Set or remove a password on a paste that was posted with authentication. You can only modify pastes that the API key-authenticated user owns.",
+      "request_parameters": [
+        {
+          "key": "paste_id",
+          "value": [
+            "Paste ID",
+            "1"
+          ],
+          "required": true,
+          "type": "number/string"
+        },
+        {
+          "key": "password",
+          "value": [
+            "The password to set for the paste. You can set this field to an empty string or <span class=\"ubuntu-mono regular\">null</span> to remove the password on the paste (if applicable).",
+            "p4ssw0rd"
+          ],
+          "required": true,
+          "type": "string/null"
         }
       ],
       "response_parameters": [
