@@ -43,8 +43,7 @@ Modern Paste is intended for system administrators who wish to host their own in
 
 2. **Get the code.**
    ```bash
-   $ cd /modern-paste/installation/directory
-   $ git clone https://github.com/LINKIWI/modern-paste
+   $ git clone https://github.com/LINKIWI/modern-paste /modern-paste/installation/directory
    ```
 
 3. **Initialize the MySQL database for Modern Paste.**
@@ -80,7 +79,11 @@ Modern Paste is intended for system administrators who wish to host their own in
    + `FLASK_SECRET_KEY` - For security reasons, replace the string here with the output of `os.urandom(32)` from a Python shell.
 
 5. **Build the app.**
-   In the directory you cloned the repository to:
+   At this point, before continuing, ensure you have the MySQL and Python dev packages installed. This corrects common errors during the `make dependencies` stage of the build.
+   ```bash
+   $ sudo apt-get install build-essential python-dev libmysqlclient-dev
+   ```
+   Then, in the directory you cloned the repository to:
    ```bash
    $ sudo make
    ```
@@ -107,3 +110,44 @@ Modern Paste is intended for system administrators who wish to host their own in
    $ sudo service apache2 reload
    ```
    If you visit `http://modernpaste.example.com`, you should be presented with your installation of Modern Paste.
+
+## Contributing
+
+Contributions from the developer community lie at the heart of open source software. Contributions to Modern Paste--in the form of new features, bug fixes, or anything else--are encouraged and always welcome. Please read the Workflow section carefully on how to get started. The Continuous Integration and Testing sections describe practices on ensuring the integrity of Modern Paste.
+
+#### Workflow
+
+This project follows the standard [git-flow workflow](https://es.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). In a nutshell, the `dev` branch serves as an integration branch for new features and fixes, and the `master` branch serves as the project's stable release branch.
+
+To contribute, you should
+
+1. Fork this project to your own account
+2. `git checkout dev` (Make sure to do this, since `master` is the default branch)
+3. Create a new branch (based off `dev`), with a name that describes the change you're making (e.g. `feature-x` or `fix-bug-y`)
+4. Write code. Write tests. Push commits.
+5. When you're ready to merge your work into the main Modern Paste repository, create a pull request to merge your work into the `dev` branch.
+6. If your build passes on Travis and your code is thoroughly tested, your work will be merged into `dev`, and eventually make its way into `master`.
+
+#### Continuous Integration
+
+Modern Paste uses [Travis CI](https://travis-ci.org/LINKIWI/modern-paste) as a continuous integration system. The CI build
++ Runs all Python, SCSS, JSON, and yaml linters
++ Checks for stylistic errors (missing newline at end of file, trailing whitespace, etc.)
++ Runs all Python tests
++ Reports test coverage statistics
++ Builds CSS and Closure-compiles Javascript controllers
+
+Your pull request must pass the build in order to be merged. You can run everything Travis runs locally with `make check-style`, `make test-coverage`, and `make prod`.
+
+#### Testing
+
+[Modern Paste has high standards of testing](https://coveralls.io/github/LINKIWI/modern-paste): every line of Python should be tested. This is to ensure accuracy of your intended changes, and to make sure future changes don't break existing functionality.
+
+This means
++ Every new Python component should be accompanied with one or more unit tests.
++ Changes to existing code should be accompanied with changes to existing unit tests.
++ You should run existing unit tests frequently to ensure that you're not breaking existing functionality. If existing unit tests fail, decide if it was intentional (in which case the old tests should be updated to reflect the new behavior), or if you've accidentally broken something that shouldn't be broken.
+
+## License
+
+This work is licensed under the MIT license.
