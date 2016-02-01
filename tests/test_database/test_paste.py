@@ -11,7 +11,7 @@ from util.exception import *
 
 class TestPaste(util.testing.DatabaseTestCase):
     def test_create_new_paste(self):
-        paste = database.paste.create_new_paste('contents', 1, 1452119965, 'title', 'python', 'password')
+        paste = database.paste.create_new_paste('contents', 1, 1452119965, 'title', 'python', 'password', True)
         self.assertEqual(1, paste.user_id)
         self.assertEqual('contents', paste.contents)
         self.assertEqual(1452119965, paste.expiry_time)
@@ -19,6 +19,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual('python', paste.language)
         self.assertEqual('python', paste.language)
         self.assertEqual(util.cryptography.secure_hash('password'), paste.password_hash)
+        self.assertTrue(paste.is_api_post)
         # Should also be able to create pastes with all optional fields blank
         paste = database.paste.create_new_paste('contents')
         self.assertEqual('text', paste.language)

@@ -3,6 +3,7 @@ from flask_login import current_user
 from modern_paste import app
 
 import config
+from uri.main import *
 from uri.paste import *
 from util.exception import *
 from api.decorators import require_form_args
@@ -30,6 +31,7 @@ def submit_paste():
     data = flask.request.get_json()
     try:
         data['user_id'] = current_user.user_id if current_user.is_authenticated else None
+        data['is_api_post'] = flask.request.referrer not in [HomeURI.uri(), PastePostInterfaceURI.uri()]
         return flask.jsonify(database.paste.create_new_paste(**data).as_dict()), constants.api.SUCCESS_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE

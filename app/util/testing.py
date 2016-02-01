@@ -83,6 +83,7 @@ class PasteFactory(Factory):
         title=lambda: random_alphanumeric_string(),
         language=lambda: random.choice(['python', 'css', 'javascript', 'text']),
         password=lambda: random_alphanumeric_string(),
+        is_api_post=lambda: False,
     ):
         return database.paste.create_new_paste(
             contents=cls.random_or_specified_value(contents),
@@ -91,6 +92,7 @@ class PasteFactory(Factory):
             title=cls.random_or_specified_value(title),
             language=cls.random_or_specified_value(language),
             password=cls.random_or_specified_value(password),
+            is_api_post=cls.random_or_specified_value(is_api_post),
         )
 
 

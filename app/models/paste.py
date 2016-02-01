@@ -20,6 +20,7 @@ class Paste(db.Model):
     contents = db.Column(db.Text)
     deactivation_token = db.Column(db.Text)
     views = db.Column(db.Integer)
+    is_api_post = db.Column(db.Boolean)
 
     def __init__(
         self,
@@ -29,6 +30,7 @@ class Paste(db.Model):
         expiry_time,
         title,
         language,
+        is_api_post,
     ):
         self.is_active = True
         self.user_id = user_id
@@ -40,6 +42,7 @@ class Paste(db.Model):
         self.contents = contents
         self.deactivation_token = util.testing.random_alphanumeric_string()
         self.views = 0
+        self.is_api_post = is_api_post
 
     def as_dict(self):
         """

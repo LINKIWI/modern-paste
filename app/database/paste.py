@@ -8,7 +8,7 @@ from modern_paste import session
 from util.exception import *
 
 
-def create_new_paste(contents, user_id=None, expiry_time=None, title=None, language=None, password=None):
+def create_new_paste(contents, user_id=None, expiry_time=None, title=None, language=None, password=None, is_api_post=False):
     """
     Create a new paste.
 
@@ -18,6 +18,7 @@ def create_new_paste(contents, user_id=None, expiry_time=None, title=None, langu
     :param title: Title of the paste (optional)
     :param language: Language of the paste (optional, defaults to plain text)
     :param password: Password of the paste (optional)
+    :param is_api_post: True to indicate that the post was posted externally via the API interface (optional)
     :return: An instance of models.Paste representing the newly added paste.
     """
     new_paste = models.Paste(
@@ -27,6 +28,7 @@ def create_new_paste(contents, user_id=None, expiry_time=None, title=None, langu
         title=title if title else 'Untitled',
         language=language or 'text',
         password_hash=util.cryptography.secure_hash(password) if password is not None else None,
+        is_api_post=is_api_post,
     )
     session.add(new_paste)
     session.commit()

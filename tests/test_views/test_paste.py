@@ -34,6 +34,10 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIn(str(paste.paste_id), views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
         self.assertIn(paste.language, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
+        # Deactivation token should never appear if the paste was posted via the API interface
+        paste = util.testing.PasteFactory.generate(is_api_post=True)
+        self.assertNotIn(paste.deactivation_token, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
+
     def test_paste_view_raw(self):
         # Non-existent paste
         self.assertEqual('This paste either does not exist or has been deleted.', views.paste.paste_view_raw(-1).data)

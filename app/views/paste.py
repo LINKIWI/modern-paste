@@ -39,7 +39,8 @@ def paste_view(paste_id):
     return 'paste/view.html', {
         'paste_id': paste_id,
         'paste_language': paste.language,
-        'deactivation_token': paste.deactivation_token if paste.views == 1 else None
+        # Display the deactivation token if this is the paste's first view and if it was posted via the web interface
+        'deactivation_token': paste.deactivation_token if paste.views == 1 and not paste.is_api_post else None
     }
 
 

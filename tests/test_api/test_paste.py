@@ -12,6 +12,7 @@ import database.user
 import util.cryptography
 import util.testing
 from uri.authentication import *
+from uri.main import *
 from uri.paste import *
 
 
@@ -108,6 +109,35 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
         self.assertEqual(user.user_id, database.paste.get_paste_by_id(util.cryptography.get_decid(resp_data['paste_id_repr'])).user_id)
+
+    def test_submit_paste_api_post(self):
+        # Ensure that the is_api_post flag is appropriately set
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': 'contents',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        paste_id = util.cryptography.get_decid(json.loads(resp.data)['paste_id_repr'], force=True)
+        self.assertTrue(database.paste.get_paste_by_id(paste_id).is_api_post)
+
+    def test_submit_paste_non_api_post(self):
+        for referrer in [PastePostInterfaceURI.uri(), HomeURI.uri()]:
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                }),
+                content_type='application/json',
+                headers={
+                    'referer': referrer,  # TIL "referer" is a deliberate mispelling of "referrer"
+                },
+            )
+            self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+            paste_id = util.cryptography.get_decid(json.loads(resp.data)['paste_id_repr'], force=True)
+            self.assertFalse(database.paste.get_paste_by_id(paste_id).is_api_post)
 
     def test_submit_paste_server_error(self):
         with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):
