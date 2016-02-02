@@ -1,4 +1,5 @@
 coverage
+coveralls
 flask
 flask-login
 flask-sqlalchemy
