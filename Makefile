@@ -5,8 +5,8 @@ all:
 default:
 	pre-commit run --all-files
 	mkdir -p build
-	java -jar lib/compiler.jar --js static/controller.js --js_output_file build/controller.js
-	sass static/stylesheet.scss:build/stylesheet.css --style compressed
+	java -jar lib/compiler.jar --js static/js/**.js --js_output_file build/controller.js
+	sass static/scss/stylesheet.scss:build/stylesheet.css --style compressed
 
 dependencies:
 	gem install sass

@@ -1,0 +1,150 @@
+@import 'colors';
+
+
+// Source and font definitions
+
+@font-face {
+    font-family: 'uni-sans-book';
+    src: url('../static/fonts/uni-sans-book.ttf');
+}
+
+@font-face {
+    font-family: 'uni-sans-light';
+    src: url('../static/fonts/uni-sans-light.ttf');
+}
+
+@font-face {
+    font-family: 'uni-sans-semibold';
+    src: url('../static/fonts/uni-sans-semibold.ttf');
+}
+
+@font-face {
+    font-family: 'uni-sans-bold';
+    src: url('../static/fonts/uni-sans-heavy.ttf');
+}
+
+@font-face {
+    font-family: 'uni-sans-book-italic';
+    src: url('../static/fonts/uni-sans-book-italic.ttf');
+}
+
+@font-face {
+    font-family: 'ubuntu-mono-regular';
+    src: url('../static/fonts/ubuntu-mono-regular.ttf');
+}
+
+
+// Font classes
+
+.sans-serif.regular {
+    font-family: 'uni-sans-book', sans-serif;
+
+    &.italic {
+        font-family: 'uni-sans-book-italic', sans-serif;
+    }
+}
+
+.sans-serif.light {
+    font-family: 'uni-sans-light', sans-serif;
+}
+
+.sans-serif.semibold {
+    font-family: 'uni-sans-semibold', sans-serif;
+}
+
+.sans-serif.bold {
+    font-family: 'uni-sans-bold', sans-serif;
+}
+
+.ubuntu-mono.regular {
+    font-family: 'ubuntu-mono-regular', monospace;
+}
+
+
+// Size modifiers
+
+.size-1 {
+    font-size: 12px;
+}
+
+.size-2 {
+    font-size: 14px;
+}
+
+.size-3 {
+    font-size: 18px;
+}
+
+.size-4 {
+    font-size: 20px;
+}
+
+.size-5 {
+    font-size: 26px;
+}
+
+.size-6 {
+    font-size: 30px;
+}
+
+.size-7 {
+    font-size: 45px;
+}
+
+.size-8 {
+    font-size: 56px;
+}
+
+
+// Letter spacing
+
+.spaced {
+    letter-spacing: 2px;
+}
+
+.less-spaced {
+    letter-spacing: 1px;
+}
+
+.more-spaced {
+    letter-spacing: 6px;
+}
+
+
+// Shadows
+// scss-lint:disable ColorVariable
+
+.less-shadow {
+    text-shadow: 0 0 2px rgba(0, 0, 0, .4);
+}
+
+.shadow {
+    text-shadow: 0 0 2px rgba(0, 0, 0, .7);
+}
+
+.more-shadow {
+    text-shadow: 0 0 5px rgba(0, 0, 0, .5);
+}
+
+
+// Font colors
+
+.white {
+    color: $white;
+}
+
+.gray {
+    color: $gray;
+}
+
+.light-gray {
+    color: $light-gray;
+}
+
+.blue {
+    color: $blue;
+}
+
+.red {
+    color: $error-red;
+}

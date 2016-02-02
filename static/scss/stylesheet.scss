@@ -1,0 +1,122 @@
+@import 'fonts';
+@import 'colors';
+@import 'links';
+
+
+// Undo Bootstrap stupidity
+
+p {
+    margin: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+
+// Main header and footer
+
+.mp-header {
+    background-color: $white;
+    display: table;
+    height: 70px;
+    left: 0;
+    padding: 10px 50px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+
+    .mp-title {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .mp-nav-links {
+        display: table-cell;
+        text-align: right;
+        vertical-align: middle;
+
+        a {
+            margin-left: 15px;
+        }
+    }
+}
+
+.mp-footer {
+    background-color: $gray;
+    display: table;
+    height: 250px;
+    padding: 40px 50px;
+    width: 100%;
+
+    .mp-description {
+        display: table-cell;
+        padding-right: 50px;
+        width: 50%;
+    }
+
+    .mp-links {
+        display: table-cell;
+        padding-left: 50px;
+        text-align: right;
+        width: 50%;
+    }
+}
+
+
+// Main content
+
+.intro {
+    background: url('http://i.imgur.com/sXRNb8k.png') no-repeat;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+
+    .icon-quote {
+        height: 45px;
+        margin-right: 20px;
+        vertical-align: top;
+        width: 45px;
+    }
+
+    .intro-text {
+        left: 50%;
+        min-width: 400px;
+        position: relative;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        width: 900px;
+    }
+}
+
+.download-section {
+    background-color: $dark-blue;
+    height: 400px;
+    padding: 60px 0;
+    text-align: center;
+
+    button {
+        padding: 10px 30px;
+    }
+
+    .demo-button {
+        margin-bottom: 20px;
+        margin-top: 50px;
+    }
+
+    .fa {
+        vertical-align: middle;
+    }
+
+    .button-text {
+        margin-bottom: 5px;
+        margin-left: 10px;
+    }
+}
+
+.content {
+    padding: 100px 50px;
+    width: 100%;
+}
