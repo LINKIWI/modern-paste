@@ -13,7 +13,7 @@ DEFAULT_HTTPS = True
 # The type of build environment
 # build_environment.DEV won't minify CSS and Closure-compile JavaScript; build_environment.PROD will.
 # Dev and prod environments also use separate databases, modern_paste_dev and modern_paste, respectively.
-BUILD_ENVIRONMENT = constants.build_environment.DEV
+BUILD_ENVIRONMENT = constants.build_environment.PROD
 
 # Option to use encrypted IDs rather than integer IDs
 # Set this to True if you want paste IDs to be encrypted, e.g. displayed as h0GZ19np17iT~CtpuIH3NcnRi-rYnlYzizqToCmG3BY=
