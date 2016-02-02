@@ -1,0 +1,11 @@
+language: python
+python:
+    - "2.7"
+install:
+    - "gem install sass"
+    - "pip install pre-commit"
+before_script:
+    - "pre-commit install"
+    - "pre-commit autoupdate"
+script:
+    - "make default"
