@@ -5,6 +5,7 @@ from collections import OrderedDict
 import config
 import constants
 import uri
+import util.cryptography
 from modern_paste import app
 
 
@@ -88,6 +89,15 @@ def get_uri_path():
         return uri_class.full_uri(*args, **kwargs)
 
     return dict(uri=uri, full_uri=full_uri)
+
+
+@app.context_processor
+def get_id_repr():
+    """
+    Templating utility to encode any ID in the form required by the application, as specified by
+    config.USE_ENCRYPTED_IDS. This function simply exports util.cryptography.get_id_repr.
+    """
+    return dict(id_repr=util.cryptography.get_id_repr)
 
 
 @app.context_processor

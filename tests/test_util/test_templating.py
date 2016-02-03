@@ -1,9 +1,10 @@
 import unittest
 
-from uri.paste import PasteSubmitURI
 import config
 import constants.build_environment
+import util.cryptography
 import util.templating
+from uri.paste import PasteSubmitURI
 
 
 class TestTemplating(unittest.TestCase):
@@ -123,6 +124,20 @@ class TestTemplating(unittest.TestCase):
         self.assertEqual(PasteSubmitURI.uri(key='value'), uri('paste', 'PasteSubmitURI', key='value'))
         self.assertEqual(PasteSubmitURI.full_uri(), full_uri('paste', 'PasteSubmitURI'))
         self.assertEqual(PasteSubmitURI.full_uri(key='value'), full_uri('paste', 'PasteSubmitURI', key='value'))
+
+    def test_get_id_repr(self):
+        id_repr = util.templating.get_id_repr()['id_repr']
+
+        decid = 25
+        encid = util.cryptography.get_encid(decid)
+
+        config.USE_ENCRYPTED_IDS = True
+        self.assertEqual(encid, id_repr(decid))
+        self.assertEqual(encid, id_repr(encid))
+
+        config.USE_ENCRYPTED_IDS = False
+        self.assertEqual(decid, id_repr(decid))
+        self.assertEqual(decid, id_repr(encid))
 
     def test_get_all_uris(self):
         uri = util.templating.get_uri_path()['uri']

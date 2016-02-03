@@ -67,31 +67,5 @@ class TestPaste(util.testing.DatabaseTestCase):
             views.paste.paste_view_raw(util.cryptography.get_id_repr(paste.paste_id)).data,
         )
 
-    def test_paste_deactivate(self):
-        # Non-existent paste
-        self.assertIn(
-            'There was an error deactivating this paste.',
-            views.paste.paste_deactivate(util.cryptography.get_id_repr(1), ''),
-        )
-
-        # Invalid deactivation token
-        paste = util.testing.PasteFactory.generate()
-        self.assertIn(
-            'There was an error deactivating this paste.',
-            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), 'invalid'),
-        )
-
-        # Correct deactivation
-        self.assertIn(
-            'This paste has been successfully deactivated.',
-            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), paste.deactivation_token),
-        )
-
-        # Already deactivated paste
-        self.assertIn(
-            'There was an error deactivating this paste.',
-            views.paste.paste_deactivate(util.cryptography.get_id_repr(paste.paste_id), paste.deactivation_token),
-        )
-
     def test_paste_archive(self):
         self.assertIsNotNone(views.paste.paste_archive())

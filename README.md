@@ -1,7 +1,7 @@
 Modern Paste
 ===========
 
-[![Build Status](https://travis-ci.org/LINKIWI/modern-paste.svg?branch=master)](https://travis-ci.org/LINKIWI/modern-paste) [![Coverage Status](https://coveralls.io/repos/LINKIWI/modern-paste/badge.svg?branch=master&service=github)](https://coveralls.io/github/LINKIWI/modern-paste?branch=master)
+[![Build Status](https://travis-ci.org/LINKIWI/modern-paste.svg?branch=master)](https://travis-ci.org/LINKIWI/modern-paste) [![Coverage Status](https://coveralls.io/repos/LINKIWI/modern-paste/badge.svg?branch=master&service=github)](https://coveralls.io/github/LINKIWI/modern-paste?branch=master) [![Join the chat at https://gitter.im/LINKIWI/modern-paste](https://badges.gitter.im/LINKIWI/modern-paste.svg)](https://gitter.im/LINKIWI/modern-paste?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![Screenshot](http://i.imgur.com/BPvBFl2.png)
 
