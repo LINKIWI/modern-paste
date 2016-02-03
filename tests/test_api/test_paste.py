@@ -124,7 +124,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertTrue(database.paste.get_paste_by_id(paste_id).is_api_post)
 
     def test_submit_paste_non_api_post(self):
-        for referrer in [PastePostInterfaceURI.uri(), HomeURI.uri()]:
+        for referrer in [PastePostInterfaceURI.full_uri(), HomeURI.full_uri(), PastePostInterfaceURI.full_uri() + '/?extra=stuff']:
             resp = self.client.post(
                 PasteSubmitURI.uri(),
                 data=json.dumps({

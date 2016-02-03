@@ -31,7 +31,11 @@ def submit_paste():
     data = flask.request.get_json()
     try:
         data['user_id'] = current_user.user_id if current_user.is_authenticated else None
-        data['is_api_post'] = flask.request.referrer not in [HomeURI.uri(), PastePostInterfaceURI.uri()]
+        # The paste is considered an API post if any of the following conditions are met:
+        # (1) The referrer is null.
+        # (2) The Home or PastePostInterface URIs are *not* contained within the referrer string (if a paste was posted
+        # via the web interface, this is where the user should be coming from).
+        data['is_api_post'] = not flask.request.referrer or not any([uri in flask.request.referrer for uri in [HomeURI.full_uri(), PastePostInterfaceURI.full_uri()]])
         return flask.jsonify(database.paste.create_new_paste(**data).as_dict()), constants.api.SUCCESS_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE

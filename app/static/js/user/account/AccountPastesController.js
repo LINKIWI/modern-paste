@@ -379,7 +379,7 @@ modernPaste.user.account.AccountPastesController.showPasteDeactivationSuccess = 
     modernPaste.universal.AlertController.displaySuccessAlert(
         'Paste ' + modernPaste.universal.CommonController.truncateText(pasteDetails.title, 25) + ' was successfully deactivated.'
     );
-    $('#' + pasteDetails.paste_id_repr.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1')).fadeOut();
+    $('#' + pasteDetails.paste_id_repr.toString().replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1')).fadeOut();
 };
 
 /**
