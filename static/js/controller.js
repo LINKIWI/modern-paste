@@ -14,7 +14,14 @@ var toggleHeaderStyle = function() {
     }
 };
 
+var controlIntroFontSize = function() {
+    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var text = $('.intro .intro-text .i-wish');
+    height < 700 ? text.css('font-size', '40px') : text.css('font-size', '72px');
+};
+
 
 $(document).ready(function() {
     $(window).on('scroll', toggleHeaderStyle);
+    $(window).on('resize', controlIntroFontSize);
 });
