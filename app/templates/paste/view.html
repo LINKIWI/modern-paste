@@ -16,8 +16,8 @@
         'paste/ViewController.js',
     ])|safe }}
 
-    {% if paste_language != 'text' %}
-        {{ import_js(['lib/codemirror/mode/' ~ paste_language ~ '/' ~ paste_language ~ '.js'], defer=True)|safe }}
+    {% if paste.language != 'text' %}
+        {{ import_js(['lib/codemirror/mode/' ~ paste.language ~ '/' ~ paste.language ~ '.js'], defer=True)|safe }}
     {% endif %}
 {% endblock %}
 
@@ -41,10 +41,10 @@
         <br/>
         <p class="paste-subtitle sans-serif semibold size-1 white less-spaced dark-link-alt">
             <a class="paste-download-link" href="#">DOWNLOAD</a>
-            &bull; <a class="paste-raw-link" href="{{ uri('paste', 'PasteViewRawInterfaceURI', paste_id=paste_id) }}">VIEW RAW</a>
+            &bull; <a class="paste-raw-link" href="{{ uri('paste', 'PasteViewRawInterfaceURI', paste_id=id_repr(paste.paste_id)) }}">VIEW RAW</a>
             <!--The fork option should be hidden if the paste is password-protected-->
             <span class="paste-fork-container">
-                &bull; <a class="paste-fork-link" href="{{ uri('paste', 'PastePostInterfaceURI', fork=paste_id) }}">FORK</a>
+                &bull; <a class="paste-fork-link" href="{{ uri('paste', 'PastePostInterfaceURI', fork=id_repr(paste.paste_id)) }}">FORK</a>
             </span>
         </p>
     </div>
@@ -54,11 +54,11 @@
         <a class="paste-download-content hidden" href="#" download></a>
     </div>
 
-    {% if deactivation_token is not none %}
+    {% if show_deactivation_token %}
         <div id="footer" class="deactivation-token-banner dark-link-alt">
             <p class="sans-serif semibold white size-2 less-spaced">PASTE DEACTIVATION TOKEN</p>
             <p class="sans-serif regular white size-1 less-spaced">The link to deactivate this paste is below. Make sure to keep it somewhere safe; this is the only time you'll see it!</p>
-            <p class="paste-deactivation-link sans-serif regular white size-1 less-spaced"><a href="{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=paste_id, deactivation_token=deactivation_token) }}">{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=paste_id, deactivation_token=deactivation_token) }}</a></p>
+            <p class="paste-deactivation-link sans-serif regular white size-1 less-spaced"><a href="{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=id_repr(paste.paste_id), deactivation_token=paste.deactivation_token) }}">{{ full_uri('paste', 'PasteDeactivateInterfaceURI', paste_id=id_repr(paste.paste_id), deactivation_token=paste.deactivation_token) }}</a></p>
         </div>
     {% endif %}
 
@@ -76,5 +76,27 @@
         </form>
     </div>
 
-    <div id="paste-id" class="hidden" data-paste-id="{{ paste_id }}"></div>
+    <!--Modal for paste deactivation confirmation-->
+    <div class="deactivate-confirm-modal modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content light-link">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p class="modal-title sans-serif semibold gray size-3 less-spaced">DEACTIVATE PASTE</p>
+                </div>
+                <div class="modal-body">
+                    <p class="deactivate-confirm-text sans-serif regular gray size-2">You are about to deactivate this paste. Are you sure you want to continue?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-button btn btn-default sans-serif semibold gray size-1 less-spaced" data-dismiss="modal">CANCEL</button>
+                    <button type="button" class="deactivate-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="metadata" class="hidden">
+        <div id="paste-id" data-paste-id="{{ id_repr(paste.paste_id) }}"></div>
+        <div id="paste-deactivation-token" data-paste-deactivation-token="{% if deactivation_token is not none %}{{ deactivation_token }}{% endif %}"></div>
+    </div>
 {% endblock %}

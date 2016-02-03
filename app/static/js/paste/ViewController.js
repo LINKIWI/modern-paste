@@ -11,7 +11,10 @@ goog.require('modernPaste.universal.URIController');
  */
 modernPaste.paste.ViewController = function() {
     // Metadata
-    this.pasteId = $('#paste-id').data('paste-id');
+    this.metadata = {
+        'deactivationToken': $('#metadata #paste-deactivation-token').data('paste-deactivation-token'),  // User-supplied
+        'pasteId': $('#metadata #paste-id').data('paste-id')
+    };
 
     // Page elements
     this.pasteLoadSplash = $('.paste-load-splash');
@@ -35,10 +38,19 @@ modernPaste.paste.ViewController = function() {
     this.pasteDownloadContent = $('.paste-view-container .paste-download-content');
     this.pasteForkContainer = $('.paste-header .paste-fork-container');
 
+    // Modals
+    this.pasteDeactivationModal = $('.deactivate-confirm-modal');
+
+    if (this.metadata.deactivationToken !== '') {
+        this.pasteDeactivationModal.modal('show');
+    }
+
     modernPaste.paste.ViewController.loadPaste.bind(this)();
 
     this.passwordSubmitButton.on('click', modernPaste.paste.ViewController.verifyPastePassword.bind(this));
     this.pasteDownloadLink.on('click', modernPaste.paste.ViewController.downloadPasteAsFile.bind(this));
+    this.pasteDeactivationModal.find('.deactivate-button').on('click', modernPaste.paste.ViewController.deactivatePaste.bind(this));
+    this.pasteDeactivationModal.find('.canel-button').on('click', modernPaste.paste.ViewController.hideModal.bind(this));
 };
 
 /**
@@ -50,7 +62,7 @@ modernPaste.paste.ViewController.loadPaste = function() {
         'url': modernPaste.universal.URIController.uris.PasteDetailsURI,
         'contentType': 'application/json',
         'data': JSON.stringify({
-            'paste_id': this.pasteId
+            'paste_id': this.metadata.pasteId
         })
     })
     .done(modernPaste.paste.ViewController.initializePasteDetails.bind(this))
@@ -83,7 +95,7 @@ modernPaste.paste.ViewController.initializePasteDetails = function(data) {
             'viewportMargin': Infinity,
             'lineWrapping': true,
             'mode': data.details.language.toLowerCase(),
-            'readOnly': 'nocursor'  // Prevent editing of paste when viewing it
+            'readOnly': true  // Prevent editing of paste when viewing it
         }
     );
 
@@ -123,7 +135,7 @@ modernPaste.paste.ViewController.verifyPastePassword = function(evt) {
         'url': modernPaste.universal.URIController.uris.PasteDetailsURI,
         'contentType': 'application/json',
         'data': JSON.stringify({
-            'paste_id': this.pasteId,
+            'paste_id': this.metadata.pasteId,
             'password': this.pastePasswordField.val()
         })
     })
@@ -163,6 +175,63 @@ modernPaste.paste.ViewController.downloadPasteAsFile = function(evt) {
     this.pasteDownloadContent.attr('download', this.pasteTitle.text() + fileExtension);
     this.pasteDownloadContent.attr('href', 'data:text/plain;base64,' + window.btoa(this.pasteContents.getValue()));
     this.pasteDownloadContent[0].click();
+};
+
+/**
+ * Hide any modals on the page.
+ */
+modernPaste.paste.ViewController.hideModal = function() {
+    $('.modal').modal('hide');
+};
+
+/**
+ * Send a request to the server to deactivate the requested paste, after the user has confirmed the action.
+ */
+modernPaste.paste.ViewController.deactivatePaste = function(evt) {
+    evt.preventDefault();
+
+    modernPaste.paste.ViewController.hideModal();
+    modernPaste.universal.SplashController.showSplash(this.pasteLoadSplash);
+    $.ajax({
+        'method': 'POST',
+        'url': modernPaste.universal.URIController.uris.PasteDeactivateURI,
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+            'paste_id': this.metadata.pasteId,
+            'deactivation_token': this.metadata.deactivationToken
+        })
+    })
+    .done(modernPaste.paste.ViewController.showDeactivationSuccess.bind(this))
+    .fail(modernPaste.paste.ViewController.showDeactivationFailure.bind(this));
+};
+
+/**
+ * Display an alert indicating paste deactivation success.
+ */
+modernPaste.paste.ViewController.showDeactivationSuccess = function() {
+    modernPaste.universal.SplashController.hideSplash(this.pasteLoadSplash);
+    modernPaste.universal.AlertController.displaySuccessAlert(
+        'This paste has been successfully deactivated. You will be redirected in 5 seconds.'
+    );
+    setTimeout(function() {
+        window.location.href = modernPaste.universal.URIController.uris.HomeURI;
+    }, 5000);
+};
+
+/**
+ * Display an alert indicating paste deactivation failure.
+ */
+modernPaste.paste.ViewController.showDeactivationFailure = function(data) {
+    modernPaste.universal.SplashController.hideSplash(this.pasteLoadSplash);
+    modernPaste.universal.AlertController.displayErrorAlert(
+        modernPaste.universal.AlertController.selectErrorMessage(
+            data,
+            {
+                'nonexistent_paste_failure': 'This paste either does not exist or has already been deactivated.',
+                'auth_failure': 'The deactivation token you supplied was invalid.'
+            }
+        )
+    );
 };
 
 
