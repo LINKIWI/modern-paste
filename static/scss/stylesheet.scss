@@ -70,7 +70,7 @@ body {
 // Main content
 
 .intro {
-    background: url('http://i.imgur.com/sXRNb8k.png') no-repeat;
+    background: url('../static/img/mock.png') no-repeat center;
     background-size: cover;
     height: 100%;
     width: 100%;
@@ -83,12 +83,24 @@ body {
     }
 
     .intro-text {
-        left: 50%;
-        min-width: 400px;
+        left: 10%;
         position: relative;
         top: 50%;
-        transform: translateX(-50%) translateY(-50%);
-        width: 900px;
+        transform: translateY(-50%);
+        width: 80%;
+    }
+
+    .download-button {
+        background-color: transparent;
+        border-color: $white;
+        margin-top: 40px;
+        padding: 15px 40px;
+    }
+
+    .download-button:hover,
+    .download-button:active,
+    .download-button:focus {
+        color: $pure-white;
     }
 }
 
@@ -99,7 +111,15 @@ body {
     text-align: center;
 
     button {
-        padding: 10px 30px;
+        background-color: transparent;
+        border-color: $white;
+        padding: 15px 40px;
+    }
+
+    button:hover,
+    button:active,
+    button:focus {
+        color: $pure-white;
     }
 
     .demo-button {
