@@ -41,7 +41,7 @@ Modern Paste is intended for system administrators who wish to host their own in
 *The following instructions assume an Apache web server, though any WSGI-aware server should work.*
 
 1. **Meet all prerequisites.**
-   It is assumed you have all the following installed: MySQL, Python, Java, Git, GNU make utility, and the package managers `pip` and `gem`. It is also assumed that MySQL is already configured (e.g. you know the password to the `root` (or equivalent) account. If not, please consult the instructions for your platform to install and configure all of the above.
+   It is assumed you have all the following installed: MySQL, Python, Java, Git, GNU make utility, and the package managers `pip`, `gem`, and `npm`. It is also assumed that MySQL is already configured (e.g. you know the password to the `root` (or equivalent) account. If not, please consult the instructions for your platform to install and configure all of the above.
 
 2. **Get the code.**
    ```bash
