@@ -76,5 +76,6 @@ LANGUAGES = [
     'sql',
     'verilog',
     'vhdl',
+    'xml',
     'yaml',
 ]
