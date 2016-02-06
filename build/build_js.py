@@ -95,6 +95,7 @@ if __name__ == '__main__':
             js_output_files.append('/'.join(file_path.split('/')[:-1]).replace('static/js', 'static/build/js') + '/' + controller_name)
         else:
             js_output_files.append(file_path.replace('static/js', 'static/build/js'))
+    mode_files = ['app/static/lib/codemirror/mode/{mode}/{mode}.js'.format(mode=mode) for mode in config.LANGUAGES if mode != 'text']
 
     print 'Javascript build started.'
     for js_file, js_output_file in zip(js_files, js_output_files):
@@ -105,4 +106,9 @@ if __name__ == '__main__':
             '--js', 'app/static/js/universal/**.js',
             '--js_output_file', js_output_file,
         ]))
+    print 'Compiling selected languages: {languages}'.format(languages=config.LANGUAGES)
+    abort_if_error(subprocess.call([
+        'uglifyjs',
+        '-o', 'app/static/build/js/paste/modes.js'
+    ] + mode_files))
     print 'Javascript build complete.'
