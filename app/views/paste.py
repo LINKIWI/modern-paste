@@ -23,12 +23,14 @@ def paste_post():
 
 
 @app.route(PasteViewInterfaceURI.path, methods=['GET'])
+@app.route(PasteDeactivateInterfaceURI.path, methods=['GET'])
 @render_view
-def paste_view(paste_id):
+def paste_view(paste_id, deactivation_token=None):
     """
-    Default interface for viewing a paste.
+    Default interface for viewing a paste or deactivating a paste.
 
     :param paste_id: Encid or decid of the paste to look up; supplied in the URL
+    :param deactivation_token: Deactivation token string for paste if the user is attempting to deactivate.
     """
     try:
         paste = database.paste.get_paste_by_id(util.cryptography.get_decid(paste_id), active_only=True)
@@ -37,10 +39,11 @@ def paste_view(paste_id):
         return 'paste/nonexistent.html', {}
 
     return 'paste/view.html', {
-        'paste_id': paste_id,
-        'paste_language': paste.language,
+        'paste': paste,
         # Display the deactivation token if this is the paste's first view and if it was posted via the web interface
-        'deactivation_token': paste.deactivation_token if paste.views == 1 and not paste.is_api_post else None
+        'show_deactivation_token': paste.views == 1 and not paste.is_api_post,
+        # User-supplied deactivation token for manual deactivation
+        'deactivation_token': deactivation_token,
     }
 
 
@@ -67,31 +70,6 @@ def paste_view_raw(paste_id):
         return flask.Response(paste.contents, mimetype='text/plain')
     except (PasteDoesNotExistException, InvalidIDException):
         return flask.Response('This paste either does not exist or has been deleted.', mimetype='text/plain')
-
-
-@app.route(PasteDeactivateInterfaceURI.path, methods=['GET'])
-@render_view
-def paste_deactivate(paste_id, deactivation_token):
-    """
-    Deactive the requested paste by deactivation token and indicate in the UI whether the deactivation was
-    successful.
-
-    :param paste_id: ID of the paste to deactivate
-    :param deactivation_token: Token associated with that paste
-    """
-    try:
-        return 'paste/deactivate.html', {
-            'success': database.paste.get_paste_by_id(
-                util.cryptography.get_decid(paste_id),
-                active_only=True,
-            ).deactivation_token == deactivation_token and database.paste.deactivate_paste(
-                util.cryptography.get_decid(paste_id),
-            ),
-        }
-    except:
-        return 'paste/deactivate.html', {
-            'success': False,
-        }
 
 
 @app.route(PasteArchiveInterfaceURI.path, methods=['GET'])
