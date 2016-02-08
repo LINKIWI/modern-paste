@@ -1,13 +1,13 @@
-import mock
 import json
 import os
 
-import util.cryptography
-import util.testing
+import mock
 
-import views.misc
 import constants.api
 import constants.build_environment
+import util.cryptography
+import util.testing
+import views.misc
 
 
 class TestMisc(util.testing.DatabaseTestCase):
@@ -38,3 +38,16 @@ class TestMisc(util.testing.DatabaseTestCase):
         )['api_endpoints']
         for endpoint in documented_api_endpoints:
             self.assertIn(endpoint['name'].replace(' ', '-').lower(), api_documentation)
+
+    def test_version(self):
+        version_string = views.misc.version().data.split('\n')
+        self.assertEqual(4, len(version_string))  # 4 lines of output
+        # Ensure SHA is present
+        self.assertEqual(
+            40,
+            len(version_string[1]),
+            'Could not parse {sha}'.format(sha=version_string[1]),
+        )
+        # Ensure date is present
+        self.assertEqual(2, version_string[2].count(':'))
+        self.assertIn('modern-paste.git', version_string[3])  # You might need to change this if the project is renamed
