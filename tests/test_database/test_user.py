@@ -185,3 +185,18 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertEqual('127.0.0.1', user.signup_ip)
         self.assertEqual('name', user.name)
         self.assertEqual('test@test.com', user.email)
+
+    def test_scrub_inactive_users(self):
+        users = [util.testing.UserFactory.generate() for i in range(15)]
+        deactivated_users = [database.user.deactivate_user(user.user_id) for user in users[:10]]
+        database.user.scrub_inactive_users()
+        for deactivated_user in deactivated_users:
+            self.assertRaises(
+                UserDoesNotExistException,
+                database.user.get_user_by_id,
+                user_id=deactivated_user.user_id,
+                active_only=False,
+            )
+        for user in users:
+            if user not in deactivated_users:
+                self.assertIsNotNone(database.user.get_user_by_id(user.user_id))
