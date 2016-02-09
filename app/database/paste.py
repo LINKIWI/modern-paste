@@ -178,3 +178,18 @@ def get_all_pastes_for_user(user_id, active_only=False):
         ).order_by(
             models.Paste.post_time.desc(),
         ).all()
+
+
+def scrub_inactive_pastes():
+    """
+    Goes through the database and deletes all pastes that are either inactive or have expired. This method is not
+    intended to be called from within the application, but rather externally either manually or via a script/cron job.
+
+    For example, in a Python shell:
+        > import database.paste
+        > database.paste.scrub_inactive_pastes()
+    """
+    models.Paste.query.filter(or_(
+        models.Paste.is_active.is_(False),
+        models.Paste.expiry_time < time.time(),
+    )).delete()

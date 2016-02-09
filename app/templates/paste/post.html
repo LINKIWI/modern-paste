@@ -18,11 +18,15 @@
         'paste/PostController.js',
     ])|safe }}
 
-    {% for language in config.LANGUAGES %}
-        {% if language != 'text' %}
-            {{ import_js(['lib/codemirror/mode/' ~ language ~ '/' ~ language ~ '.js'], defer=True)|safe }}
-        {% endif %}
-    {% endfor %}
+    {% if config.BUILD_ENVIRONMENT == 'dev' %}
+        {% for language in config.LANGUAGES %}
+            {% if language != 'text' %}
+                {{ import_js(['lib/codemirror/mode/' ~ language ~ '/' ~ language ~ '.js'], defer=True)|safe }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {{ import_js(['paste/modes.js'], defer=True)|safe }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

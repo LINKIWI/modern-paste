@@ -34,6 +34,7 @@ prod:
 
 dependencies:
 	gem install sass
+	npm install -g uglify-js
 	pip install -r requirements.txt
 	pre-commit install
 	pre-commit autoupdate
