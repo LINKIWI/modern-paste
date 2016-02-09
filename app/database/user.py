@@ -1,5 +1,5 @@
-import models
 import database.paste
+import models
 import util.cryptography
 import util.testing
 from modern_paste import login_manager
@@ -202,3 +202,15 @@ def load_user(user_id):
         return get_user_by_id(user_id)
     except UserDoesNotExistException:
         return None
+
+
+def scrub_inactive_users():
+    """
+    Goes through the database and deletes all users that are inactive. This method is not intended to be called from
+    within the application, but rather externally either manually or via a script/cron job.
+
+    For example, in a Python shell:
+        > import database.user
+        > database.paste.scrub_inactive_users()
+    """
+    models.User.query.filter_by(is_active=False).delete()

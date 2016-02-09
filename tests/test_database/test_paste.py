@@ -159,3 +159,18 @@ class TestPaste(util.testing.DatabaseTestCase):
         [util.testing.PasteFactory.generate(user_id=user.user_id, expiry_time=int(time.time()) - 1000) for i in range(15)]
         self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=False))
         self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=True))
+
+    def test_scrub_inactive_pastes(self):
+        pastes = [util.testing.PasteFactory.generate(expiry_time=None) for i in range(15)]
+        deactivated_pastes = [database.paste.deactivate_paste(paste.paste_id) for paste in pastes[:10]]
+        database.paste.scrub_inactive_pastes()
+        for deactivated_paste in deactivated_pastes:
+            self.assertRaises(
+                PasteDoesNotExistException,
+                database.paste.get_paste_by_id,
+                paste_id=deactivated_paste.paste_id,
+                active_only=False,
+            )
+        for paste in pastes:
+            if paste not in deactivated_pastes:
+                self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id))

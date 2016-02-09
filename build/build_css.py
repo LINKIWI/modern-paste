@@ -53,7 +53,7 @@ if __name__ == '__main__':
             print 'Configuration in config.py specified a dev environment.\n' \
                   'Compiling SCSS in non-minified mode.'
         else:
-            print 'Configuration in config.py specified a dev environment.\n' \
+            print 'Configuration in config.py specified a prod environment.\n' \
                   'Compiling SCSS in minified mode.'
             style = 'compressed'
     if args.dev:

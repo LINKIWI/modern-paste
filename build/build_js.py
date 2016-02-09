@@ -69,7 +69,7 @@ if __name__ == '__main__':
                   'Skipping compilation of Javascript.'
             sys.exit()
         else:
-            print 'Configuration in config.py specified a dev environment.\n' \
+            print 'Configuration in config.py specified a prod environment.\n' \
                   'Compiling Javascript with default optimizations.'
     if args.dev:
         print 'Skipping compilation of Javascript.'
