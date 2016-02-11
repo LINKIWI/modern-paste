@@ -61,6 +61,7 @@ FLASK_SECRET_KEY = '\x90]\xd4SDI\xb9h\x89\x01\x9f\xa5\xd9\xa1\xb6\xf8]\xb5\x077\
 # Only use strings from the directory app/static/build/lib/codemirror/mode
 LANGUAGES = [
     'text',
+    'clike',
     'cmake',
     'coffeescript',
     'css',
@@ -70,6 +71,7 @@ LANGUAGES = [
     'javascript',
     'jinja2',
     'markdown',
+    'octave',
     'php',
     'python',
     'sass',
