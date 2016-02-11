@@ -1,5 +1,5 @@
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: d740faeded968de3881405d7de09dc6d2e0d7b06
+    sha: 97b88d9610bcc03982ddac33caba98bb2b751f5f
     hooks:
     -   id: trailing-whitespace
     -   id: check-json

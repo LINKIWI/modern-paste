@@ -31,6 +31,16 @@
     .api-item {
         margin-bottom: 80px;
     }
+
+    pre {
+        // !important to override highlight.js defaults
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: initial !important;
+        min-width: 500px;
+        padding: 0 !important;
+        width: 800px !important;
+    }
 }
 
 .api-listing {
@@ -52,16 +62,6 @@
     .api-listing-item {
         margin: 5px 0;
     }
-}
-
-pre {
-    // !important to override highlight.js defaults
-    background-color: transparent !important;
-    border: none !important;
-    border-radius: initial !important;
-    min-width: 500px;
-    padding: 0 !important;
-    width: 800px !important;
 }
 
 .hljs {

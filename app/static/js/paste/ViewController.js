@@ -7,13 +7,15 @@ goog.require('modernPaste.universal.URIController');
 
 /**
  * This controller handles loading paste information into the paste view page via an AJAX call.
+ *
  * @constructor
  */
 modernPaste.paste.ViewController = function() {
     // Metadata
     this.metadata = {
         'deactivationToken': $('#metadata #paste-deactivation-token').data('paste-deactivation-token'),  // User-supplied
-        'pasteId': $('#metadata #paste-id').data('paste-id')
+        'pasteId': $('#metadata #paste-id').data('paste-id'),
+        'showDeactivationLink': $('#metadata #show-deactivate-link').text().toLowerCase() === 'true'
     };
 
     // Page elements
@@ -37,18 +39,25 @@ modernPaste.paste.ViewController = function() {
     this.pasteDownloadLink = $('.paste-header .paste-download-link');
     this.pasteDownloadContent = $('.paste-view-container .paste-download-content');
     this.pasteForkContainer = $('.paste-header .paste-fork-container');
+    this.pasteDeactivateContainer = $('.paste-header .paste-deactivate-container');
+    this.pasteDeactivateLink = $('.paste-header .paste-deactivate-link');
 
     // Modals
     this.pasteDeactivationModal = $('.deactivate-confirm-modal');
 
+    // Two ways to bring up the paste deactivation modal: either by supplying a deactivation token or being logged in and owning the paste
     if (this.metadata.deactivationToken !== '') {
-        this.pasteDeactivationModal.modal('show');
+        modernPaste.paste.ViewController.showModal.bind(this)();
+    }
+    if (!this.metadata.showDeactivationLink) {
+        this.pasteDeactivateContainer.hide();
     }
 
     modernPaste.paste.ViewController.loadPaste.bind(this)();
 
     this.passwordSubmitButton.on('click', modernPaste.paste.ViewController.verifyPastePassword.bind(this));
     this.pasteDownloadLink.on('click', modernPaste.paste.ViewController.downloadPasteAsFile.bind(this));
+    this.pasteDeactivateLink.on('click', modernPaste.paste.ViewController.showModal.bind(this));
     this.pasteDeactivationModal.find('.deactivate-button').on('click', modernPaste.paste.ViewController.deactivatePaste.bind(this));
     this.pasteDeactivationModal.find('.canel-button').on('click', modernPaste.paste.ViewController.hideModal.bind(this));
 };
@@ -182,6 +191,13 @@ modernPaste.paste.ViewController.downloadPasteAsFile = function(evt) {
  */
 modernPaste.paste.ViewController.hideModal = function() {
     $('.modal').modal('hide');
+};
+
+/**
+ * Show all modals on the page.
+ */
+modernPaste.paste.ViewController.showModal = function(evt) {
+    $('.modal').modal('show');
 };
 
 /**

@@ -46,6 +46,10 @@
             <span class="paste-fork-container">
                 &bull; <a class="paste-fork-link" href="{{ uri('paste', 'PastePostInterfaceURI', fork=id_repr(paste.paste_id)) }}">FORK</a>
             </span>
+            <!--The paste deactivation link should be hidden if the user does not own the paste-->
+            <span class="paste-deactivate-container">
+                &bull; <a class="paste-deactivate-link" href="#">DEACTIVATE</a>
+            </span>
         </p>
     </div>
 
@@ -98,5 +102,6 @@
     <div id="metadata" class="hidden">
         <div id="paste-id" data-paste-id="{{ id_repr(paste.paste_id) }}"></div>
         <div id="paste-deactivation-token" data-paste-deactivation-token="{% if deactivation_token is not none %}{{ deactivation_token }}{% endif %}"></div>
+        <div id="show-deactivate-link">{{ current_user.is_authenticated and current_user.user_id == paste.user_id }}</div>
     </div>
 {% endblock %}
