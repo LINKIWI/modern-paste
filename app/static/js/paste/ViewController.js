@@ -82,6 +82,7 @@ modernPaste.paste.ViewController.loadPaste = function() {
  * Update all UI elements on the page with the paste details.
  */
 modernPaste.paste.ViewController.initializePasteDetails = function(data) {
+    this.passwordSubmitButton.prop('disabled', false);
     this.passwordProtectionNotice.fadeOut('fast');
 
     this.pasteTitle.text(data.details.title);
