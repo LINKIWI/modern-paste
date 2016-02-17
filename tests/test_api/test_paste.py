@@ -202,6 +202,21 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         self.assertFalse(database.paste.get_paste_by_id(paste.paste_id).is_active)
 
+    def test_deactivate_paste_api_key(self):
+        # Deactivate paste by authentication via an API key
+        user = util.testing.UserFactory.generate()
+        paste = util.testing.PasteFactory.generate(user_id=user.user_id)
+        resp = self.client.post(
+            PasteDeactivateURI.uri(),
+            data=json.dumps({
+                'paste_id': paste.paste_id,
+                'api_key': user.api_key,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertFalse(database.paste.get_paste_by_id(paste.paste_id).is_active)
+
     def test_deactivate_paste_token(self):
         # Deactivate paste using deactivation token
         paste = util.testing.PasteFactory.generate()

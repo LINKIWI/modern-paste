@@ -43,6 +43,7 @@ def submit_paste():
 
 @app.route(PasteDeactivateURI.path, methods=['POST'])
 @require_form_args(['paste_id'])
+@optional_login_api
 def deactivate_paste():
     """
     Endpoint for deactivating an existing paste.
