@@ -172,7 +172,7 @@ modernPaste.paste.ViewController.convertUnixTimestamp = function(unixTimestampSt
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var date = new Date(parseInt(unixTimestampString, 10)*1000);
     // It would also be nice if Javascript had a formalized method of formatting strings
-    return monthNames[date.getMonth()].toUpperCase() + ' ' + date.getDate() + ', ' + date.getFullYear() + ' ' + ((date.getHours() + 11) % 12 + 1) + ':' + date.getMinutes() + ' ' + (date.getHours() >= 12 ? 'PM' : 'AM');
+    return monthNames[date.getMonth()].toUpperCase() + ' ' + date.getDate() + ', ' + date.getFullYear() + ' ' + ((date.getHours() + 11) % 12 + 1) + ':' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ' ' + (date.getHours() >= 12 ? 'PM' : 'AM');
 };
 
 /**
