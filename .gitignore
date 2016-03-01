@@ -3,3 +3,4 @@
 .coverage
 app/static/build
 .sass-cache
+*.swp

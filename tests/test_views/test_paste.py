@@ -35,8 +35,11 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIn(paste.language, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
         # Deactivation token should never appear if the paste was posted via the API interface
-        paste = util.testing.PasteFactory.generate(is_api_post=True)
+        paste = util.testing.PasteFactory.generate(is_api_post=True, title='Test title')
         self.assertNotIn(paste.deactivation_token, views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
+
+        # Ensure that the paste title is the window title
+        self.assertIn('Test title - Modern Paste', views.paste.paste_view(util.cryptography.get_id_repr(paste.paste_id)))
 
     def test_paste_view_raw(self):
         # Non-existent paste
