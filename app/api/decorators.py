@@ -69,7 +69,7 @@ def require_form_args(form_args, allow_blank_values=False, strict_params=False):
     def decorator(func):
         @wraps(func)
         def abort_if_invalid_args(*args, **kwargs):
-            if (len(form_args) > 0 and not request.get_json()) or (not strict_params and not set(form_args).issubset(request.get_json().keys())) or (strict_params and set(form_args) != set(request.get_json().keys())) or (not allow_blank_values and not all([request.get_json()[arg] is not None and len(str(request.get_json()[arg])) > 0 for arg in form_args])):
+            if (len(form_args) > 0 and not request.get_json()) or (not strict_params and not set(form_args).issubset(request.get_json().keys())) or (strict_params and set(form_args) != set(request.get_json().keys())) or (not allow_blank_values and not all([request.get_json()[arg] is not None and len(unicode(request.get_json()[arg])) > 0 for arg in form_args])):
                 return jsonify(INCOMPLETE_PARAMS_FAILURE), INCOMPLETE_PARAMS_FAILURE_CODE
             return func(*args, **kwargs)
         return abort_if_invalid_args
