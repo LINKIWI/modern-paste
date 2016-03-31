@@ -25,5 +25,15 @@ function handleWindowScroll() {
 
 
 $(document).ready(function() {
+    // Register event handlers
     $(window).on('scroll', handleWindowScroll);
+
+    // Fancybox initialization
+    $('.fancybox').fancybox({
+        helpers: {
+            overlay: {
+                locked: false
+            }
+        }
+    });
 });
