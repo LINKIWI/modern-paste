@@ -1,27 +1,29 @@
-var toggleHeaderStyle = function() {
-    var header = $('.mp-header');
-    var titleText = $('.mp-header span');
-    var linksText = $('.mp-header a');
+/**
+ * Handle window scroll events. When the window is not scrolled to the top, the "scroll to learn more" prompt should
+ * disappear. When the intro page is almost scrolled out of view, the header title should appear.
+ */
+function handleWindowScroll() {
+    var headerTitle = $('.mp-header .mp-title');
+    var scrollPrompt = $('.intro .scroll-prompt');
+
+    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    if ($(window).scrollTop() > height - 200) {
+        // Approximately scrolled past main intro title
+        headerTitle.fadeIn();
+    } else {
+        headerTitle.fadeOut();
+    }
 
     if ($(window).scrollTop() > 0) {
-        header.css('background-color', '#edf1f2');
-        titleText.css('color', '#242424');
-        linksText.css('color', '#242424');
+        // Not scrolled to the top
+        scrollPrompt.fadeOut();
     } else {
-        header.css('background-color', 'transparent');
-        titleText.css('color', '#edf1f2');
-        linksText.css('color', '#edf1f2');
+        scrollPrompt.fadeIn();
     }
-};
-
-var controlIntroFontSize = function() {
-    var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    var text = $('.intro .intro-text .i-wish');
-    height < 700 ? text.css('font-size', '40px') : text.css('font-size', '72px');
-};
+}
 
 
 $(document).ready(function() {
-    $(window).on('scroll', toggleHeaderStyle);
-    $(window).on('resize', controlIntroFontSize);
+    $(window).on('scroll', handleWindowScroll);
 });

@@ -18,7 +18,7 @@ body {
 // Main header and footer
 
 .mp-header {
-    background-color: transparent;
+    background-color: $transparent-white;
     display: table;
     height: 70px;
     left: 0;
@@ -70,29 +70,21 @@ body {
 // Main content
 
 .intro {
-    background: url('../static/img/mock-compressed.png') no-repeat center;
-    background-size: cover;
+    background-color: $bright-white;
     height: 100%;
     width: 100%;
-
-    .icon-quote {
-        height: 45px;
-        margin-right: 20px;
-        vertical-align: top;
-        width: 45px;
-    }
 
     .intro-text {
         left: 10%;
         position: relative;
-        top: 50%;
+        top: 40%;
         transform: translateY(-50%);
         width: 80%;
     }
 
     .download-button {
         background-color: transparent;
-        border-color: $white;
+        border-color: $blue;
         margin-top: 40px;
         padding: 15px 40px;
     }
@@ -100,12 +92,33 @@ body {
     .download-button:hover,
     .download-button:active,
     .download-button:focus {
-        color: $pure-white;
+        color: $blue;
+    }
+
+    .scroll-prompt {
+        bottom: 20px;
+        opacity: .5;
+        position: absolute;
+        width: 100%;
+
+        .scroll-text {
+            display: block;
+            margin: auto;
+            text-align: center;
+        }
+
+        .scroll-arrows {
+            display: block;
+            height: 35px;
+            margin: auto;
+            transform: rotate(90deg);
+            width: 20px;
+        }
     }
 }
 
 .download-section {
-    background-color: $dark-blue;
+    background-color: $blue;
     height: 400px;
     padding: 60px 0;
     text-align: center;
