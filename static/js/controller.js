@@ -36,4 +36,7 @@ $(document).ready(function() {
             }
         }
     });
+
+    // The header title should be hidden when the page loads
+    $('.mp-header .mp-title').hide();
 });
