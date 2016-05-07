@@ -42,12 +42,19 @@ class TestMisc(util.testing.DatabaseTestCase):
     def test_version(self):
         version_string = views.misc.version().data.split('\n')
         self.assertEqual(4, len(version_string))  # 4 lines of output
+
+        # Ensure branch name is present
+        self.assertGreater(len(version_string[0]), 0)
+
         # Ensure SHA is present
         self.assertEqual(
             40,
             len(version_string[1]),
             'Could not parse {sha}'.format(sha=version_string[1]),
         )
+
         # Ensure date is present
         self.assertEqual(2, version_string[2].count(':'))
-        self.assertIn('modern-paste.git', version_string[3])  # You might need to change this if the project is renamed
+
+        # Ensure remote URL is present
+        self.assertGreater(len(version_string[3]), 0)
