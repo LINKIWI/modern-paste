@@ -33,6 +33,7 @@ prod:
 	python build/build_css.py --prod
 
 dependencies:
+	java -version
 	gem install sass
 	npm install -g uglify-js
 	pip install -r requirements.txt
