@@ -1,7 +1,7 @@
 import constants
 
 
-# Domain from which you will access this app.
+# Domain from which you will access this app
 # If running on a port other than 80, append it after a colon at the end of the domain, e.g. 'domain.com:8080'
 DOMAIN = 'example.com'
 
@@ -19,6 +19,19 @@ BUILD_ENVIRONMENT = constants.build_environment.PROD
 # Set this to True if you want paste IDs to be encrypted, e.g. displayed as h0GZ19np17iT~CtpuIH3NcnRi-rYnlYzizqToCmG3BY=
 # If False, IDs will be displayed as regular, incrementing integers, e.g. 1, 2, 3, etc.
 USE_ENCRYPTED_IDS = False
+
+# Choose to allow paste attachments
+# This will allow for users to attach files and images to pastes. If disabled, the MAX_ATTACHMENT_SIZE and
+# ATTACHMENTS_DIR configuration constants will be ignored.
+ENABLE_PASTE_ATTACHMENTS = True
+
+# Allow only paste attachments below a certain size threshold, in MB
+# Set this to 0 for an unlimited file size.
+MAX_ATTACHMENT_SIZE = 0
+
+# Location to store paste attachments
+# Please use an absolute path and ensure that it is writable by www-data.
+ATTACHMENTS_DIR = '/var/www/modern-paste-attachments'
 
 # Database name
 # It's suggested you leave this as default.

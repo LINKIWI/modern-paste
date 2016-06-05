@@ -20,6 +20,13 @@ class PasteDoesNotExistException(Exception):
     pass
 
 
+# Attachment
+
+
+class AttachmentDoesNotExistException(Exception):
+    pass
+
+
 # Cryptography
 
 

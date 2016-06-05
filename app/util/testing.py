@@ -9,6 +9,7 @@ from flask.ext.testing import TestCase
 
 import config
 import constants.api
+import database.attachment
 import database.paste
 import database.user
 from modern_paste import app
@@ -93,6 +94,19 @@ class PasteFactory(Factory):
             language=cls.random_or_specified_value(language),
             password=cls.random_or_specified_value(password),
             is_api_post=cls.random_or_specified_value(is_api_post),
+        )
+
+
+class AttachmentFactory(Factory):
+    @classmethod
+    def generate(
+        cls,
+        paste_id=lambda: random.getrandbits(16),
+        file_name=lambda: random_alphanumeric_string(),
+    ):
+        return database.attachment.create_new_attachment(
+            paste_id=cls.random_or_specified_value(paste_id),
+            file_name=cls.random_or_specified_value(file_name),
         )
 
 
