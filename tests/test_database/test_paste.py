@@ -55,6 +55,19 @@ class TestPaste(util.testing.DatabaseTestCase):
             active_only=True,
         )
 
+    def test_is_paste_active(self):
+        self.assertFalse(database.paste.is_paste_active(-1))
+
+        paste = util.testing.PasteFactory.generate(expiry_time=None)
+        self.assertTrue(database.paste.is_paste_active(paste.paste_id))
+
+        paste = util.testing.PasteFactory.generate(expiry_time=int(time.time()) - 1000)
+        self.assertFalse(database.paste.is_paste_active(paste.paste_id))
+
+        paste = util.testing.PasteFactory.generate(expiry_time=None)
+        database.paste.deactivate_paste(paste.paste_id)
+        self.assertFalse(database.paste.is_paste_active(paste.paste_id))
+
     def test_set_paste_password(self):
         paste = util.testing.PasteFactory.generate()
         old_password_hash = str(paste.password_hash)

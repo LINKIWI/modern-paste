@@ -64,6 +64,18 @@ def get_paste_by_id(paste_id, active_only=False):
     return paste
 
 
+def is_paste_active(paste_id):
+    """
+    Check if this paste is active. The paste is considered active if it exists, has not been deactivated, and has not
+    expired. This procedure is more concise than attempting a try-except on get_paste_by_id.
+
+    :param paste_id: ID of the paste to check
+    :return: True if the paste is active; False otherwise
+    """
+    paste = models.Paste.query.filter_by(paste_id=paste_id).first()
+    return paste and paste.is_active and (paste.expiry_time is None or paste.expiry_time > time.time())
+
+
 def set_paste_password(paste_id, password):
     """
     Set a paste's password. This can either change a password that already exists, set a password that did not
