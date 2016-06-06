@@ -187,19 +187,19 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(2, mock_store_attachment_file.call_count)
 
             resp_data = json.loads(resp.data)
-            self.assertEqual('file name', resp_data['attachments'][0]['name'])
+            self.assertEqual('file_name', resp_data['attachments'][0]['name'])
             self.assertEqual(12345, resp_data['attachments'][0]['size'])
             self.assertEqual('image/png', resp_data['attachments'][0]['mime_type'])
             self.assertIsNotNone(database.attachment.get_attachment_by_name(
                 util.cryptography.get_decid(resp_data['paste_id_repr']),
-                'file name')
+                'file_name')
             )
-            self.assertEqual('file name 2', resp_data['attachments'][1]['name'])
+            self.assertEqual('file_name_2', resp_data['attachments'][1]['name'])
             self.assertEqual(12345, resp_data['attachments'][1]['size'])
             self.assertEqual('image/png', resp_data['attachments'][1]['mime_type'])
             self.assertIsNotNone(database.attachment.get_attachment_by_name(
                 util.cryptography.get_decid(resp_data['paste_id_repr']),
-                'file name 2')
+                'file_name_2')
             )
 
     def test_submit_paste_invalid_attachments(self):

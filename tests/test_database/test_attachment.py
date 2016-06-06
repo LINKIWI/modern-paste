@@ -24,16 +24,30 @@ class TestAttachment(util.testing.DatabaseTestCase):
             )
             self.assertGreater(attachment.attachment_id, -1)
             self.assertEqual(paste.paste_id, attachment.paste_id)
-            self.assertEqual('file name', attachment.file_name)
+            self.assertEqual('file_name', attachment.file_name)
             self.assertEqual(12345, attachment.file_size)
             self.assertEqual('image/png', attachment.mime_type)
-            self.assertEqual(util.cryptography.secure_hash('file name'), attachment.hash_name)
+            self.assertEqual(util.cryptography.secure_hash('file_name'), attachment.hash_name)
             self.assertEqual(1, mock_store_attachment_file.call_count)
             mock_store_attachment_file.assert_called_with(
                 paste.paste_id,
                 'binary data',
                 attachment.hash_name,
             )
+
+    def test_create_new_attachment_unsafe_file_name(self):
+        with mock.patch.object(database.attachment, '_store_attachment_file') as mock_store_attachment_file:
+            paste = util.testing.PasteFactory.generate()
+            attachment = database.attachment.create_new_attachment(
+                paste_id=paste.paste_id,
+                file_name='test/.bashrc',  # Sneaky
+                file_size=12345,
+                mime_type='image/png',
+                file_data='binary data',
+            )
+            self.assertEqual('test_.bashrc', attachment.file_name)
+            self.assertEqual(util.cryptography.secure_hash('test_.bashrc'), attachment.hash_name)
+            self.assertEqual(1, mock_store_attachment_file.call_count)
 
     def test_store_attachment_file(self):
         with mock.patch.object(os, 'makedirs') as mock_makedirs, mock.patch('__builtin__.open') as mock_open:

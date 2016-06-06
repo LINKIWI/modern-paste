@@ -1,6 +1,8 @@
 import errno
 import os
 
+from werkzeug.utils import secure_filename
+
 import config
 import database.paste
 import models
@@ -23,7 +25,7 @@ def create_new_attachment(paste_id, file_name, file_size, mime_type, file_data):
     # Add an entry into the database describing this file
     new_attachment = models.Attachment(
         paste_id=paste_id,
-        file_name=file_name,
+        file_name=secure_filename(file_name),
         file_size=file_size,
         mime_type=mime_type,
     )
@@ -99,6 +101,7 @@ def get_attachment_by_name(paste_id, file_name, active_only=False):
     :param active_only: True to ensure that the paste is active
     :return: A models.Attachment instance representing the requested attachment
     :raises PasteDoesNotExistException: If active_only is True and the paste is deactivated or nonexistent
+    :raises AttachmentDoesNotExistException: If the attachment does not exist
     """
     attachment = models.Attachment.query.filter_by(
         paste_id=database.paste.get_paste_by_id(paste_id, active_only=active_only).paste_id,
