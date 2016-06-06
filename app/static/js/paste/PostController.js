@@ -1,7 +1,8 @@
 goog.provide('modernPaste.paste.PostController');
 
-goog.require('modernPaste.universal.URIController');
 goog.require('modernPaste.universal.AlertController');
+goog.require('modernPaste.universal.CommonController');
+goog.require('modernPaste.universal.URIController');
 
 
 /**
@@ -10,6 +11,10 @@ goog.require('modernPaste.universal.AlertController');
  * @constructor
  */
 modernPaste.paste.PostController = function() {
+    // Keep track of all the attachments selected by the user in a global variable.
+    // This data is inserted into the AJAX request when submitting a paste.
+    this.attachments = [];
+
     this.urlParams = modernPaste.universal.URIController.getURLParameters();
 
     this.alert = $('#alert');
@@ -28,7 +33,13 @@ modernPaste.paste.PostController = function() {
     this.pasteTitle = $('.paste-title-container').find('.paste-title');
     this.submitButton = $('#footer').find('.submit-section .submit-button');
     this.pasteSubmitSplash = $('.paste-submit-splash');
+    this.attachmentsBrowseButton = $('.paste-attachments-container').find('.attachments-browse-button');
+    this.attachmentsBrowseInput = $('.paste-attachments-container').find('#attachments-browse-input');
+    this.attachmentsList = $('.paste-attachments-container').find('.attachments-list');
+    this.attachmentItemTemplate = $('#attachment-item-template');
+    this.attachmentUploadingStatus = $('.paste-submit-splash .uploading-status');
 
+    this.submitButton.prop('disabled', false);
     this.dateTimePicker.datetimepicker({});
     this.pasteContents = CodeMirror(
         this.codeMirrorContainer[0],
@@ -51,6 +62,8 @@ modernPaste.paste.PostController = function() {
     this.pasteContents.on('change', modernPaste.paste.PostController.handlePasteContentsChange.bind(this));
     this.pasteDownloadLink.on('click', modernPaste.paste.PostController.handlePasteDownloadLinkClick.bind(this));
     this.submitButton.on('click', modernPaste.paste.PostController.handleSubmitButtonClick.bind(this));
+    this.attachmentsBrowseButton.on('click', modernPaste.paste.PostController.handleAttachmentsBrowseButtonClick.bind(this));
+    this.attachmentsBrowseInput.on('change', modernPaste.paste.PostController.handleAttachmentsFileInput.bind(this));
 };
 
 /**
@@ -110,6 +123,18 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
     modernPaste.universal.SplashController.showSplash(this.pasteSubmitSplash);
 
     $.ajax({
+        'xhr': function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = 100.0 * evt.loaded / evt.total;
+                    if (this.attachments.length > 0) {
+                        this.attachmentUploadingStatus.text('UPLOADING ATTACHMENTS - ' + Math.round(percentComplete) + '%');
+                    }
+                }
+           }.bind(this), false);
+           return xhr;
+        }.bind(this),
         'method': 'POST',
         'url': modernPaste.universal.URIController.uris.PasteSubmitURI,
         'contentType': 'application/json',
@@ -118,7 +143,8 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
             'expiry_time': Date.parse(this.dateTimePicker.val()),
             'title': this.pasteTitle.val(),
             'language': this.languageSelector.val().toLowerCase(),
-            'password': this.pastePassword.val() !== '' ? this.pastePassword.val() : null
+            'password': this.pastePassword.val() !== '' ? this.pastePassword.val() : null,
+            'attachments': this.attachments
         })
     })
     .done(modernPaste.paste.PostController.handleSubmitSuccess.bind(this))
@@ -151,6 +177,89 @@ modernPaste.paste.PostController.handleSubmitFail = function(data) {
     modernPaste.universal.AlertController.displayErrorAlert(
         modernPaste.universal.AlertController.selectErrorMessage(data, errorMessages)
     );
+};
+
+/**
+ * Open the file input dialog when the user clicks on the browse files button.
+ */
+modernPaste.paste.PostController.handleAttachmentsBrowseButtonClick = function(evt) {
+    evt.preventDefault();
+    this.attachmentsBrowseInput.click();
+};
+
+/**
+ * When the user selects files to upload, read them as a base64-encoded string and keep track of it in a globally
+ * accessible array. This will also create a listing that shows the name of the file in the user interface.
+ */
+modernPaste.paste.PostController.handleAttachmentsFileInput = function(evt) {
+    var files = evt.target.files;
+    if (files) {
+        $.each(evt.target.files, function(_, attachment) {
+            var reader = new FileReader();
+
+            reader.onload = function(readerEvt) {
+                this.attachments.push({
+                    'name': attachment.name,
+                    'mime_type': attachment.type,
+                    'size': attachment.size,
+                    'data': btoa(readerEvt.target.result)
+                });
+
+                // Indicate that this file is processed by removing its opacity fade and changing its loading icon
+                var attachmentItem = this.attachmentsList.find('#' + modernPaste.universal.CommonController.escapeSelector(attachment.name));
+                attachmentItem.removeClass('faded');
+                attachmentItem.find('.delete-attachment-icon').removeClass('hidden');
+                attachmentItem.find('.attachment-loading-icon').addClass('hidden');
+            }.bind(this);
+
+            // Only attempt to read the file if it isn't a duplicate
+            var matchingNames = this.attachments.filter(function(existingAttachment) {
+                return existingAttachment.name === attachment.name;
+            });
+            if (matchingNames.length === 0) {
+                // Async read the file and convert it to a base64-encoded string
+                reader.readAsBinaryString(attachment);
+
+                // The attachments list is hidden by default; it should be shown when an attachment is added.
+                this.attachmentsList.removeClass('hidden');
+
+                // Create an attachment item describing this file
+                var attachmentItem = $(this.attachmentItemTemplate.html());
+                attachmentItem.prop('id', attachment.name);
+                attachmentItem
+                    .find('.attachment-name')
+                    .text(attachment.name + ' (' + modernPaste.universal.CommonController.formatFileSize(attachment.size) + ')');
+                attachmentItem.find('.delete-attachment-icon').on('click', modernPaste.paste.PostController.handleAttachmentDeletion.bind(this, attachment));
+
+                this.attachmentsList.append(attachmentItem);
+            } else {
+                modernPaste.universal.AlertController.displayErrorAlert('This file name already exists as an attachment for this paste.');
+            }
+        }.bind(this));
+    }
+};
+
+/**
+ * If the user clicks the delete button next to a file, it should be removed from the attachments upload queue
+ * and the user interface.
+ *
+ * @param deletedAttachment The attachment to remove
+ */
+modernPaste.paste.PostController.handleAttachmentDeletion = function(deletedAttachment) {
+    // Remove the element from the global list of attachments
+    this.attachments = this.attachments.filter(function(existingAttachment) {
+        return existingAttachment.name !== deletedAttachment.name;
+    });
+
+    // Remove the corresponding DOM element
+    this.attachmentsList
+        .find('#' + modernPaste.universal.CommonController.escapeSelector(deletedAttachment.name))
+        .remove();
+
+    // Hide the attachments list if there are no attachments left
+    if (this.attachments.length === 0) {
+        this.attachmentsList.addClass('hidden');
+    }
 };
 
 /**

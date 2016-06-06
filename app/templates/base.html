@@ -73,10 +73,12 @@
         {% block header %}
             <div id="header">
                 <div class="container">
-                    <span class="title-section">
+                    <span class="title-section icon-link">
                         <img class="menu-button" src="/static/img/icons/menu.png" />
                         <img class="hidden" src="/static/img/icons/cross.png" />
-                        <span class="sans-serif light gray size-5 spaced">modern</span><span class="sans-serif regular gray size-5 spaced">paste</span>
+                        <a href="{{ uri('main', 'HomeURI') }}">
+                            <span class="sans-serif light gray size-5 spaced">modern</span><span class="sans-serif regular gray size-5 spaced">paste</span>
+                        </a>
                     </span>
                     <span class="user-section">
                         <span class="user-header sans-serif semibold size-2 less-spaced">

@@ -35,6 +35,7 @@
         <p class="sans-serif regular size-1 light-gray less-spaced">PASTE TITLE</p>
         <textarea class="paste-title minimal-input-field ubuntu-mono regular gray size-4" autocomplete="off">Untitled</textarea>
     </div>
+
     <!--Paste language-->
     <div class="paste-language-container section-label">
         <p class="sans-serif regular size-1 light-gray less-spaced">PASTE LANGUAGE</p>
@@ -44,6 +45,7 @@
             {% endfor %}
         </select>
     </div>
+
     <!--More options-->
     <div class="more-options-container section-label">
         <span class="more-options-link">
@@ -55,12 +57,37 @@
         <p class="option-description sans-serif regular size-1 light-gray less-spaced">PASSWORD</p>
         <input type="password" class="paste-password minimal-input-field underlined-input-field regular size-3" autocomplete="off">
     </div>
+
+    <!--Paste attachments-->
+    {% if config.ENABLE_PASTE_ATTACHMENTS %}
+        <div class="paste-attachments-container section-label">
+            <p class="sans-serif regular size-1 light-gray less-spaced">PASTE ATTACHMENTS</p>
+            <div class="attachments-upload-section">
+                <a href="#" class="attachments-browse-button btn btn-default sans-serif semibold size-1 gray less-spaced">BROWSE FILES...</a>
+                {% if config.MAX_ATTACHMENT_SIZE > 0 %}
+                    <span class="max-size-notice sans-serif regular size-1 light-gray less-spaced">Max size {{ config.MAX_ATTACHMENT_SIZE }} MB</span>
+                {% endif %}
+            </div>
+            <div class="attachments-list hidden ubuntu-mono regular size-2 gray">
+                <template id="attachment-item-template">
+                    <div class="attachment-item faded">
+                        <i class="delete-attachment-icon fa fa-minus red hidden" aria-hidden="true"></i>
+                        <i class="attachment-loading-icon fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>
+                        <span class="attachment-name"></span>
+                    </div>
+                </template>
+            </div>
+            <input id="attachments-browse-input" class="hidden" type="file" multiple>
+        </div>
+    {% endif %}
+
     <!--Paste contents-->
     <div class="paste-contents-container">
         <p class="sans-serif regular size-1 light-gray less-spaced">PASTE CONTENTS</p>
     </div>
     <div id="paste-post-contents"></div>
 
+    <!--Footer (paste metadata, submit button)-->
     <div id="footer">
         <div class="statistics-section">
             <span>
@@ -76,8 +103,8 @@
                 <!--Hidden from the user; used to store the plain text data for launching the download via the link above.-->
                 <a class="paste-download-content hidden" href="#" download></a>
                 <button type="button" class="submit-button sans-serif semibold white size-2 spaced btn btn-success">
-                    <i class="submit-arrow fa fa-long-arrow-right"></i>
                     SUBMIT
+                    <i class="submit-arrow fa fa-long-arrow-right"></i>
                 </button>
             </span>
         </div>
@@ -85,5 +112,6 @@
 
     <div class="paste-submit-splash splash">
         <div class="spinner"><div></div></div>
+        <p class="uploading-status sans-serif semibold size-2 gray less-spaced"></p>
     </div>
 {% endblock %}

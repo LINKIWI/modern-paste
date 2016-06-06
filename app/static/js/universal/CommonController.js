@@ -120,6 +120,16 @@ modernPaste.universal.CommonController.formatFileSize = function(numB, numDecima
     }
 };
 
+/**
+ * Escape all characters necessary for generating a jQuery ID selector.
+ *
+ * @param selector Raw selector string, with characters unescaped
+ * @returns {string} Escaped version of the input safe to use as a jQuery selector
+ */
+modernPaste.universal.CommonController.escapeSelector = function(selector) {
+    return selector.replace( /(:|\.|\[|\]|,)/g, "\\$1");
+};
+
 
 $(document).ready(function() {
     new modernPaste.universal.CommonController();

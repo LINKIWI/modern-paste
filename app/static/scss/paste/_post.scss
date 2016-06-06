@@ -5,6 +5,12 @@
 
 .paste-submit-splash {
     z-index: 4;
+
+    .uploading-status {
+        @include absolute-center(1);
+        margin-top: 60px;
+        position: absolute;
+    }
 }
 
 .section-label {
@@ -67,6 +73,35 @@
     }
 }
 
+.paste-attachments-container {
+    padding: 15px 30px;
+
+    .attachments-upload-section {
+        margin-top: 10px;
+    }
+
+    .max-size-notice {
+        margin-left: 5px;
+    }
+
+    .attachments-list {
+        margin-top: 15px;
+    }
+
+    .attachment-item {
+        margin-bottom: 5px;
+    }
+
+    .delete-attachment-icon {
+        cursor: pointer;
+        margin-right: 5px;
+    }
+
+    .faded {
+        opacity: .5;
+    }
+}
+
 .paste-contents-container {
     height: 20px;
     padding: 15px 30px;
@@ -106,7 +141,7 @@
         vertical-align: middle;
 
         .submit-arrow {
-            margin-right: 5px;
+            margin-left: 10px;
         }
 
         .submit-button {
