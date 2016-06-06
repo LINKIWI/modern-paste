@@ -529,6 +529,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         paste_details = database.paste.get_paste_by_id(paste.paste_id).as_dict()
         paste_details['poster_username'] = 'username'
+        paste_details['attachments'] = []
         self.assertEqual(paste_details, json.loads(resp.data)['details'])
 
     def test_paste_details_password(self):
@@ -576,6 +577,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         paste_details = database.paste.get_paste_by_id(paste.paste_id).as_dict()
         paste_details['poster_username'] = 'username'
+        paste_details['attachments'] = []
         self.assertEqual(paste_details, json.loads(resp.data)['details'])
 
     def test_paste_details_anonymous(self):
