@@ -3,6 +3,7 @@ import random
 import time
 import types
 
+import mock
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from flask.ext.testing import TestCase
@@ -103,11 +104,18 @@ class AttachmentFactory(Factory):
         cls,
         paste_id=lambda: random.getrandbits(16),
         file_name=lambda: random_alphanumeric_string(),
+        file_size=lambda: random.getrandbits(16),
+        mime_type=lambda: 'image/png',
+        file_data=lambda: random_alphanumeric_string(8192)
     ):
-        return database.attachment.create_new_attachment(
-            paste_id=cls.random_or_specified_value(paste_id),
-            file_name=cls.random_or_specified_value(file_name),
-        )
+        with mock.patch.object(database.attachment, '_store_attachment_file'):
+            return database.attachment.create_new_attachment(
+                paste_id=cls.random_or_specified_value(paste_id),
+                file_name=cls.random_or_specified_value(file_name),
+                file_size=cls.random_or_specified_value(file_size),
+                mime_type=cls.random_or_specified_value(mime_type),
+                file_data=cls.random_or_specified_value(file_data),
+            )
 
 
 class DatabaseTestCase(TestCase):
