@@ -131,6 +131,7 @@ class DatabaseTestCase(TestCase):
         config.REQUIRE_LOGIN_TO_PASTE = False
         config.ENABLE_USER_REGISTRATION = True
         config.ENABLE_PASTE_ATTACHMENTS = True
+        config.MAX_ATTACHMENT_SIZE = 0
 
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_TEST_DATABASE_URI']

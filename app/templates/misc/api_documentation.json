@@ -31,6 +31,10 @@
     {
       "failure_name": "paste_attachments_disabled_failure",
       "description": "The server administrator has disabled paste attachments, and the action attempted to add an attachment to a paste. Repeating the same request without any attachments will succeed."
+    },
+    {
+      "failure_name": "paste_attachment_too_large_failure",
+      "description": "The uploaded paste attachment is larger than that allowed by the server."
     }
   ],
   "api_endpoints": [

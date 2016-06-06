@@ -1,3 +1,4 @@
+import config
 from uri.misc import APIDocumentationInterfaceURI
 
 
@@ -64,6 +65,13 @@ PASTE_ATTACHMENTS_DISABLED_FAILURE = {
     FAILURE: 'paste_attachments_disabled_failure',
 }
 PASTE_ATTACHMENTS_DISABLED_FAILURE_CODE = 400
+
+PASTE_ATTACHMENT_TOO_LARGE_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'The paste attachment is too large. The maximum allowable size is {max_size} MB.'.format(max_size=config.MAX_ATTACHMENT_SIZE),
+    FAILURE: 'paste_attachment_too_large_failure',
+}
+PASTE_ATTACHMENT_TOO_LARGE_FAILURE_CODE = 414
 
 UNDEFINED_FAILURE = {
     RESULT: RESULT_FAULURE,

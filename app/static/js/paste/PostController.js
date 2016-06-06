@@ -11,6 +11,10 @@ goog.require('modernPaste.universal.URIController');
  * @constructor
  */
 modernPaste.paste.PostController = function() {
+    this.metadata = {
+        'maxAttachmentSize': $('#metadata #max-attachment-size').data('max-attachment-size')
+    };
+
     // Keep track of all the attachments selected by the user in a global variable.
     // This data is inserted into the AJAX request when submitting a paste.
     this.attachments = [];
@@ -172,7 +176,10 @@ modernPaste.paste.PostController.handleSubmitFail = function(data) {
 
     var errorMessages = {
         'incomplete_params_failure': 'You can\'t submit an empty paste.',
-        'auth_failure': 'You need to be logged in to post a non-anonymous paste.'
+        'auth_failure': 'You need to be logged in to post a non-anonymous paste.',
+        'unauthenticated_pastes_disabled_failure' : 'The server administrator has requierd that users be signed in to post a paste.',
+        'paste_attachments_disabled_failure': 'The server administrator has disabled paste attachments.',
+        'paste_attachment_too_large_failure': 'The size of one or more attachments is larger than the maximum allowable file size.'
     };
     modernPaste.universal.AlertController.displayErrorAlert(
         modernPaste.universal.AlertController.selectErrorMessage(data, errorMessages)
@@ -216,25 +223,32 @@ modernPaste.paste.PostController.handleAttachmentsFileInput = function(evt) {
             var matchingNames = this.attachments.filter(function(existingAttachment) {
                 return existingAttachment.name === attachment.name;
             });
-            if (matchingNames.length === 0) {
-                // Async read the file and convert it to a base64-encoded string
-                reader.readAsBinaryString(attachment);
 
-                // The attachments list is hidden by default; it should be shown when an attachment is added.
-                this.attachmentsList.removeClass('hidden');
-
-                // Create an attachment item describing this file
-                var attachmentItem = $(this.attachmentItemTemplate.html());
-                attachmentItem.prop('id', attachment.name);
-                attachmentItem
-                    .find('.attachment-name')
-                    .text(attachment.name + ' (' + modernPaste.universal.CommonController.formatFileSize(attachment.size) + ')');
-                attachmentItem.find('.delete-attachment-icon').on('click', modernPaste.paste.PostController.handleAttachmentDeletion.bind(this, attachment));
-
-                this.attachmentsList.append(attachmentItem);
-            } else {
-                modernPaste.universal.AlertController.displayErrorAlert('This file name already exists as an attachment for this paste.');
+            if (attachment.size > this.metadata.maxAttachmentSize * 1000 * 1000) {
+                modernPaste.universal.AlertController.displayErrorAlert('This file\'s size exceeds the limit of ' + this.metadata.maxAttachmentSize + ' MB imposed by the server administrator.');
+                return;
             }
+
+            if (matchingNames.length > 0) {
+                modernPaste.universal.AlertController.displayErrorAlert('This file name already exists as an attachment for this paste.');
+                return;
+            }
+
+            // Async read the file and convert it to a base64-encoded string
+            reader.readAsBinaryString(attachment);
+
+            // The attachments list is hidden by default; it should be shown when an attachment is added.
+            this.attachmentsList.removeClass('hidden');
+
+            // Create an attachment item describing this file
+            var attachmentItem = $(this.attachmentItemTemplate.html());
+            attachmentItem.prop('id', attachment.name);
+            attachmentItem
+                .find('.attachment-name')
+                .text(attachment.name + ' (' + modernPaste.universal.CommonController.formatFileSize(attachment.size) + ')');
+            attachmentItem.find('.delete-attachment-icon').on('click', modernPaste.paste.PostController.handleAttachmentDeletion.bind(this, attachment));
+
+            this.attachmentsList.append(attachmentItem);
         }.bind(this));
     }
 };

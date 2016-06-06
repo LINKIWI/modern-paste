@@ -151,7 +151,7 @@ class TestPaste(util.testing.DatabaseTestCase):
                         'name': 'file name',
                         'size': 12345,
                         'mime_type': 'image/png',
-                        'file_data': 'binary data',
+                        'data': 'binary data',
                     }
                 ]
             }),
@@ -171,13 +171,13 @@ class TestPaste(util.testing.DatabaseTestCase):
                             'name': 'file name',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'file_data': 'binary data',
+                            'data': 'binary data',
                         },
                         {
                             'name': 'file name 2',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'file_data': 'binary data 2',
+                            'data': 'binary data 2',
                         }
                     ]
                 }),
@@ -218,6 +218,44 @@ class TestPaste(util.testing.DatabaseTestCase):
             )
             self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
             self.assertEqual(1, mock_store_attachment_file.call_count)
+
+    def test_submit_paste_too_large(self):
+        config.MAX_ATTACHMENT_SIZE = 10.0 / (1000 * 1000)  # 10 B
+        with mock.patch.object(database.attachment, '_store_attachment_file'):
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                    'attachments': [
+                        {
+                            'name': 'file name',
+                            'size': 12345,
+                            'mime_type': 'image/png',
+                            'data': util.testing.random_alphanumeric_string(length=20),
+                        },
+                    ]
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.PASTE_ATTACHMENT_TOO_LARGE_FAILURE_CODE, resp.status_code)
+            self.assertEqual(constants.api.PASTE_ATTACHMENT_TOO_LARGE_FAILURE, json.loads(resp.data))
+
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                    'attachments': [
+                        {
+                            'name': 'file name',
+                            'size': 12345,
+                            'mime_type': 'image/png',
+                            'data': util.testing.random_alphanumeric_string(length=5),
+                        },
+                    ]
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
 
     def test_submit_paste_server_error(self):
         with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):
