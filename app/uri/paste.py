@@ -13,6 +13,10 @@ class PasteViewRawInterfaceURI(URI):
     path = '/paste/<paste_id>/raw'
 
 
+class PasteAttachmentURI(URI):
+    path = '/paste/<paste_id>/attachment/<file_name>'
+
+
 class PasteDeactivateInterfaceURI(URI):
     path = '/paste/<paste_id>/deactivate/<deactivation_token>'
 

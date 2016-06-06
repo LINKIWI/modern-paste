@@ -1,6 +1,9 @@
+import base64
+
 import flask
 
 import config
+import database.attachment
 import database.paste
 import util.cryptography
 from api.decorators import render_view
@@ -70,6 +73,37 @@ def paste_view_raw(paste_id):
         return flask.Response(paste.contents, mimetype='text/plain')
     except (PasteDoesNotExistException, InvalidIDException):
         return flask.Response('This paste either does not exist or has been deleted.', mimetype='text/plain')
+
+
+@app.route(PasteAttachmentURI.path, methods=['GET'])
+def paste_attachment(paste_id, file_name):
+    """
+    Download a paste attachment.
+
+    :param paste_id: ID of the paste associated with this attachment
+    :param file_name: File name of the attachment
+    """
+    try:
+        attachment = database.attachment.get_attachment_by_name(
+            paste_id=util.cryptography.get_decid(paste_id),
+            file_name=file_name,
+            active_only=True,
+        )
+        file_path = '{attachments_dir}/{paste_id}/{hash_name}'.format(
+            attachments_dir=config.ATTACHMENTS_DIR,
+            paste_id=util.cryptography.get_decid(paste_id),
+            hash_name=attachment.hash_name,
+        )
+        resp = flask.make_response(base64.b64decode(open(file_path).read()))
+        resp.headers['Content-Type'] = attachment.mime_type
+        return resp
+    except (PasteDoesNotExistException, InvalidIDException):
+        return 'No paste with the given ID could be found. ' \
+               'It\'s also possible that the paste has been deactivated or has expired.', 404
+    except AttachmentDoesNotExistException:
+        return 'No attachment with the given file name could be found.', 404
+    except:
+        return 'Undefined error. Please open an issue at https://github.com/LINKIWI/modern-paste/issues', 500
 
 
 @app.route(PasteArchiveInterfaceURI.path, methods=['GET'])

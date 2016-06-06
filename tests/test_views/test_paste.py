@@ -1,7 +1,10 @@
+import base64
 import time
 
 import flask
+import mock
 
+import database.attachment
 import database.paste
 import util.cryptography
 import util.testing
@@ -69,6 +72,44 @@ class TestPaste(util.testing.DatabaseTestCase):
             'This paste either does not exist or has been deleted.',
             views.paste.paste_view_raw(util.cryptography.get_id_repr(paste.paste_id)).data,
         )
+
+    def test_paste_attachment(self):
+        paste = util.testing.PasteFactory.generate()
+        attachment = util.testing.AttachmentFactory.generate(paste_id=paste.paste_id)
+
+        # Non-existent paste
+        resp = views.paste.paste_attachment(util.cryptography.get_id_repr(10), attachment.file_name)
+        self.assertIn(
+            'No paste with the given ID could be found',
+            resp[0],
+        )
+        self.assertEqual(404, resp[1])
+
+        # Non-existent attachment file name
+        resp = views.paste.paste_attachment(util.cryptography.get_id_repr(paste.paste_id), 'nonexistent')
+        self.assertIn(
+            'No attachment with the given file name could be found',
+            resp[0]
+        )
+        self.assertEqual(404, resp[1])
+
+        # Valid input
+        with mock.patch('__builtin__.open') as mock_open, mock.patch.object(base64, 'b64decode') as mock_b64, mock.patch.object(flask, 'make_response') as mock_resp:
+            resp = views.paste.paste_attachment(util.cryptography.get_id_repr(paste.paste_id), attachment.file_name)
+            self.assertEqual(1, mock_open.call_count)
+            self.assertEqual(1, mock_b64.call_count)
+            self.assertEqual(1, mock_resp.call_count)
+            self.assertIsNotNone(resp)
+
+        # Undefined server error
+        with mock.patch.object(database.attachment, 'get_attachment_by_name') as mock_get_attachment:
+            mock_get_attachment.side_effect = Exception
+            resp = views.paste.paste_attachment(util.cryptography.get_id_repr(paste.paste_id), attachment.file_name)
+            self.assertIn(
+                'Undefined error',
+                resp[0],
+            )
+            self.assertEqual(500, resp[1])
 
     def test_paste_archive(self):
         self.assertIsNotNone(views.paste.paste_archive())
