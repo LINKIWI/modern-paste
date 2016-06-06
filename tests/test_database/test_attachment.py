@@ -49,6 +49,22 @@ class TestAttachment(util.testing.DatabaseTestCase):
             self.assertEqual(util.cryptography.secure_hash('test_.bashrc'), attachment.hash_name)
             self.assertEqual(1, mock_store_attachment_file.call_count)
 
+    def test_attachment_dict_repr(self):
+        with mock.patch.object(database.attachment, '_store_attachment_file'):
+            paste = util.testing.PasteFactory.generate()
+            attachment = database.attachment.create_new_attachment(
+                paste_id=paste.paste_id,
+                file_name='file_name',
+                file_size=12345,
+                mime_type='image/png',
+                file_data='binary data',
+            )
+            attachment_dict = attachment.as_dict()
+            self.assertEqual(util.cryptography.get_id_repr(paste.paste_id), attachment_dict['paste_id_repr'])
+            self.assertEqual('file_name', attachment_dict['file_name'])
+            self.assertEqual(12345, attachment_dict['file_size'])
+            self.assertEqual('image/png', attachment_dict['mime_type'])
+
     def test_store_attachment_file(self):
         with mock.patch.object(os, 'makedirs') as mock_makedirs, mock.patch('__builtin__.open') as mock_open:
             exception = OSError()

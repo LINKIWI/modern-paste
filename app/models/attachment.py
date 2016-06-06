@@ -1,6 +1,5 @@
+import util.cryptography
 from modern_paste import db
-
-from util.cryptography import secure_hash
 
 
 class Attachment(db.Model):
@@ -22,6 +21,19 @@ class Attachment(db.Model):
     ):
         self.paste_id = paste_id
         self.file_name = file_name
-        self.hash_name = secure_hash(file_name)
+        self.hash_name = util.cryptography.secure_hash(file_name)
         self.file_size = file_size
         self.mime_type = mime_type
+
+    def as_dict(self):
+        """
+        Represent this attachment as an easily JSON-serializable dictionary.
+
+        :return: Dictionary of attachment properties
+        """
+        return {
+            'paste_id_repr': util.cryptography.get_id_repr(self.paste_id),
+            'file_name': self.file_name,
+            'file_size': self.file_size,
+            'mime_type': self.mime_type,
+        }
