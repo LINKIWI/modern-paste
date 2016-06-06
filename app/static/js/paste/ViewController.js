@@ -34,6 +34,7 @@ modernPaste.paste.ViewController = function() {
     this.passwordProtectionNotice = $('.password-protected');
     this.pastePasswordField = $('.password-protected .paste-password-field');
     this.passwordSubmitButton = $('.password-protected .password-submit-button');
+    this.pasteAttachmentsText = $('.paste-attachments .paste-attachments-text');
 
     // Paste header links
     this.pasteDownloadLink = $('.paste-header .paste-download-link');
@@ -41,6 +42,8 @@ modernPaste.paste.ViewController = function() {
     this.pasteForkContainer = $('.paste-header .paste-fork-container');
     this.pasteDeactivateContainer = $('.paste-header .paste-deactivate-container');
     this.pasteDeactivateLink = $('.paste-header .paste-deactivate-link');
+    this.attachmentsList = $('.paste-header .paste-attachments');
+    this.attachmentLinkTemplate = $('#attachment-link-template');
 
     // Modals
     this.pasteDeactivationModal = $('.deactivate-confirm-modal');
@@ -96,6 +99,27 @@ modernPaste.paste.ViewController.initializePasteDetails = function(data) {
         this.pasteExpiryTime.text(modernPaste.paste.ViewController.convertUnixTimestamp(data.details.expiry_time));
     }
     this.rawPasteContents.text(data.details.contents);
+
+    // Enumerate all attachments
+    var numAttachments = data.details.attachments.length;
+    if (numAttachments === 0) {
+        this.attachmentsList.hide();
+    } else {
+        this.pasteAttachmentsText.text(numAttachments + ' ATTACHMENT' + (numAttachments === 1 ? '' : 'S'));
+        data.details.attachments.forEach(function(attachment) {
+            var attachmentLinkItem = $(this.attachmentLinkTemplate.html());
+            var attachmentLink = attachmentLinkItem.find('.attachment-link');
+            attachmentLink.text(attachment.file_name + ' (' + modernPaste.universal.CommonController.formatFileSize(attachment.file_size) + ')');
+            attachmentLink.prop('href', modernPaste.universal.URIController.formatURI(
+                modernPaste.universal.URIController.uris.PasteAttachmentURI,
+                {
+                    'paste_id': this.metadata.pasteId,
+                    'file_name': attachment.file_name
+                }
+            ));
+            this.attachmentsList.append(attachmentLinkItem);
+        }.bind(this));
+    }
 
     this.pasteContents = CodeMirror.fromTextArea(
         this.rawPasteContents[0],

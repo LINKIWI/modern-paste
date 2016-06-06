@@ -221,6 +221,11 @@
           "key": "url",
           "value": "Full URL to the web interface for viewing the paste",
           "type": "string"
+        },
+        {
+          "key": "attachments",
+          "value": "Array of attachments associated with the paste, each of which has properties <span class=\"ubuntu-mono regular\">file_name</span> (name of the uploaded file), <span class=\"ubuntu-mono regular\">file_size</span> (size of the file in bytes), and <span class=\"ubuntu-mono regular\">mime_type</span> (the MIME type of the file, if available)",
+          "type": "array"
         }
       ]
     },

@@ -39,6 +39,16 @@
             | <span class="paste-views">0</span> VIEWS
         </p>
         <br/>
+        <div class="paste-attachments">
+            <p class="paste-attachments-text sans-serif semibold size-1 white less-spaced">ATTACHMENTS</p>
+            <template id="attachment-link-template">
+                <div class="attachment-item dark-link-alt">
+                    <i class="attachment-icon fa fa-paperclip size-1 white" aria-hidden="true"></i>
+                    <a href="#" class="attachment-link ubuntu-mono regular size-1 white">hello, world</a>
+                </div>
+            </template>
+        </div>
+        <br/>
         <p class="paste-subtitle sans-serif semibold size-1 white less-spaced dark-link-alt">
             <a class="paste-download-link" href="#">DOWNLOAD</a>
             &bull; <a class="paste-raw-link" href="{{ uri('paste', 'PasteViewRawInterfaceURI', paste_id=id_repr(paste.paste_id)) }}">VIEW RAW</a>

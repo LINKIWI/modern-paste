@@ -601,6 +601,24 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE_CODE, resp.status_code)
         self.assertEqual(constants.api.NONEXISTENT_PASTE_FAILURE, json.loads(resp.data))
 
+    def test_paste_details_with_attachments(self):
+        paste = util.testing.PasteFactory.generate(password=None, user_id=None)
+        attachments = [
+            util.testing.AttachmentFactory.generate(paste_id=paste.paste_id).as_dict()
+            for _ in range(5)
+        ]
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+        self.assertEqual(5, len(json.loads(resp.data)['details']['attachments']))
+        for attachment in attachments:
+            self.assertIn(attachment, json.loads(resp.data)['details']['attachments'])
+
     def test_paste_details_server_error(self):
         with mock.patch.object(database.paste, 'get_paste_by_id', side_effect=SQLAlchemyError):
             paste = util.testing.PasteFactory.generate(password=None)
