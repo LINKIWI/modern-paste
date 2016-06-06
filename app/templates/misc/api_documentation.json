@@ -143,7 +143,7 @@
     {
       "name": "Get paste details",
       "uri_class": ["paste", "PasteDetailsURI"],
-      "authentication": "none",
+      "authentication": "optional",
       "short_description": "Get details for an existing paste",
       "long_description": "Retrieve publicly accessible details for an existing, active paste, queried by paste ID. The paste ID will either be an encrypted string (if the server administrator has enabled this option), or a regular decrypted interger. For password-protected pastes, you must supply the <span class=\"ubuntu-mono regular\">password</span> request parameter, containing a plain-text representation of the paste's password.",
       "request_parameters": [

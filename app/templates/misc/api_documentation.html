@@ -125,9 +125,9 @@ assert set(resp.json().keys()) == {
                         <span class="authentication-property sans-serif semibold blue size-1 less-spaced">AUTHENTICATION REQUIRED</span>
                     {% endif %}
                 </p>
-                <p class="api-subtitle sans-serif regular light-gray size-3 less-spaced">{{ endpoint.short_description }}</p>
+                <p class="api-subtitle sans-serif regular light-gray size-3 less-spaced">{{ endpoint.short_description|safe }}</p>
                 <br/><br/>
-                <p class="api-description sans-serif regular gray size-2 less-spaced">{{ endpoint.long_description }}</p>
+                <p class="api-description sans-serif regular gray size-2 less-spaced">{{ endpoint.long_description|safe }}</p>
                 <br/><br/>
                 <p class="api-heading sans-serif semibold gray size-2 less-spaced">ENDPOINT</p>
                 <pre><code class="html">
