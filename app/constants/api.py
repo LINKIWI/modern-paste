@@ -19,24 +19,28 @@ AUTH_FAILURE = {
     FAILURE: 'auth_failure',
 }
 AUTH_FAILURE_CODE = 401
+
 INCOMPLETE_PARAMS_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'Required params are missing',
     FAILURE: 'incomplete_params_failure',
 }
 INCOMPLETE_PARAMS_FAILURE_CODE = 400
+
 NONEXISTENT_USER_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'User does not exist',
     FAILURE: 'nonexistent_user_failure',
 }
 NONEXISTENT_USER_FAILURE_CODE = 404
+
 NONEXISTENT_PASTE_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'Paste does not exist',
     FAILURE: 'nonexistent_paste_failure',
 }
 NONEXISTENT_PASTE_FAILURE_CODE = 404
+
 UNAUTHENTICATED_PASTES_DISABLED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'The server administrator has required that users be signed in to post a paste. If you have an account, '
@@ -46,12 +50,21 @@ UNAUTHENTICATED_PASTES_DISABLED_FAILURE = {
     FAILURE: 'unauthenticated_pastes_disabled_failure',
 }
 UNAUTHENTICATED_PASTES_DISABLED_FAILURE_CODE = 403
+
 USER_REGISTRATION_DISABLED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'The server administrator has disabled new user registration.',
     FAILURE: 'user_registration_disabled_failure',
 }
 USER_REGISTRATION_DISABLED_FAILURE_CODE = 403
+
+PASTE_ATTACHMENTS_DISABLED_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'The server administrator has disabled paste attachments.',
+    FAILURE: 'paste_attachments_disabled_failure',
+}
+PASTE_ATTACHMENTS_DISABLED_FAILURE_CODE = 400
+
 UNDEFINED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'Undefined server-side failure',

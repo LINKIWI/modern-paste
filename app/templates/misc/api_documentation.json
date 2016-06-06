@@ -27,6 +27,10 @@
     {
       "failure_name": "user_registration_disabled_failure",
       "description": "The server administrator has disabled new user registration."
+    },
+    {
+      "failure_name": "paste_attachments_disabled_failure",
+      "description": "The server administrator has disabled paste attachments, and the action attempted to add an attachment to a paste. Repeating the same request without any attachments will succeed."
     }
   ],
   "api_endpoints": [

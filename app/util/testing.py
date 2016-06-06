@@ -130,6 +130,7 @@ class DatabaseTestCase(TestCase):
         # Default config parameters for test environment
         config.REQUIRE_LOGIN_TO_PASTE = False
         config.ENABLE_USER_REGISTRATION = True
+        config.ENABLE_PASTE_ATTACHMENTS = True
 
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_TEST_DATABASE_URI']

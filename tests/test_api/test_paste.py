@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 import config
 import constants.api
+import database.attachment
 import database.paste
 import database.user
 import util.cryptography
@@ -132,12 +133,91 @@ class TestPaste(util.testing.DatabaseTestCase):
                 }),
                 content_type='application/json',
                 headers={
-                    'referer': referrer,  # TIL "referer" is a deliberate mispelling of "referrer"
+                    'referer': referrer,  # TIL "referer" is a deliberate misspelling of "referrer"
                 },
             )
             self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
             paste_id = util.cryptography.get_decid(json.loads(resp.data)['paste_id_repr'], force=True)
             self.assertFalse(database.paste.get_paste_by_id(paste_id).is_api_post)
+
+    def test_submit_paste_attachments_disabled(self):
+        config.ENABLE_PASTE_ATTACHMENTS = False
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': 'contents',
+                'attachments': [
+                    {
+                        'name': 'file name',
+                        'size': 12345,
+                        'mime_type': 'image/png',
+                        'file_data': 'binary data',
+                    }
+                ]
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.PASTE_ATTACHMENTS_DISABLED_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.PASTE_ATTACHMENTS_DISABLED_FAILURE, json.loads(resp.data))
+
+    def test_submit_paste_with_attachments(self):
+        with mock.patch.object(database.attachment, '_store_attachment_file') as mock_store_attachment_file:
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                    'attachments': [
+                        {
+                            'name': 'file name',
+                            'size': 12345,
+                            'mime_type': 'image/png',
+                            'file_data': 'binary data',
+                        },
+                        {
+                            'name': 'file name 2',
+                            'size': 12345,
+                            'mime_type': 'image/png',
+                            'file_data': 'binary data 2',
+                        }
+                    ]
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+            self.assertEqual(2, mock_store_attachment_file.call_count)
+
+            resp_data = json.loads(resp.data)
+            self.assertEqual('file name', resp_data['attachments'][0]['name'])
+            self.assertEqual(12345, resp_data['attachments'][0]['size'])
+            self.assertEqual('image/png', resp_data['attachments'][0]['mime_type'])
+            self.assertIsNotNone(database.attachment.get_attachment_by_name(
+                util.cryptography.get_decid(resp_data['paste_id_repr']),
+                'file name')
+            )
+            self.assertEqual('file name 2', resp_data['attachments'][1]['name'])
+            self.assertEqual(12345, resp_data['attachments'][1]['size'])
+            self.assertEqual('image/png', resp_data['attachments'][1]['mime_type'])
+            self.assertIsNotNone(database.attachment.get_attachment_by_name(
+                util.cryptography.get_decid(resp_data['paste_id_repr']),
+                'file name 2')
+            )
+
+    def test_submit_paste_invalid_attachments(self):
+        with mock.patch.object(database.attachment, '_store_attachment_file') as mock_store_attachment_file:
+            resp = self.client.post(
+                PasteSubmitURI.uri(),
+                data=json.dumps({
+                    'contents': 'contents',
+                    'attachments': [
+                        {
+                            'name': 'file name',
+                        }
+                    ]
+                }),
+                content_type='application/json',
+            )
+            self.assertEqual(constants.api.SUCCESS_CODE, resp.status_code)
+            self.assertEqual(1, mock_store_attachment_file.call_count)
 
     def test_submit_paste_server_error(self):
         with mock.patch.object(database.paste, 'create_new_paste', side_effect=SQLAlchemyError):

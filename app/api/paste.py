@@ -10,6 +10,7 @@ from api.decorators import require_form_args
 from api.decorators import require_login_api
 from api.decorators import optional_login_api
 import constants.api
+import database.attachment
 import database.paste
 import database.user
 import util.cryptography
@@ -29,14 +30,50 @@ def submit_paste():
         )
 
     data = flask.request.get_json()
+
+    if not config.ENABLE_PASTE_ATTACHMENTS and len(data.get('attachments', [])) > 0:
+        return (
+            flask.jsonify(constants.api.PASTE_ATTACHMENTS_DISABLED_FAILURE),
+            constants.api.PASTE_ATTACHMENTS_DISABLED_FAILURE_CODE
+        )
+
     try:
-        data['user_id'] = current_user.user_id if current_user.is_authenticated else None
-        # The paste is considered an API post if any of the following conditions are met:
-        # (1) The referrer is null.
-        # (2) The Home or PastePostInterface URIs are *not* contained within the referrer string (if a paste was posted
-        # via the web interface, this is where the user should be coming from).
-        data['is_api_post'] = not flask.request.referrer or not any([uri in flask.request.referrer for uri in [HomeURI.full_uri(), PastePostInterfaceURI.full_uri()]])
-        return flask.jsonify(database.paste.create_new_paste(**data).as_dict()), constants.api.SUCCESS_CODE
+        new_paste = database.paste.create_new_paste(
+            contents=data.get('contents'),
+            user_id=current_user.user_id if current_user.is_authenticated else None,
+            expiry_time=data.get('expiry_time'),
+            title=data.get('title'),
+            language=data.get('language'),
+            password=data.get('password'),
+            # The paste is considered an API post if any of the following conditions are met:
+            # (1) The referrer is null.
+            # (2) The Home or PastePostInterface URIs are *not* contained within the referrer string (if a paste was
+            # posted via the web interface, this is where the user should be coming from, unless the client performed
+            # some black magic and spoofed the referrer string or something equally sketchy).
+            is_api_post=not flask.request.referrer or not any(
+                [uri in flask.request.referrer for uri in [HomeURI.full_uri(), PastePostInterfaceURI.full_uri()]]
+            ),
+        )
+        new_attachments = [
+            database.attachment.create_new_attachment(
+                paste_id=new_paste.paste_id,
+                file_name=attachment.get('name'),
+                file_size=attachment.get('size'),
+                mime_type=attachment.get('mime_type'),
+                file_data=attachment.get('data'),
+            )
+            for attachment in data.get('attachments', [])
+        ]
+        resp_data = new_paste.as_dict().copy()
+        resp_data['attachments'] = [
+            {
+                'name': attachment.file_name,
+                'size': attachment.file_size,
+                'mime_type': attachment.mime_type,
+            }
+            for attachment in new_attachments
+        ]
+        return flask.jsonify(resp_data), constants.api.SUCCESS_CODE
     except:
         return flask.jsonify(constants.api.UNDEFINED_FAILURE), constants.api.UNDEFINED_FAILURE_CODE
 
