@@ -1,9 +1,9 @@
 import flask
 from flask import request
-from flask.ext.login import current_user
-from flask.ext.login import login_required
-from flask.ext.login import login_user as login
-from flask.ext.login import logout_user as logout
+from flask_login import current_user
+from flask_login import login_required
+from flask_login import login_user as login
+from flask_login import logout_user as logout
 
 import constants.api
 import database.user

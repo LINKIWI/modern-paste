@@ -40,7 +40,7 @@ def submit_paste():
     is_attachment_too_large = [
         # The data is encoded as a string: each character takes 1 B
         len(attachment.get('data', '')) > config.MAX_ATTACHMENT_SIZE * 1000 * 1000
-        for attachment in data.get('attachments')
+        for attachment in data.get('attachments', [])
     ]
     if any(is_attachment_too_large) and config.MAX_ATTACHMENT_SIZE > 0:
         return (

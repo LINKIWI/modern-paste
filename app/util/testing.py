@@ -4,9 +4,9 @@ import time
 import types
 
 import mock
-from flask.ext.login import login_user
-from flask.ext.login import logout_user
-from flask.ext.testing import TestCase
+from flask_login import login_user
+from flask_login import logout_user
+from flask_testing import TestCase
 
 import config
 import constants.api

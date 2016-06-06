@@ -1,5 +1,5 @@
 from flask import redirect
-from flask.ext.login import logout_user
+from flask_login import logout_user
 
 from api.decorators import hide_if_logged_in
 from api.decorators import require_login_frontend

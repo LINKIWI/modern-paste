@@ -2,9 +2,9 @@ import json
 
 import mock
 from flask import request
-from flask.ext.login import current_user
-from flask.ext.login import login_user
-from flask.ext.login import logout_user
+from flask_login import current_user
+from flask_login import login_user
+from flask_login import logout_user
 
 import config
 import api.decorators

@@ -6,8 +6,8 @@ from modern_paste import app
 import config
 import constants.api
 import database.user
-from flask.ext.login import current_user
-from flask.ext.login import login_user
+from flask_login import current_user
+from flask_login import login_user
 from api.decorators import require_form_args
 from api.decorators import require_login_api
 from util.exception import *
