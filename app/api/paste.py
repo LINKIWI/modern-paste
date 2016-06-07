@@ -39,7 +39,8 @@ def submit_paste():
 
     is_attachment_too_large = [
         # The data is encoded as a string: each character takes 1 B
-        len(attachment.get('data', '')) > config.MAX_ATTACHMENT_SIZE * 1000 * 1000
+        # The base64-encoded string is at 4/3x larger in size than the raw file
+        len(attachment.get('data', '')) * 3 / 4.0 > config.MAX_ATTACHMENT_SIZE * 1000 * 1000
         for attachment in data.get('attachments', [])
     ]
     if any(is_attachment_too_large) and config.MAX_ATTACHMENT_SIZE > 0:
