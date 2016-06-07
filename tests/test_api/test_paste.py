@@ -295,7 +295,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -313,7 +313,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
             }),
             content_type='application/json',
         )
@@ -327,7 +327,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'api_key': user.api_key,
             }),
             content_type='application/json',
@@ -341,7 +341,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'deactivation_token': 'invalid',
             }),
             content_type='application/json',
@@ -351,7 +351,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'deactivation_token': paste.deactivation_token,
             }),
             content_type='application/json',
@@ -366,7 +366,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         resp = self.client.post(
             PasteDeactivateURI.uri(),
             data=json.dumps({
-                'paste_id': paste.paste_id,
+                'paste_id': util.cryptography.get_id_repr(paste.paste_id),
                 'deactivation_token': paste.deactivation_token,
             }),
             content_type='application/json',

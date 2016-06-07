@@ -1,3 +1,4 @@
+import StringIO
 import base64
 import time
 
@@ -94,12 +95,15 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(404, resp[1])
 
         # Valid input
-        with mock.patch('__builtin__.open') as mock_open, mock.patch.object(base64, 'b64decode') as mock_b64, mock.patch.object(flask, 'make_response') as mock_resp:
+        with mock.patch('__builtin__.open') as mock_open:
+            mock_file_obj = mock.Mock(spec=file, wraps=StringIO.StringIO(base64.b64encode('file contents')))
+            mock_open.return_value = mock_file_obj
+
             resp = views.paste.paste_attachment(util.cryptography.get_id_repr(paste.paste_id), attachment.file_name)
             self.assertEqual(1, mock_open.call_count)
-            self.assertEqual(1, mock_b64.call_count)
-            self.assertEqual(1, mock_resp.call_count)
             self.assertIsNotNone(resp)
+            self.assertEqual('file contents', resp.get_data())
+            self.assertEqual(200, resp.status_code)
 
         # Undefined server error
         with mock.patch.object(database.attachment, 'get_attachment_by_name') as mock_get_attachment:

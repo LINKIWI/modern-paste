@@ -135,6 +135,7 @@ class DatabaseTestCase(TestCase):
 
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_TEST_DATABASE_URI']
+
         return app
 
     def setUp(self):
