@@ -1,7 +1,10 @@
+import errno
+import shutil
 import time
 
 from sqlalchemy import or_
 
+import config
 import models
 import util.cryptography
 from modern_paste import session
@@ -201,7 +204,27 @@ def scrub_inactive_pastes():
         > import database.paste
         > database.paste.scrub_inactive_pastes()
     """
-    models.Paste.query.filter(or_(
+    inactive_pastes = models.Paste.query.filter(or_(
         models.Paste.is_active.is_(False),
         models.Paste.expiry_time < time.time(),
-    )).delete()
+    ))
+    inactive_paste_ids = [paste.paste_id for paste in inactive_pastes]
+    if not inactive_paste_ids:
+        # No inactive pastes to scrub; quit without taking further action
+        return
+    inactive_attachments = models.Attachment.query.filter(
+        models.Attachment.paste_id.in_(inactive_paste_ids)
+    )
+
+    # Attempt to remove the attachment files, if they exist
+    for paste_id in inactive_paste_ids:
+        try:
+            shutil.rmtree('{attachment_dir}/{paste_id}'.format(attachment_dir=config.ATTACHMENTS_DIR, paste_id=paste_id))
+        except OSError as err:
+            if err.errno != errno.ENOENT:
+                raise
+
+    # Then, delete the database entries
+    inactive_pastes.delete(synchronize_session='fetch')
+    inactive_attachments.delete(synchronize_session='fetch')
+    session.commit()

@@ -1,8 +1,11 @@
 import random
+import shutil
 import time
+import errno
 
 import mock
 
+import database.attachment
 import database.paste
 import util.cryptography
 import util.testing
@@ -173,17 +176,56 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=False))
         self.assertEqual([], database.paste.get_all_pastes_for_user(user.user_id, active_only=True))
 
-    def test_scrub_inactive_pastes(self):
-        pastes = [util.testing.PasteFactory.generate(expiry_time=None) for i in range(15)]
+    def test_scrub_inactive_pastes_valid(self):
+        pastes = [util.testing.PasteFactory.generate(expiry_time=None) for _ in range(15)]
+        [util.testing.AttachmentFactory.generate(paste_id=paste.paste_id, file_name='file') for paste in pastes]
         deactivated_pastes = [database.paste.deactivate_paste(paste.paste_id) for paste in pastes[:10]]
-        database.paste.scrub_inactive_pastes()
-        for deactivated_paste in deactivated_pastes:
+        with mock.patch.object(shutil, 'rmtree') as mock_rmtree:
+            database.paste.scrub_inactive_pastes()
+            self.assertEqual(10, mock_rmtree.call_count)
+            for deactivated_paste in deactivated_pastes:
+                self.assertRaises(
+                    PasteDoesNotExistException,
+                    database.paste.get_paste_by_id,
+                    paste_id=deactivated_paste.paste_id,
+                    active_only=False,
+                )
+                self.assertRaises(
+                    PasteDoesNotExistException,
+                    database.attachment.get_attachment_by_name,
+                    paste_id=deactivated_paste.paste_id,
+                    file_name='file',
+                    active_only=True,
+                )
+            for paste in pastes:
+                if paste not in deactivated_pastes:
+                    self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id))
+                    self.assertIsNotNone(database.attachment.get_attachment_by_name(paste.paste_id, 'file', active_only=True))
+
+    def test_scrub_inactive_pastes_none(self):
+        pastes = [util.testing.PasteFactory.generate(expiry_time=None) for _ in range(15)]
+        with mock.patch.object(shutil, 'rmtree') as mock_rmtree:
+            database.paste.scrub_inactive_pastes()
+
+            self.assertEqual(0, mock_rmtree.call_count)
+            for paste in pastes:
+                self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id))
+
+    def test_scrub_inactive_pastes_error(self):
+        pastes = [util.testing.PasteFactory.generate(expiry_time=None) for _ in range(15)]
+        [util.testing.AttachmentFactory.generate(paste_id=paste.paste_id, file_name='file') for paste in pastes]
+        [database.paste.deactivate_paste(paste.paste_id) for paste in pastes[:10]]
+
+        with mock.patch.object(shutil, 'rmtree') as mock_rmtree:
+            mock_rmtree.side_effect = OSError(errno.EBUSY)
+
             self.assertRaises(
-                PasteDoesNotExistException,
-                database.paste.get_paste_by_id,
-                paste_id=deactivated_paste.paste_id,
-                active_only=False,
+                OSError,
+                database.paste.scrub_inactive_pastes,
             )
-        for paste in pastes:
-            if paste not in deactivated_pastes:
+
+        with mock.patch.object(shutil, 'rmtree') as mock_rmtree:
+            mock_rmtree.side_effect = OSError(errno.ENOENT)
+
+            for paste in pastes:
                 self.assertIsNotNone(database.paste.get_paste_by_id(paste.paste_id))
