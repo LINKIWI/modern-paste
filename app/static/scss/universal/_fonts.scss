@@ -4,28 +4,28 @@
 // Source and font definitions
 
 @font-face {
-    font-family: 'uni-sans-book';
-    src: url('/static/fonts/uni-sans-book.ttf');
+    font-family: 'sans-serif-book';
+    src: url('/static/fonts/sans-serif-book.ttf');
 }
 
 @font-face {
-    font-family: 'uni-sans-light';
-    src: url('/static/fonts/uni-sans-light.ttf');
+    font-family: 'sans-serif-light';
+    src: url('/static/fonts/sans-serif-light.ttf');
 }
 
 @font-face {
-    font-family: 'uni-sans-semibold';
-    src: url('/static/fonts/uni-sans-semibold.ttf');
+    font-family: 'sans-serif-semibold';
+    src: url('/static/fonts/sans-serif-semibold.ttf');
 }
 
 @font-face {
-    font-family: 'uni-sans-bold';
-    src: url('/static/fonts/uni-sans-heavy.ttf');
+    font-family: 'sans-serif-bold';
+    src: url('/static/fonts/sans-serif-heavy.ttf');
 }
 
 @font-face {
-    font-family: 'uni-sans-book-italic';
-    src: url('/static/fonts/uni-sans-book-italic.ttf');
+    font-family: 'sans-serif-book-italic';
+    src: url('/static/fonts/sans-serif-book-italic.ttf');
 }
 
 @font-face {
@@ -37,23 +37,23 @@
 // Font classes
 
 .sans-serif.regular {
-    font-family: 'uni-sans-book', sans-serif;
+    font-family: 'sans-serif-book', sans-serif;
 
     &.italic {
-        font-family: 'uni-sans-book-italic', sans-serif;
+        font-family: 'sans-serif-book-italic', sans-serif;
     }
 }
 
 .sans-serif.light {
-    font-family: 'uni-sans-light', sans-serif;
+    font-family: 'sans-serif-light', sans-serif;
 }
 
 .sans-serif.semibold {
-    font-family: 'uni-sans-semibold', sans-serif;
+    font-family: 'sans-serif-semibold', sans-serif;
 }
 
 .sans-serif.bold {
-    font-family: 'uni-sans-bold', sans-serif;
+    font-family: 'sans-serif-bold', sans-serif;
 }
 
 .ubuntu-mono.regular {
