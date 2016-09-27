@@ -8,6 +8,7 @@ from uri.paste import *
 
 class Paste(db.Model):
     __tablename__ = 'paste'
+    __table_args__ = {'mysql_collate': 'utf8mb4_general_ci'}
 
     paste_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     is_active = db.Column(db.Boolean)
