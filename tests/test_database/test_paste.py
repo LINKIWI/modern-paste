@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import random
 import shutil
 import time
@@ -23,10 +25,21 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual('python', paste.language)
         self.assertEqual(util.cryptography.secure_hash('password'), paste.password_hash)
         self.assertTrue(paste.is_api_post)
+
         # Should also be able to create pastes with all optional fields blank
         paste = database.paste.create_new_paste('contents')
         self.assertEqual('text', paste.language)
         self.assertEqual('Untitled', paste.title)
+        self.assertEqual('contents', paste.contents)
+        self.assertIsNone(paste.password_hash)
+        self.assertIsNone(paste.user_id)
+        self.assertIsNone(paste.expiry_time)
+
+        # Unicode, non-Latin characters
+        paste = database.paste.create_new_paste('어머')
+        self.assertEqual('text', paste.language)
+        self.assertEqual('Untitled', paste.title)
+        self.assertEqual('어머', paste.contents)
         self.assertIsNone(paste.password_hash)
         self.assertIsNone(paste.user_id)
         self.assertIsNone(paste.expiry_time)

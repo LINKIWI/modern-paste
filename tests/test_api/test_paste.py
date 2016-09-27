@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import json
 import random
 import time
@@ -139,6 +141,26 @@ class TestPaste(util.testing.DatabaseTestCase):
             self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
             paste_id = util.cryptography.get_decid(json.loads(resp.data)['paste_id_repr'], force=True)
             self.assertFalse(database.paste.get_paste_by_id(paste_id).is_api_post)
+
+    def test_submit_paste_non_ascii(self):
+        resp = self.client.post(
+            PasteSubmitURI.uri(),
+            data=json.dumps({
+                'contents': '어머',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+
+        resp = self.client.post(
+            PasteDetailsURI.uri(),
+            data=json.dumps({
+                'paste_id': json.loads(resp.data)['paste_id_repr'],
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
+        self.assertEqual(json.loads(resp.data)['details']['contents'], unicode('어머', 'utf8'))
 
     def test_submit_paste_attachments_disabled(self):
         config.ENABLE_PASTE_ATTACHMENTS = False
