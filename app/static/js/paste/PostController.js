@@ -177,7 +177,7 @@ modernPaste.paste.PostController.handleSubmitFail = function(data) {
     var errorMessages = {
         'incomplete_params_failure': 'You can\'t submit an empty paste.',
         'auth_failure': 'You need to be logged in to post a non-anonymous paste.',
-        'unauthenticated_pastes_disabled_failure' : 'The server administrator has requierd that users be signed in to post a paste.',
+        'unauthenticated_pastes_disabled_failure' : 'The server administrator has required that users be signed in to post a paste.',
         'paste_attachments_disabled_failure': 'The server administrator has disabled paste attachments.',
         'paste_attachment_too_large_failure': 'The size of one or more attachments is larger than the maximum allowable file size.'
     };
@@ -224,7 +224,7 @@ modernPaste.paste.PostController.handleAttachmentsFileInput = function(evt) {
                 return existingAttachment.name === attachment.name;
             });
 
-            if (attachment.size > this.metadata.maxAttachmentSize * 1000 * 1000) {
+            if (attachment.size > this.metadata.maxAttachmentSize * 1000 * 1000 && this.metadata.maxAttachmentSize > 0) {
                 modernPaste.universal.AlertController.displayErrorAlert('This file\'s size exceeds the limit of ' + this.metadata.maxAttachmentSize + ' MB imposed by the server administrator.');
                 return;
             }
