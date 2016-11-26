@@ -9,14 +9,16 @@ import constants
 
 
 # Flask-SQLAlchemy
-SQLALCHEMY_DATABASE_URI = 'mysql://{database_user}:{database_password}@localhost/{database_name}'.format(
+SQLALCHEMY_DATABASE_URI = 'mysql://{database_user}:{database_password}@{database_host}/{database_name}'.format(
     database_user=config.DATABASE_USER,
     database_password=config.DATABASE_PASSWORD,
+    database_host=config.DATABASE_HOST,
     database_name=config.DATABASE_NAME if config.BUILD_ENVIRONMENT == constants.build_environment.PROD else config.DATABASE_NAME + '_dev',
 )
-SQLALCHEMY_TEST_DATABASE_URI = 'mysql://{database_user}:{database_password}@localhost/{database_name}'.format(
+SQLALCHEMY_TEST_DATABASE_URI = 'mysql://{database_user}:{database_password}@{database_host}/{database_name}'.format(
     database_user=config.DATABASE_USER,
     database_password=config.DATABASE_PASSWORD,
+    database_host=config.DATABASE_HOST,
     database_name=config.DATABASE_NAME + '_test',
 )
 SQLALCHEMY_TRACK_MODIFICATIONS = False

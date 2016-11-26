@@ -33,6 +33,10 @@ MAX_ATTACHMENT_SIZE = 0
 # Please use an absolute path and ensure that it is writable by www-data.
 ATTACHMENTS_DIR = '/var/www/modern-paste-attachments'
 
+# Database host
+# Optionally change the host on which the MySQL server is running; defaults to the same server hosting the site.
+DATABASE_HOST = 'localhost'
+
 # Database name
 # It's suggested you leave this as default.
 # IMPORTANT NOTE: You must create this database yourself before running this app.
