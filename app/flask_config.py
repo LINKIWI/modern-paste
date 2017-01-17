@@ -23,5 +23,8 @@ SQLALCHEMY_TEST_DATABASE_URI = 'mysql://{database_user}:{database_password}@{dat
 )
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+# Flask session cookie name
+SESSION_COOKIE_NAME = 'modern-paste-session'
+
 # Flask session secret key
 SECRET_KEY = config.FLASK_SECRET_KEY
