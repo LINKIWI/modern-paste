@@ -91,11 +91,12 @@ Modern Paste is intended for system administrators who wish to host their own in
    ```bash
    $ sudo apt-get install build-essential python-dev libmysqlclient-dev
    ```
-   Or for Fedora/RedHat varients:
+   Or for Fedora/RedHat variants:
    ```bash
    $ sudo dnf install python-devel community-mysql-devel redhat-rpm-config mod_wsgi gem npm community-mysql-server
    $ sudo dnf groupinstall "C Development Tools and Libraries"
    $ sudo dnf groupinstall "Development Tools"
+   ```
    Then, in the directory you cloned the repository to:
    ```bash
    $ sudo make
