@@ -87,9 +87,15 @@ Modern Paste is intended for system administrators who wish to host their own in
    + `FLASK_SECRET_KEY` - For security reasons, replace the string here with the output of `os.urandom(32)` from a Python shell.
 
 5. **Build the app.**
-   At this point, before continuing, ensure you have the MySQL and Python dev packages installed. This corrects common errors during the `make dependencies` stage of the build.
+   At this point, before continuing, ensure you have the MySQL and Python dev packages installed. This corrects common errors during the `make dependencies` stage of the build. To avoid conflicts with the system Python's modules, it is recommended to use [pyenv](https://github.com/yyuu/pyenv) so the app's Python dependencies remain segregated from the base system's environment.
    ```bash
    $ sudo apt-get install build-essential python-dev libmysqlclient-dev
+   ```
+   Or for Fedora/RedHat variants:
+   ```bash
+   $ sudo dnf install python-devel community-mysql-devel redhat-rpm-config mod_wsgi gem npm community-mysql-server
+   $ sudo dnf groupinstall "C Development Tools and Libraries"
+   $ sudo dnf groupinstall "Development Tools"
    ```
    Then, in the directory you cloned the repository to:
    ```bash
