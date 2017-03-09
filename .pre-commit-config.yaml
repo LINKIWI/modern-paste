@@ -1,5 +1,5 @@
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: 64943e86417774b9d6ba63c74e00f8cc3e2119e0
+    sha: a11d9314b22d8f8c7556443875b731ef05965464
     hooks:
     -   id: trailing-whitespace
     -   id: check-json
@@ -7,6 +7,6 @@
     -   id: check-merge-conflict
     -   id: end-of-file-fixer
 -   repo: git://github.com/pre-commit/mirrors-scss-lint
-    sha: f840ac610d8d9d76b666062416241f2156b3f388
+    sha: v0.52.0
     hooks:
     -   id: scss-lint
