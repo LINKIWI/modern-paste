@@ -1,0 +1,171 @@
+@import 'fonts';
+@import 'colors';
+@import 'links';
+
+
+// Undo Bootstrap stupidity
+
+p {
+    margin: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+
+// Main header and footer
+
+.mp-header {
+    background-color: $transparent-white;
+    display: table;
+    height: 70px;
+    left: 0;
+    padding: 10px 50px;
+    position: fixed;
+    top: 0;
+    transition: all .15s linear;
+    width: 100%;
+    z-index: 2;
+
+    .mp-title {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .mp-nav-links {
+        display: table-cell;
+        text-align: right;
+        vertical-align: middle;
+
+        a {
+            margin-left: 20px;
+        }
+    }
+}
+
+.mp-footer {
+    background-color: $gray;
+    display: table;
+    height: 250px;
+    padding: 40px 50px;
+    width: 100%;
+
+    .mp-description {
+        display: table-cell;
+        padding-right: 50px;
+        width: 50%;
+    }
+
+    .mp-links {
+        display: table-cell;
+        padding-left: 50px;
+        text-align: right;
+        width: 50%;
+    }
+}
+
+
+// Main content
+
+.intro {
+    background-color: $bright-white;
+    height: 100%;
+    width: 100%;
+
+    .intro-text {
+        left: 10%;
+        position: relative;
+        top: 40%;
+        transform: translateY(-50%);
+        width: 80%;
+    }
+
+    .download-button {
+        background-color: transparent;
+        border-color: $blue;
+        margin-top: 40px;
+        padding: 15px 40px;
+    }
+
+    .download-button:hover,
+    .download-button:active,
+    .download-button:focus {
+        color: $blue;
+    }
+
+    .scroll-prompt {
+        bottom: 20px;
+        opacity: .5;
+        position: absolute;
+        width: 100%;
+
+        .scroll-text {
+            display: block;
+            margin: auto;
+            text-align: center;
+        }
+
+        .scroll-arrows {
+            display: block;
+            height: 35px;
+            margin: auto;
+            transform: rotate(90deg);
+            width: 20px;
+        }
+    }
+}
+
+.download-section {
+    background-color: $blue;
+    height: 400px;
+    padding: 60px 0;
+    text-align: center;
+
+    button {
+        background-color: transparent;
+        border-color: $white;
+        padding: 15px 40px;
+    }
+
+    button:hover,
+    button:active,
+    button:focus {
+        color: $pure-white;
+    }
+
+    .demo-button {
+        margin-bottom: 20px;
+        margin-top: 50px;
+    }
+
+    .fa {
+        vertical-align: middle;
+    }
+
+    .button-text {
+        margin-bottom: 5px;
+        margin-left: 10px;
+    }
+}
+
+.content {
+    margin: auto;
+    padding: 100px 50px;
+    width: 50%;
+
+    .section-heading {
+        text-align: center;
+    }
+
+    .screenshots {
+        text-align: center;
+    }
+
+    .thumbnail-preview {
+        height: 133px;
+        margin: 15px 3px;
+        width: 268px;
+    }
+}

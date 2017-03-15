@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Paste - A modern, feature-rich, and Python-powered open source alternative to Pastebin</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" type="text/css" media="screen" />
+    <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+    <link rel="stylesheet" href="build/stylesheet.css">
+    <script type="text/javascript" src="build/controller.js"></script>
+
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+	var u="//analytics.internal.kevinlin.info/";
+	_paq.push(['setTrackerUrl', u+'piwik.php']);
+	_paq.push(['setSiteId', '3']);
+	var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+	g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+</head>
+<body>
+    <div class="mp-header">
+        <div class="mp-title">
+            <span class="sans-serif light bright-gray size-5 spaced">modern</span><span class="sans-serif regular bright-gray size-5 spaced">paste</span>
+        </div>
+        <div class="mp-nav-links light-link-alt">
+            <p class="sans-serif semibold gray size-1 less-spaced">
+                <a href="https://demo.modernpaste.com">LIVE DEMO</a>
+                <a href="https://github.com/LINKIWI/modern-paste/archive/master.zip">DOWNLOAD</a>
+                <a href="https://github.com/LINKIWI/modern-paste">GITHUB</a>
+                <a href="https://travis-ci.org/LINKIWI/modern-paste">BUILD STATUS</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="intro">
+        <div class="intro-text">
+            <span class="sans-serif light bright-gray size-9 spaced">modern</span><span class="sans-serif regular bright-gray size-9 spaced">paste</span>
+            <br/>
+            <span class="sans-serif light gray size-3 less-spaced">self-hosted pastebin &bull; minimalistic and contemporary &bull; open source</span>
+            <br/><br/>
+            <form action="https://github.com/LINKIWI/modern-paste/archive/master.zip">
+                <button class="download-button btn sans-serif regular blue size-3 less-spaced">DOWNLOAD</button>
+            </form>
+        </div>
+        <div class="scroll-prompt">
+            <span class="scroll-text sans-serif semibold bright-gray size-1 spaced">SCROLL TO LEARN MORE</span>
+            <img class="scroll-arrows" src="static/img/icons/arrows.png" />
+        </div>
+    </div>
+
+    <div class="download-section">
+        <p class="sans-serif regular white size-7 less-spaced">INTRODUCING MODERN PASTE</p>
+        <p class="sans-serif regular white size-2 less-spaced">A powerful, open-source Pastebin alternative that doesn't suck</p>
+        <form action="https://demo.modernpaste.com">
+            <button type="submit" class="demo-button btn sans-serif semibold white size-2 less-spaced">
+                <i class="demo-icon fa fa-desktop fa-2x"></i>
+                <span class="button-text">CHECK OUT THE LIVE DEMO</span>
+            </button>
+        </form>
+        <form action="https://github.com/LINKIWI/modern-paste">
+            <button type="submit" class="github-button btn sans-serif semibold white size-2 less-spaced">
+                <i class="github-icon fa fa-github fa-2x"></i>
+                <span class="button-text">GET THE SOURCE ON GITHUB</span>
+            </button>
+        </form>
+    </div>
+
+    <div class="content light-link">
+        <p class="section-heading sans-serif regular gray size-6 less-spaced">AN OPEN SOURCE PASTEBIN</p>
+        <br/>
+        <p class="sans-serif regular gray size-3"><span class="sans-serif semibold">Modern Paste</span> is a contemporary Pastebin for self-hosted installations. This Python-powered web application features functionality standard for a code/text sharing application, including user account integration, syntax highlighting, security restrictions and visibility control, and a RESTful API for integration into existing applications.</p>
+        <br/>
+        <p class="sans-serif regular gray size-3">Modern Paste is also <a href="https://github.com/LINKIWI/modern-paste#installation">easy to install</a> and <a href="https://github.com/LINKIWI/modern-paste/blob/master/app/config.py">highly configurable</a>. Current instructions exist for Apache, though the application can be deployed on any WSGI-aware server.</p>
+        <br/><br/><br/><br/>
+        <p class="section-heading sans-serif regular gray size-6 less-spaced">FEATURES</p>
+        <br/>
+        <ul class="sans-serif regular gray size-3">
+            <li>Modern user interface with a consistent design language</li>
+            <li>Syntax highlighting for <a href="https://codemirror.net/mode/">all languages supported by CodeMirror</a></li>
+            <li>Ability to set paste expiration dates</li>
+            <li>Ability to password-protect pastes</li>
+            <li>Full user account functionality</li>
+            <li>
+                <ul>
+                    <li>Associate new pastes with a user account</li>
+                    <li>View, modify, or delete pastes posted with a user account</li>
+                    <li>Directly query the Modern Paste API with the account's API key/authtoken</li>
+                </ul>
+            </li>
+            <li>Public archive of pastes, sorted reverse chronologically or by popularity</li>
+            <li>RESTful API for externally creating, reading, and managing pastes</li>
+            <li>Ability to enforce security restrictions: can configure that only authenticated users can post pastes (ideal for private, non-public-facing installations)</li>
+            <li>Ability to encrypt the front-facing-display of paste IDs (e.g. so that <span class="ubuntu-mono regular">/paste/1</span> might display as <span class="ubuntu-mono regular">/paste/9~AEygplxfCPHW4eJctbjMnRi-rYnlYzizqToCmG3BY=)</span></li>
+        </ul>
+        <br/><br/><br/><br/>
+        <p class="section-heading sans-serif regular gray size-6 less-spaced">CUSTOMIZATION AND CONFIGURATION</p>
+        <br/>
+        <p class="sans-serif regular gray size-3">Your deployment of Modern Paste can be configured to meet your specific usage scenario. Deploying for internal, private use? Require users be logged in to post new pastes and disable new user registration. Want to add an additional layer of security for publicly visible paste IDs? Enable paste ID encryption.</p>
+        <br/>
+        <p class="sans-serif regular gray size-3">Modern Paste's app configuration options can be modified in <span class="ubuntu-mono regular">app/config.py</span>. Effecting config changes is simple: just <span class="ubuntu-mono regular">service apache2 reload</span>.</p>
+        <br/><br/><br/><br/>
+        <p class="section-heading sans-serif regular gray size-6 less-spaced">CONTRIBUTING</p>
+        <br/>
+        <p class="sans-serif regular gray size-3">Contributions are always welcome! Please fork <a href="https://github.com/LINKIWI/modern-paste">the repository</a> and submit pull requests. Full details on how to contribute are in the repository's <a href="https://github.com/LINKIWI/modern-paste#contributing">README</a>.</p>
+        <br/><br/><br/><br/>
+        <p class="section-heading sans-serif regular gray size-6 less-spaced">SCREENSHOTS</p>
+        <br/>
+        <div class="screenshots">
+            <a href="static/img/screenshots/account.png" class="fancybox" rel="screenshots" title="Account management interface"><img class="thumbnail-preview" src="static/img/screenshots/account.png" /></a>
+            <a href="static/img/screenshots/add-password.png" class="fancybox" rel="screenshots" title="Add a paste password"><img class="thumbnail-preview" src="static/img/screenshots/add-password.png" /></a>
+            <a href="static/img/screenshots/api.png" class="fancybox" rel="screenshots" title="API documentation"><img class="thumbnail-preview" src="static/img/screenshots/api.png" /></a>
+            <a href="static/img/screenshots/archive.png" class="fancybox" rel="screenshots" title="Paste archive"><img class="thumbnail-preview" src="static/img/screenshots/archive.png" /></a>
+            <a href="static/img/screenshots/deactivate.png" class="fancybox" rel="screenshots" title="Paste deactivation"><img class="thumbnail-preview" src="static/img/screenshots/deactivate.png" /></a>
+            <a href="static/img/screenshots/main.png" class="fancybox" rel="screenshots" title="Paste posting interface"><img class="thumbnail-preview" src="static/img/screenshots/main.png" /></a>
+            <a href="static/img/screenshots/view.png" class="fancybox" rel="screenshots" title="Paste view interface"><img class="thumbnail-preview" src="static/img/screenshots/view.png" /></a>
+        </div>
+    </div>
+
+    <div class="mp-footer dark-link-alt">
+        <div class="mp-description">
+            <span class="sans-serif light white size-5 spaced">modern</span><span class="sans-serif regular white size-5 spaced">paste</span>
+            <p class="sans-serif regular white size-3 less-spaced">A modern, feature-rich, and Python-powered open source alternative to Pastebin</p>
+            <br/><br/>
+            <p class="sans-serif regular light-gray size-1 less-spaced">Modern Paste is licensed under the <a href="https://github.com/LINKIWI/modern-paste/blob/master/LICENSE">MIT license</a>.</p>
+            <p class="sans-serif regular light-gray size-1 less-spaced">Modern Paste is maintained by <a href="https://www.kevinlin.info">Kevin Lin</a>.</p>
+        </div>
+        <div class="mp-links">
+            <p class="sans-serif regular white size-2 less-spaced"><a href="https://github.com/LINKIWI/modern-paste">GITHUB</a></p>
+            <p class="sans-serif regular white size-2 less-spaced"><a href="https://github.com/LINKIWI/modern-paste/blob/master/README.md">README</a></p>
+            <p class="sans-serif regular white size-2 less-spaced"><a href="https://github.com/LINKIWI/modern-paste/issues">ISSUES</a></p>
+            <br/>
+            <p class="sans-serif regular white size-2 less-spaced"><a href="https://demo.modernpaste.com">LIVE DEMO - PRODUCTION BUILD</a></p>
+            <p class="sans-serif regular white size-2 less-spaced"><a href="https://dev.modernpaste.com">LIVE DEMO - DEV BUILD</a></p>
+        </div>
+    </div>
+</body>
+</html>
