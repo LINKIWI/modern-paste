@@ -144,7 +144,7 @@ modernPaste.paste.PostController.handleSubmitButtonClick = function(evt) {
         'contentType': 'application/json',
         'data': JSON.stringify({
             'contents': this.pasteContents.getValue(),
-            'expiry_time': Date.parse(this.dateTimePicker.val()),
+            'expiry_time': Math.round(Date.parse(this.dateTimePicker.val()) / 1000),
             'title': this.pasteTitle.val(),
             'language': this.languageSelector.val().toLowerCase(),
             'password': this.pastePassword.val() !== '' ? this.pastePassword.val() : null,
