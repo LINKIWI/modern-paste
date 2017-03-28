@@ -6,7 +6,10 @@ import config
 from util.exception import InvalidIDException
 
 
-BLOCK_SIZE = 32
+# Source: http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
+# Section 3.1: "The input and output for the AES algorithm each consist of
+# *sequences of 128 bits*"  (128 bits == 16 bytes)
+BLOCK_SIZE = 16
 PADDING_CHAR = '*'
 cipher = AES.new(config.ID_ENCRYPTION_KEY)
 
