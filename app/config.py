@@ -89,6 +89,7 @@ LANGUAGES = [
     'jinja2',
     'markdown',
     'octave',
+    'perl',
     'php',
     'python',
     'sass',
