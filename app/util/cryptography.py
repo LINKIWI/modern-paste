@@ -6,13 +6,26 @@ import config
 from util.exception import InvalidIDException
 
 
-BLOCK_SIZE = 32
+# Source: http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
+# Section 3.1: "The input and output for the AES algorithm each consist of
+# *sequences of 128 bits*"  (128 bits == 16 bytes)
+BLOCK_SIZE = 16
 PADDING_CHAR = '*'
 cipher = AES.new(config.ID_ENCRYPTION_KEY)
+
+ALTCHARS = '~-'
 
 
 def _pad(s):
     return s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING_CHAR
+
+
+def _base64_decode(data):
+    """Decode base64, re-adding padding if needed."""
+    to_add = len(data) % 4
+    if to_add != 0:
+        data += b'=' * (4 - to_add)
+    return base64.b64decode(data, ALTCHARS)
 
 
 def get_encid(decid):
@@ -28,7 +41,8 @@ def get_encid(decid):
         raise InvalidIDException('Decrypted ID must be int-castable')
 
     # Slashes are not URL-friendly; replace them with dashes
-    return base64.b64encode(cipher.encrypt(_pad(str(decid)))).replace('/', '-').replace('+', '~')
+    # Also strip the base64 padding: it can be recovered.
+    return base64.b64encode(cipher.encrypt(_pad(str(decid))), ALTCHARS).rstrip('=')
 
 
 def get_decid(encid, force=False):
@@ -58,7 +72,7 @@ def get_decid(encid, force=False):
 
     try:
         str(encid)
-        return int(cipher.decrypt(base64.b64decode(str(encid).replace('-', '/').replace('~', '+'))).rstrip(PADDING_CHAR))
+        return int(cipher.decrypt(_base64_decode(str(encid))).rstrip(PADDING_CHAR))
     except:
         raise InvalidIDException('The encrypted ID is not valid')
 

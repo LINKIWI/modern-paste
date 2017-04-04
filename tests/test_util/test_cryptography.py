@@ -14,7 +14,7 @@ class TestCryptography(unittest.TestCase):
         )
 
         encid = util.cryptography.get_encid(15)
-        self.assertEqual(len(encid), 44)
+        self.assertEqual(len(encid), 22)
         self.assertNotIn('/', list(encid))
         self.assertNotIn('\\', list(encid))
 
