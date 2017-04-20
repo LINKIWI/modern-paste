@@ -62,5 +62,6 @@ class Paste(db.Model):
             'language': self.language,
             'views': self.views,
             'is_password_protected': self.password_hash is not None,
+            'deactivation_token': self.deactivation_token,
             'url': PasteViewInterfaceURI.full_uri(paste_id=util.cryptography.get_id_repr(self.paste_id)),
         }
