@@ -77,6 +77,7 @@ def submit_paste():
             for attachment in data.get('attachments', [])
         ]
         resp_data = new_paste.as_dict().copy()
+        resp_data['deactivation_token'] = new_paste.deactivation_token
         resp_data['attachments'] = [
             {
                 'name': attachment.file_name,

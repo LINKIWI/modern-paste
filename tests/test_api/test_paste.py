@@ -69,6 +69,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
+        self.assertIsNotNone(resp_data['deactivation_token'])
 
         resp = self.client.post(
             PasteSubmitURI.uri(),
@@ -111,6 +112,7 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertIsNotNone(resp_data['paste_id_repr'])
         self.assertTrue(resp_data['is_active'])
         self.assertEquals('contents', resp_data['contents'])
+        self.assertIsNotNone(resp_data['deactivation_token'])
         self.assertEqual(user.user_id, database.paste.get_paste_by_id(util.cryptography.get_decid(resp_data['paste_id_repr'])).user_id)
 
     def test_submit_paste_api_post(self):
