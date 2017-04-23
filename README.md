@@ -44,7 +44,7 @@ Modern Paste is intended for system administrators who wish to host their own in
    In order to build the application locally, you **must** have the following installed:
    + MySQL - Used as Modern Paste's persistent data store. Make sure you know the password to the `root` (or equivalent) user.
    + Python - Implementation language of Modern Paste's backend. **Python version 2.7+ is required**, as the backend makes use of language features not available in 2.6 and earlier.
-   + Java - Used to compile compile controllers into single `.js` files.
+   + Javascript - Used to compile compile controllers into single `.js` files.
    + Package managers `pip`, `gem`, and `npm` - Used for fulfilling application dependencies.
 
    If you have all of the above, you should be able to run all tests and build the application.
