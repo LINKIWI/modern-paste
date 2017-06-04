@@ -141,7 +141,12 @@
           "key": "url",
           "value": "Full URL to the web interface for viewing the paste",
           "type": "string"
-        }
+      },
+      {
+          "key": "deactivation_token",
+          "value": "Token used for deactivating the paste",
+          "type": "string"
+      }
       ]
     },
     {
