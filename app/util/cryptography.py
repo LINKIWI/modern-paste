@@ -11,7 +11,8 @@ from util.exception import InvalidIDException
 # *sequences of 128 bits*"  (128 bits == 16 bytes)
 BLOCK_SIZE = 16
 PADDING_CHAR = '*'
-cipher = AES.new(config.ID_ENCRYPTION_KEY)
+# switched from default (insecure) ECB cipher to CBC
+cipher = AES.new(config.ID_ENCRYPTION_KEY, AES.MODE_CBC)
 
 ALTCHARS = '~-'
 
