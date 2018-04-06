@@ -8,6 +8,6 @@ mock
 mysql-python
 pbr
 pre-commit
-pycrypto
+pycryptodome
 requests
 six

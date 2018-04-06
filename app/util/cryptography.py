@@ -11,8 +11,6 @@ from util.exception import InvalidIDException
 # *sequences of 128 bits*"  (128 bits == 16 bytes)
 BLOCK_SIZE = 16
 PADDING_CHAR = '*'
-cipher = AES.new(config.ID_ENCRYPTION_KEY)
-
 ALTCHARS = '~-'
 
 
@@ -42,6 +40,7 @@ def get_encid(decid):
 
     # Slashes are not URL-friendly; replace them with dashes
     # Also strip the base64 padding: it can be recovered.
+    cipher = AES.new(config.ID_ENCRYPTION_KEY, AES.MODE_CBC, config.ID_ENCRYPTION_IV)
     return base64.b64encode(cipher.encrypt(_pad(str(decid))), ALTCHARS).rstrip('=')
 
 
@@ -72,6 +71,7 @@ def get_decid(encid, force=False):
 
     try:
         str(encid)
+        cipher = AES.new(config.ID_ENCRYPTION_KEY, AES.MODE_CBC, config.ID_ENCRYPTION_IV)
         return int(cipher.decrypt(_base64_decode(str(encid))).rstrip(PADDING_CHAR))
     except:
         raise InvalidIDException('The encrypted ID is not valid')

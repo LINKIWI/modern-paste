@@ -68,6 +68,9 @@ REQUIRE_LOGIN_TO_PASTE = False
 # so that the encrypted IDs generated for the app are specific to this installation.
 ID_ENCRYPTION_KEY = '6\x80\x18\xdc\xcf \xad\x14U\xa7\x05X\x7f\x81\x01\xd5\x19i\xf3S;\xcaL\xcf\xe2\x8d\x82\x1a\x12\xd9}\x8c'
 
+# AES iv for CBC block cipher operation, advice as per key gen above
+ID_ENCRYPTION_IV = '1234567890123456'
+
 # Flask session secret key
 # IMPORTANT NOTE: Open up a Python terminal, and replace the below with the output of os.urandom(32)
 # This secret key should be different for every installation of Modern Paste.
