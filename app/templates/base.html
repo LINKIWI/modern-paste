@@ -52,9 +52,11 @@
             <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
                 <a href="{{ uri('user', 'UserLoginInterfaceURI') }}">LOGIN</a>
             </p>
-            <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
-                <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
-            </p>
+            {% if enable_user_registration %}
+                <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
+                    <a href="{{ uri('user', 'UserRegisterInterfaceURI') }}">REGISTER</a>
+                </p>
+            {% endif %}
         {% endif %}
         <p class="menu-panel-item dark-link-alt sans-serif regular white size-3 spaced">
             <a href="{{ uri('paste', 'PasteArchiveInterfaceURI') }}">ARCHIVE</a>

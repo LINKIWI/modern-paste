@@ -59,6 +59,13 @@ USER_REGISTRATION_DISABLED_FAILURE = {
 }
 USER_REGISTRATION_DISABLED_FAILURE_CODE = 403
 
+AUTH_METHOD_DISABLED_FAILURE = {
+    RESULT: RESULT_FAULURE,
+    MESSAGE: 'The auth method you attempted to use is disabled on this server.',
+    FAILURE: 'auth_method_disabled_failure'
+}
+AUTH_METHOD_DISABLED_FAILURE_CODE = 403
+
 PASTE_ATTACHMENTS_DISABLED_FAILURE = {
     RESULT: RESULT_FAULURE,
     MESSAGE: 'The server administrator has disabled paste attachments.',

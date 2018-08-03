@@ -10,10 +10,12 @@ from flask_login import current_user
 from flask_login import login_user
 from api.decorators import require_form_args
 from api.decorators import require_login_api
+from api.decorators import require_local_auth
 from util.exception import *
 
 
 @app.route(UserCreateURI.path, methods=['POST'])
+@require_local_auth
 @require_form_args(['username', 'password'])
 def create_new_user():
     """
@@ -59,6 +61,7 @@ def create_new_user():
 
 
 @app.route(UserUpdateDetailsURI.path, methods=['POST'])
+@require_local_auth
 @require_login_api
 def update_user_details():
     """
@@ -100,6 +103,7 @@ def update_user_details():
 
 
 @app.route(UserDeactivateURI.path, methods=['POST'])
+@require_local_auth
 @require_login_api
 def deactivate_user():
     """
@@ -117,6 +121,7 @@ def deactivate_user():
 
 
 @app.route(UserAPIKeyRegenerateURI.path, methods=['POST'])
+@require_local_auth
 @require_login_api
 def api_key_regenerate():
     """
@@ -133,6 +138,7 @@ def api_key_regenerate():
 
 
 @app.route(CheckUsernameAvailabilityURI.path, methods=['POST'])
+@require_local_auth
 @require_form_args(['username'])
 def check_username_availability():
     """
@@ -149,6 +155,7 @@ def check_username_availability():
 
 
 @app.route(ValidateEmailAddressURI.path, methods=['POST'])
+@require_local_auth
 @require_form_args(['email'])
 def validate_email_address():
     """

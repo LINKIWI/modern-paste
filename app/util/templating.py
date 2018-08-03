@@ -10,6 +10,20 @@ from modern_paste import app
 
 
 @app.context_processor
+def add_config():
+    """
+    Templating utility to retrieve specific configuration information.
+
+    Currently injected:
+
+        enabled_user_registration
+        auth_method
+    """
+    return dict(auth_method=config.AUTH_METHOD,
+                enable_user_registration=config.ENABLE_USER_REGISTRATION)
+
+
+@app.context_processor
 def import_static_resources():
     """
     Templating utility to handle build environment-specific static resource (CSS and JS) imports.

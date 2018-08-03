@@ -4,16 +4,18 @@ import time
 import types
 
 import mock
+import flask
 from flask_login import login_user
 from flask_login import logout_user
 from flask_testing import TestCase
 
 import config
 import constants.api
+from api.authentication import oidc_request_loader
 import database.attachment
 import database.paste
 import database.user
-from modern_paste import app
+import modern_paste
 from modern_paste import db
 from uri.authentication import LoginUserURI
 from uri.authentication import LogoutUserURI
@@ -132,17 +134,18 @@ class DatabaseTestCase(TestCase):
         config.ENABLE_USER_REGISTRATION = True
         config.ENABLE_PASTE_ATTACHMENTS = True
         config.MAX_ATTACHMENT_SIZE = 0
+        config.AUTH_METHOD = 'local'
 
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_TEST_DATABASE_URI']
+        modern_paste.app.config['TESTING'] = True
+        modern_paste.app.config['SQLALCHEMY_DATABASE_URI'] = modern_paste.app.config['SQLALCHEMY_TEST_DATABASE_URI']
 
-        return app
+        return modern_paste.app
 
     def setUp(self):
         """
         Initialize a test database environment.
         """
-        self.client = app.test_client()
+        self.client = modern_paste.app.test_client()
         db.create_all()
 
     def tearDown(self):
@@ -178,3 +181,78 @@ class DatabaseTestCase(TestCase):
         resp = self.client.post(LogoutUserURI.uri())
         self.assertEqual(resp.status_code, constants.api.SUCCESS_CODE)
         logout_user()
+
+
+class OIDCTestCase(DatabaseTestCase):
+    """
+    Subclass of DatabaseTestClass for testing OpenID Connect auth.
+    This sets the correct auth method and reloads at the end and start of tests.
+
+    This class is also used as a virtual mock object for the OIDC library.
+    """
+    @classmethod
+    def setUpClass(cls):
+        config.AUTH_METHOD = 'oidc'
+        modern_paste.setup_oidc()
+
+    def setUp(self):
+        """
+        Initialize a test database environment.
+        """
+        modern_paste.oidc = self
+
+        # This fun is here to make sure our set_token function is called first
+        modern_paste.app.before_request_funcs[None] = [
+            self.set_token,
+            oidc_request_loader
+        ]
+
+        self.has_id_token = False
+        self.token_valid = False
+        self.user = None
+
+        self.client = modern_paste.app.test_client()
+        db.create_all()
+
+    def tearDown(self):
+        """
+        Destroys the test database environment, resetting it to a clean state.
+        """
+        db.session.remove()
+        db.drop_all()
+        modern_paste.app.before_request_funcs[None] = []
+
+    @classmethod
+    def tearDownClass(cls):
+        config.AUTH_METHOD = 'local'
+
+    def set_token(self):
+        """
+        Used as app.before_request to set the g.oidc_id_token for tests.
+        """
+        if self.has_id_token:
+            flask.g.oidc_id_token = True
+        else:
+            flask.g.oidc_id_token = None
+
+    def user_getfield(self, field):
+        """
+        Stand-in for oidc.user_getfield.
+        """
+        return self.user[field]
+
+    def user_getinfo(self, fields, token=None):
+        """
+        Stand-in for oidc.user_getinfo.
+        It doesn't matter that we return all the info, that's not disallowed.
+        """
+        return self.user
+
+    def validate_token(self, token, scope):
+        """
+        Stand-in for oidc.validate_token.
+        """
+        if not self.token_valid:
+            return 'Invalid'
+        flask.g.oidc_token_info = self.user
+        return True

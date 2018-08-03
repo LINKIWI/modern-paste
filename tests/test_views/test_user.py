@@ -1,5 +1,7 @@
 from flask_login import current_user
 
+import config
+
 import util.testing
 import views.user
 from uri.main import *
@@ -38,6 +40,11 @@ class TestUser(util.testing.DatabaseTestCase):
         self.assertTrue(current_user.is_authenticated)
         redirect_resp = views.user.user_register_interface()
         self.assertEqual(302, redirect_resp.status_code)
+        self.assertEqual(HomeURI.uri(), redirect_resp.location)
+
+    def test_user_register_interface_non_local_auth(self):
+        config.AUTH_METHOD = 'oidc'
+        redirect_resp = views.user.user_register_interface()
         self.assertEqual(HomeURI.uri(), redirect_resp.location)
 
     def test_user_account_interface(self):

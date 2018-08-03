@@ -34,15 +34,19 @@
             </p>
             <a href="#" class="pastes-list-group-item settings-item list-group-item sans-serif semibold active" data-section="pastes-settings">MY PASTES</a>
             <a href="#" class="user-profile-list-group-item settings-item list-group-item" data-section="user-profile-settings">USER PROFILE</a>
-            <a href="#" class="api-key-list-group-item settings-item list-group-item" data-section="api-key-settings">API KEY</a>
-            <a href="#" class="deactivate-list-group-item settings-item list-group-item" data-section="deactivate-settings">DEACTIVATE</a>
+            {% if auth_method == 'local' %}
+                <a href="#" class="api-key-list-group-item settings-item list-group-item" data-section="api-key-settings">API KEY</a>
+                <a href="#" class="deactivate-list-group-item settings-item list-group-item" data-section="deactivate-settings">DEACTIVATE</a>
+            {% endif %}
         </div>
 
         <div class="mobile-account-settings-list-group btn-group sans-serif regular gray less-spaced size-2" role="group">
             <button type="button" class="pastes-list-group-item settings-item btn btn-default sans-serif semibold active" data-section="pastes-settings">MY PASTES</button>
             <button type="button" class="user-profile-list-group-item settings-item btn btn-default" data-section="user-profile-settings">USER PROFILE</button>
-            <button type="button" class="api-key-list-group-item settings-item btn btn-default" data-section="api-key-settings">API KEY</button>
-            <button type="button" class="deactivate-list-group-item settings-item btn btn-default" data-section="deactivate-settings">DEACTIVATE</button>
+            {% if auth_method == 'local' %}
+                <button type="button" class="api-key-list-group-item settings-item btn btn-default" data-section="api-key-settings">API KEY</button>
+                <button type="button" class="deactivate-list-group-item settings-item btn btn-default" data-section="deactivate-settings">DEACTIVATE</button>
+            {% endif %}
         </div>
 
         <!--My pastes-->
@@ -113,6 +117,7 @@
             </div>
         </div>
 
+        {% if auth_method == 'local' %}
         <!--API key-->
         <div class="api-key-settings settings-section-container hidden-setting">
             <div class="settings-header">
@@ -164,6 +169,7 @@
                 <button type="button" class="deactivate-account-button btn btn-danger sans-serif semibold white size-1 less-spaced" autocomplete="off">DEACTIVATE MY ACCOUNT</button>
             </div>
         </div>
+        {% endif %}
     </div>
 
     <!--Modal for paste deactivation confirmation-->

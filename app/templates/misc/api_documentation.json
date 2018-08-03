@@ -5,6 +5,10 @@
       "description": "This error is returned when attempting to access an authentication-required endpoint without authentication, or when attempting to access an authentication-optional endpoint with an invalid API key."
     },
     {
+      "failure_name": "auth_method_disabled_failure",
+      "description": "This error is returned when attempting to access an API endpoint that's only used when local users are used, but this installation uses an external authentication mechanism."
+    },
+    {
       "failure_name": "incomplete_params_failure",
       "description": "At least one required request parameter for the endpoint is missing from the request. Even if all required parameters are supplied as keys, this error may still be returned if the value of one of the required parameters is blank (e.g., an empty string). This error may also be returned if the <span class=\"ubuntu-mono regular\">Content-Type</span> of the request isn't explicitly specified as <span class=\"ubuntu-mono regular\">application/json</span>."
     },

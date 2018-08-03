@@ -39,7 +39,10 @@ def render_view(func):
     """
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        template, context = func(*args, **kwargs)
+        response = func(*args, **kwargs)
+        if not isinstance(response, tuple):
+            return response
+        template, context = response
         if 'config' in context:
             context['config'].update(context_config())
         else:
@@ -80,7 +83,7 @@ def require_login_api(func):
     """
     A custom implementation of Flask-login's built-in @login_required decorator.
     This decorator will allow usage of the API endpoint if the user is either currently logged in via the app
-    or if the user authenticates with an API key in the POST JSON parameters.
+    or if the user authenticates with an API key in the POST JSON parameters and local auth is used.
     This implementation overrides the behavior taken when the current user is not authenticated by
     returning the predefined AUTH_FAILURE JSON response with HTTP status code 401.
     This decorator is intended for use with API endpoints.
@@ -91,7 +94,7 @@ def require_login_api(func):
         if current_user.is_authenticated:
             return func(*args, **kwargs)
         try:
-            if data and data.get('api_key'):
+            if config.AUTH_METHOD == 'local' and data and data.get('api_key'):
                 user = database.user.get_user_by_api_key(data['api_key'], active_only=True)
                 login_user(user)
                 del data['api_key']
@@ -107,7 +110,7 @@ def optional_login_api(func):
     """
     This decorator is similar in behavior to require_login_api, but is intended for use with endpoints that offer
     extended functionality with a login, but can still be used without any authentication.
-    The decorator will set current_user if authentication via an API key is provided, and will continue without error
+    The decorator will set current_user if authentication via an API key is provided and local auth is used, and will continue without error
     otherwise.
     This decorator is intended for use with API endpoints.
     """
@@ -117,7 +120,7 @@ def optional_login_api(func):
         if current_user.is_authenticated:
             return func(*args, **kwargs)
         try:
-            if data and data.get('api_key'):
+            if config.AUTH_METHOD == 'local' and data and data.get('api_key'):
                 user = database.user.get_user_by_api_key(data['api_key'], active_only=True)
                 login_user(user)
                 del data['api_key']
@@ -159,4 +162,16 @@ def hide_if_logged_in(redirect_uri):
                 return redirect(redirect_uri)
             return func(*args, **kwargs)
         return decorated_view
+    return decorator
+
+
+def require_local_auth(func):
+    """
+    Makes the current API endpoint only work with local auth, otherwise returns an error.
+    """
+    @wraps(func)
+    def decorator(*args, **kwargs):
+        if config.AUTH_METHOD != 'local':
+            return jsonify(AUTH_METHOD_DISABLED_FAILURE), AUTH_METHOD_DISABLED_FAILURE_CODE
+        return func(*args, **kwargs)
     return decorator

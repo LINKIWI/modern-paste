@@ -103,6 +103,8 @@ def secure_hash(s, iterations=10000):
     :param iterations: Number of hash iterations to use
     :return: A string representing a secure hash of the string
     """
+    if s is None:
+        return None
     hash_result = SHA256.new(data=str(s)).hexdigest()
     for i in range(iterations):
         hash_result = SHA256.new(data=hash_result).hexdigest()

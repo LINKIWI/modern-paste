@@ -60,6 +60,19 @@ class TestPaste(util.testing.DatabaseTestCase):
         self.assertEqual(constants.api.USER_REGISTRATION_DISABLED_FAILURE_CODE, resp.status_code)
         self.assertEqual(constants.api.USER_REGISTRATION_DISABLED_FAILURE, json.loads(resp.data))
 
+    def test_create_new_user_non_local_auth(self):
+        config.AUTH_METHOD = 'oidc'
+        resp = self.client.post(
+            UserCreateURI.uri(),
+            data=json.dumps({
+                'username': 'username',
+                'password': 'password',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(constants.api.AUTH_METHOD_DISABLED_FAILURE_CODE, resp.status_code)
+        self.assertEqual(constants.api.AUTH_METHOD_DISABLED_FAILURE, json.loads(resp.data))
+
     def test_create_new_user_valid(self):
         resp = self.client.post(
             UserCreateURI.uri(),
