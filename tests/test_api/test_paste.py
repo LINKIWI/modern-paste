@@ -13,6 +13,7 @@ import database.attachment
 import database.paste
 import database.user
 import util.cryptography
+import util.string
 import util.testing
 from uri.authentication import *
 from uri.main import *
@@ -255,7 +256,7 @@ class TestPaste(util.testing.DatabaseTestCase):
                             'name': 'file name',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'data': util.testing.random_alphanumeric_string(length=20),
+                            'data': util.string.random_alphanumeric_string(length=20),
                         },
                     ]
                 }),
@@ -273,7 +274,7 @@ class TestPaste(util.testing.DatabaseTestCase):
                             'name': 'file name',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'data': util.testing.random_alphanumeric_string(length=5),
+                            'data': util.string.random_alphanumeric_string(length=5),
                         },
                     ]
                 }),
@@ -293,7 +294,7 @@ class TestPaste(util.testing.DatabaseTestCase):
                             'name': 'file name',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'data': util.testing.random_alphanumeric_string(length=5),
+                            'data': util.string.random_alphanumeric_string(length=5),
                         },
                     ]
                 }),
@@ -311,7 +312,7 @@ class TestPaste(util.testing.DatabaseTestCase):
                             'name': 'file name',
                             'size': 12345,
                             'mime_type': 'image/png',
-                            'data': util.testing.random_alphanumeric_string(length=4),
+                            'data': util.string.random_alphanumeric_string(length=4),
                         },
                     ]
                 }),

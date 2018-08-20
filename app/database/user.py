@@ -1,7 +1,7 @@
 import database.paste
 import models
 import util.cryptography
-import util.testing
+import util.string
 from modern_paste import login_manager
 from modern_paste import session
 from util.exception import *
@@ -125,7 +125,7 @@ def generate_new_api_key(user_id):
     :raises UserDoesNotExistException: If no user exists with the given user_id
     """
     user = get_user_by_id(user_id)
-    user.api_key = util.testing.random_alphanumeric_string(length=64)
+    user.api_key = util.string.random_alphanumeric_string(length=64)
     session.commit()
     return user
 
