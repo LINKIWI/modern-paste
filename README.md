@@ -99,10 +99,10 @@ Modern Paste is intended for system administrators who wish to host their own in
    ```
    Then, in the directory you cloned the repository to:
    ```bash
-   $ sudo make
+   $ make
    ```
    This will:
-   + Install dependencies via `pip` and `gem`, and initialize this repository's submodules.
+   + Install dependencies via `pip` and `gem`, and initialize this repository's submodules. Some of these commands require sudo, you will be prompted for your password.
    + Run all tests.
    + Create all tables in the database.
    + Compile CSS and Javascript depending on the `BUILD_ENVIRONMENT` constant set in `app/config.py`.

@@ -34,8 +34,8 @@ prod:
 
 dependencies:
 	java -version
-	gem install sass
-	npm install -g uglify-js
+	sudo gem install sass
+	sudo npm install -g uglify-js
 	pip install -r requirements.txt
 	pre-commit install
 	git submodule init
