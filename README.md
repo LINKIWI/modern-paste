@@ -125,6 +125,9 @@ Modern Paste is intended for system administrators who wish to host their own in
    ```
    If you visit `http://modernpaste.example.com`, you should be presented with your installation of Modern Paste.
 
+7. **Deploying on Google App Engine.**
+   In order to deploy on Google App Engine (GAE), you should complete steps 1 & 2 above. For step 3, you need to decide whether you would like to use Google Cloud SQL, or a traditional MySQL server hosted elsewhere. If you choose the former, create an instance and database in your Cloud project. Complete Step 4, paying attention to the parts which are different for GAE deployments (most notably Cloud SQL config). Build the app locally per Step 5, and once completed run 'pip install -r requirements.txt -t lib/' to install your requirements in the lib folder for GAE. You should now be able to test and deploy your code with dev_appserver.py/cloud sql proxy and gcloud.
+
 ## Contributing
 
 Contributions from the developer community lie at the heart of open source software. Contributions to Modern Paste--in the form of new features, bug fixes, or anything else--are encouraged and always welcome. Please read the Workflow section carefully on how to get started. The Continuous Integration and Testing sections describe practices on ensuring the integrity of Modern Paste.

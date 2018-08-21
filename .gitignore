@@ -4,3 +4,4 @@
 app/static/build
 .sass-cache
 *.swp
+lib/
