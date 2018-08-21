@@ -99,10 +99,10 @@ Modern Paste is intended for system administrators who wish to host their own in
    ```
    Then, in the directory you cloned the repository to:
    ```bash
-   $ sudo make
+   $ make
    ```
    This will:
-   + Install dependencies via `pip` and `gem`, and initialize this repository's submodules.
+   + Install dependencies via `pip` and `gem`, and initialize this repository's submodules. Some of these commands require sudo, you will be prompted for your password.
    + Run all tests.
    + Create all tables in the database.
    + Compile CSS and Javascript depending on the `BUILD_ENVIRONMENT` constant set in `app/config.py`.
@@ -113,7 +113,7 @@ Modern Paste is intended for system administrators who wish to host their own in
    <VirtualHost *:80>
        ServerName modernpaste.example.com
        DocumentRoot /modern-paste/installation/directory
-       WSGIScriptAlias / /modern-paste/installation/directory/modern_paste.wsgi
+       WSGIScriptAlias / /modern-paste/installation/directory/wsgi.py
 
        ErrorLog ${APACHE_LOG_DIR}/modernpaste-error.log
        CustomLog ${APACHE_LOG_DIR}/modernpaste-access.log combined
@@ -124,6 +124,9 @@ Modern Paste is intended for system administrators who wish to host their own in
    $ sudo service apache2 reload
    ```
    If you visit `http://modernpaste.example.com`, you should be presented with your installation of Modern Paste.
+
+7. **Deploying on Google App Engine.**
+   In order to deploy on Google App Engine (GAE), you should complete steps 1 & 2 above. For step 3, you need to decide whether you would like to use Google Cloud SQL, or a traditional MySQL server hosted elsewhere. If you choose the former, create an instance and database in your Cloud project. Complete Step 4, paying attention to the parts which are different for GAE deployments (most notably Cloud SQL config). Build the app locally per Step 5, and once completed run 'pip install -r requirements.txt -t lib/' to install your requirements in the lib folder for GAE. You should now be able to test and deploy your code with dev_appserver.py/cloud sql proxy and gcloud.
 
 ## Contributing
 

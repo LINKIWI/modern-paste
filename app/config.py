@@ -35,12 +35,17 @@ ATTACHMENTS_DIR = '/var/www/modern-paste-attachments'
 
 # Database host
 # Optionally change the host on which the MySQL server is running; defaults to the same server hosting the site.
+# For Google App Engine testing, this is used by dev_appserver and should point to the cloud sql proxy
 DATABASE_HOST = 'localhost'
 
 # Database name
 # It's suggested you leave this as default.
 # IMPORTANT NOTE: You must create this database yourself before running this app.
 DATABASE_NAME = 'modern_paste'
+
+# Cloud SQL Instance Connection name
+# This is only relevant for Google App Engine deployments. Insert the instance connection name of your database from the console here. If you are using App Engine without Cloud SQL, leave this blank
+DATABASE_INSTANCE_CONNECTION_NAME = 'my-project:my-location:my-instance'
 
 # Username and password for MySQL identity with R/W access to the DATABASE_NAME database.
 # It's suggested you create a new user with permissions only on DATABASE_NAME.

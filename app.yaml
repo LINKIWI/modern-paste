@@ -1,0 +1,17 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /.*
+  script: wsgi.application
+
+libraries:
+- name: flask
+  version: latest
+- name: pycrypto
+  version: latest
+- name: ssl
+  version: latest
+- name: MySQLdb
+  version: latest

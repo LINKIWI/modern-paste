@@ -1,10 +1,9 @@
 import time
 
 import util.cryptography
-import util.testing
+import util.string
 from modern_paste import db
 from uri.paste import *
-
 
 class Paste(db.Model):
     __tablename__ = 'paste'
@@ -41,7 +40,7 @@ class Paste(db.Model):
         self.language = language
         self.password_hash = password_hash
         self.contents = contents
-        self.deactivation_token = util.testing.random_alphanumeric_string()
+        self.deactivation_token = util.string.random_alphanumeric_string()
         self.views = 0
         self.is_api_post = is_api_post
 

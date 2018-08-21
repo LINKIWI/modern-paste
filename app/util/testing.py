@@ -17,18 +17,7 @@ from modern_paste import app
 from modern_paste import db
 from uri.authentication import LoginUserURI
 from uri.authentication import LogoutUserURI
-
-
-def random_alphanumeric_string(length=64):
-    """
-    Generate a random alphanumeric string of the specified length.
-
-    :param length: Length of the random string
-    :return: A random string of length length containing only alphabetic and numeric characters
-    """
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    numbers = '0123456789'
-    return ''.join([random.choice(list(alphabet) + list(alphabet.upper()) + list(numbers)) for i in range(length)])
+from util.string import random_alphanumeric_string
 
 
 class Factory:
