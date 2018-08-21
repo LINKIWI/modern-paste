@@ -113,7 +113,7 @@ Modern Paste is intended for system administrators who wish to host their own in
    <VirtualHost *:80>
        ServerName modernpaste.example.com
        DocumentRoot /modern-paste/installation/directory
-       WSGIScriptAlias / /modern-paste/installation/directory/modern_paste.wsgi
+       WSGIScriptAlias / /modern-paste/installation/directory/wsgi.py
 
        ErrorLog ${APACHE_LOG_DIR}/modernpaste-error.log
        CustomLog ${APACHE_LOG_DIR}/modernpaste-access.log combined
