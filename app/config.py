@@ -31,16 +31,26 @@ MAX_ATTACHMENT_SIZE = 0
 
 # Location to store paste attachments
 # Please use an absolute path and ensure that it is writable by www-data.
+# For Google Cloud Storage, this should be relative to your bucket
 ATTACHMENTS_DIR = '/var/www/modern-paste-attachments'
+
+# Google Cloud Storage bucket
+# Set to True if you're using Cloud Storage
+USE_CLOUD_STORAGE = False
 
 # Database host
 # Optionally change the host on which the MySQL server is running; defaults to the same server hosting the site.
+# For Google App Engine testing, this is used by dev_appserver and should point to the cloud sql proxy
 DATABASE_HOST = 'localhost'
 
 # Database name
 # It's suggested you leave this as default.
 # IMPORTANT NOTE: You must create this database yourself before running this app.
 DATABASE_NAME = 'modern_paste'
+
+# Cloud SQL Instance Connection name
+# This is only relevant for Google App Engine deployments. Insert the instance connection name of your database from the console here. If you are using App Engine without Cloud SQL, leave this blank
+DATABASE_INSTANCE_CONNECTION_NAME = 'my-project:my-location:my-instance'
 
 # Username and password for MySQL identity with R/W access to the DATABASE_NAME database.
 # It's suggested you create a new user with permissions only on DATABASE_NAME.
@@ -61,6 +71,11 @@ ENABLE_USER_REGISTRATION = True
 # existing, active user.
 # This is useful for private or internal installations that aren't intended for public use.
 REQUIRE_LOGIN_TO_PASTE = False
+
+# Choose to require users to be logged in to post attachments
+# If True, the web interface will only allow users to add attachments if they are logged in
+# This is useful to prevent abuse of attachments system
+REQUIRE_LOGIN_TO_ATTACH = False
 
 # AES key for generating encrypted IDs
 # This is only relevant if USE_ENCRYPTED_IDS above is True. If not, this config parameter can be ignored.

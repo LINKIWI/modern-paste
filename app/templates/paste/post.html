@@ -60,7 +60,7 @@
     </div>
 
     <!--Paste attachments-->
-    {% if config.ENABLE_PASTE_ATTACHMENTS %}
+    {% if config.ENABLE_PASTE_ATTACHMENTS and (not config.REQUIRE_LOGIN_TO_ATTACH or current_user.is_authenticated) %}
         <div class="paste-attachments-container section-label">
             <p class="sans-serif regular size-1 light-gray less-spaced">PASTE ATTACHMENTS</p>
             <div class="attachments-upload-section">

@@ -1,5 +1,7 @@
+import base64
 import errno
 import os
+import logging
 
 from werkzeug.utils import secure_filename
 
@@ -30,7 +32,7 @@ def create_new_attachment(paste_id, file_name, file_size, mime_type, file_data):
         mime_type=mime_type,
     )
 
-    _store_attachment_file(paste_id, file_data, new_attachment.hash_name)
+    _store_attachment_file(paste_id, file_data, new_attachment)
 
     session.add(new_attachment)
     session.commit()
@@ -38,14 +40,13 @@ def create_new_attachment(paste_id, file_name, file_size, mime_type, file_data):
     return new_attachment
 
 
-def _store_attachment_file(paste_id, attachment_binary_data, attachment_hash_name):
+def _store_attachment_file(paste_id, attachment_binary_data, attachment):
     """
     Store the attachment on disk.
 
     :param paste_id: Paste ID to associate with this attachment
     :param attachment_binary_data: Binary, base64-encoded data for this attachment to write to a file
-    :param attachment_hash_name: The hashed name of the attachment corresponding to the name of the attachment file
-                                 on disk
+    :param attachment: The attachment file metadata
     """
     # Create the file paths for storage
     save_file_dir = '{attachments_dir}/{paste_id}'.format(
@@ -56,19 +57,38 @@ def _store_attachment_file(paste_id, attachment_binary_data, attachment_hash_nam
     )
     save_file_path = '{save_file_dir}/{hash_name}'.format(
         save_file_dir=save_file_dir,
-        hash_name=attachment_hash_name,
+        hash_name=attachment.hash_name,
     )
 
-    # Create the directory if it doesn't already exist
-    try:
-        os.makedirs(save_file_dir)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
+    if not config.USE_CLOUD_STORAGE:
+        # Create the directory if it doesn't already exist
+        try:
+            os.makedirs(save_file_dir)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
 
-    # Write the attachment's base64-encoded data to a file
-    with open(save_file_path, 'w') as attachment_file:
-        attachment_file.write(attachment_binary_data)
+        # Decode and write the attachment's data to a file
+        with open(save_file_path, 'w') as attachment_file:
+            attachment_file.write(base64.b64decode(attachment_binary_data))
+    else:
+        try:
+            import cloudstorage as gcs
+            from google.appengine.api import app_identity
+            import os
+
+            bucket = os.environ.get('BUCKET_NAME',
+                                    app_identity.get_default_gcs_bucket_name())
+            gcs_path = '/{}{}'.format(bucket, save_file_path)
+            logging.error('Saving to {}'.format(gcs_path))
+
+            gcs_file = gcs.open(gcs_path, 'w',
+                                content_type=attachment.mime_type,
+                                retry_params=gcs.RetryParams(backoff_factor=1.1))
+            gcs_file.write(str(base64.b64decode(attachment_binary_data)))
+            gcs_file.close()
+        except:
+            logging.exception('Cloud storage store failed')
 
 
 def get_attachment_by_id(attachment_id, active_only=False):
